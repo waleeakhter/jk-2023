@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Pending",
+        "value": 0
+    },
+    {
+        "name": "Paid",
+        "value": 1
+    },
+    {
+        "name": "Credit",
+        "value": 2
+    }
+]

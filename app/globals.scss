@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input[type="number"] {
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+.react-select__option--is-focused:not(.react-select__option--is-selected) {
+    background-color: rgba(90, 97, 105, 0.10196078431372549);
+}
+
+.react-datepicker-popper {
+    z-index: 100;
+}
+.p-tabview-panels {
+    padding: 0 !important;
+}
+
+.p-selectbutton {
+    > div {
+        font-size: 0.775rem;
+        padding: 0.45625rem 1rem;
+    }
+}
+.react-datepicker__input-container .react-datepicker__calendar-icon {
+    z-index: 33;
+    top: 4.5px;
+    left: -3px;
+    width: 2em;
+    height: 2em;
+    fill: #6366f1;
+}
