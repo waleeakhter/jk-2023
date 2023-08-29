@@ -16,13 +16,15 @@ const Home = async ({ searchParams }: Props) => {
       tags: ["item"]
     }
   })
-  console.log(searchParams, 'searchParams');
   const Items = await getItems.json()
 
-  // const addItems = async () => {
+  // const addItems = async (e: React.SyntheticEvent) => {
+  //   const formDate = new FormData()
+  //   formDate.append("file", e.target?.files[0])
   //   const additems = await fetch('http://localhost:3000/api/item', {
   //     method: "POST",
-  //   })
+  //     body: formDate
+  //   }).then(res => console.log(res)).catch(err => console.log(err))
   // }
   const columns = [
     { field: 'name', header: 'Item', enabledEdit: true, type: "text" },
@@ -41,6 +43,7 @@ const Home = async ({ searchParams }: Props) => {
 
     <>
       {/* <Button onClick={addItems} >'Add Items'</Button> */}
+      {/* <input type='file' accept='xlsx' onChange={addItems} /> */}
       <Datatable data={Items.data} showSale={Items.totalAmount} hideActionCol={true}
         columns={columns} search={['name', 'type']} hideDeleteBtn={true} tableName={'Items'} addComponent={undefined} targetRoute={'item'} />
     </>

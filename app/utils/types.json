@@ -1,14 +1,18 @@
 [
     {
-        "name": "All",
-        "value": "all"
-    },
-    {
         "name": "LCD's",
         "value": "lcd"
     },
     {
         "name": "Mobile's",
         "value": "mobile"
+    },
+    {
+        "name": "Charger's",
+        "value": "charger"
+    },
+    {
+        "name": "Laptop's",
+        "value": "laptop"
     }
 ]

@@ -8,13 +8,16 @@ import Status from "@/app/utils/status.json";
 import { Fieldset } from 'primereact/fieldset';
 import AdvanceSelect from '@/app/components/AdvanceSelect';
 import { ToggleButton } from 'primereact/togglebutton';
+import BrandsSelect from '@/app/components/BrandsSelect';
+import { Button } from 'primereact/button';
+import { MultiSelect } from 'primereact/multiselect';
 
 type date = {
     createdAt: Date | null | undefined,
     endAt: Date | null | undefined,
-    status: number | undefined,
+    status: Array<number> | undefined,
     paidOn: string | undefined,
-    type: string | undefined
+    type: string[] | undefined
 }
 
 
@@ -25,15 +28,15 @@ type Props = { searchParams: URLSearchParams, clients: Object[] }
 export const Filters = (props: Props) => {
     const searchParams = useSearchParams().toString()!;
     const params = new URLSearchParams(searchParams);
-    const [toggleClientFilters, setToggleClientFilters] = useState(false);
+    const [toggleClientFilters, setToggleClientFilters] = useState(true);
 
 
     const [filters, setFilters] = useState<date>({
-        status: Status.at(0)?.value,
+        status: [Status.at(0)?.value ?? 0],
         createdAt: null,
         endAt: null,
         paidOn: undefined,
-        type: Types.at(0)?.value
+        type: []
     });
 
     useEffect(() => {
@@ -44,14 +47,14 @@ export const Filters = (props: Props) => {
     const types = Types.map(type => (
         {
             name: type.name, value: type.value,
-            disabled: params.get(type.name) === type.value.toString() ?? filters.type === type.value
+            disabled: params.get(type.name) === type.value.toString() ?? filters.type?.includes(type.value)
 
         }
     ));
     const status = Status.map(el => (
         {
             name: el.name, value: el.value,
-            disabled: params.get(el.name) === el.value.toString() ?? filters.status === el.value
+            disabled: params.get(el.name) === el.value.toString() ?? filters.status?.includes(el.value)
 
         }
     ));
@@ -71,21 +74,26 @@ export const Filters = (props: Props) => {
         router.push(pathname + '?' + params.toString());
     }
     const onChange = (e: SelectButtonChangeEvent, name: string) => {
-        setFilters(prevFilters => ({ ...prevFilters, [name]: e.value }));
-        const value = e.value
-        switch (value) {
-            case "all":
-                deleteParams("type");
-                break;
-            case 0:
-            case 2:
-                createQueryString(name, e.value)
-                deleteParams("paidOn");
-                break;
-            default:
-                router.push(pathname + '?' + createQueryString(name, e.value));
-                break;
+        const value = name === "status" ? e.value?.length > 0 ? e.value : [0] : e.value?.length > 0 ? e.value : null
+        setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
+        console.log(e.value)
+        if (value?.length > 0) {
+            createQueryString(name, JSON.stringify(value))
+            if (name === "status") {
+                const checkStatus = [0, 2];
+                const check1 = checkStatus.some(el => value.includes(el))
+                console.log(check1)
+                if (check1) {
+                    deleteParams("paidOn");
+                    return;
+                }
+            }
+            router.push(pathname + '?' + params.toString());
+        } else {
+            deleteParams(name);
+
         }
+
 
     };
     const onDateChange = (dates: [Date, Date] | [any, any]) => {
@@ -132,6 +140,24 @@ export const Filters = (props: Props) => {
         }
     }
     const noop = () => { };
+    const onBrandSelect = (res: Array<{ name: string, value: string }>) => {
+        if (res?.length > 0) {
+            const client = res.map(el => el.value)
+
+            router.push(pathname + '?' + createQueryString("brands", JSON.stringify(client)));
+        } else {
+            deleteParams("brands")
+            router.push(pathname + '?' + params.toString());
+
+        }
+    }
+
+    const legendTemplate = (
+        <div className="flex items-center text-primary text-sm">
+            <span className="pi pi-filter mr-2"></span>
+            <span className="font-bold ">Filters</span>
+        </div>
+    );
     return (
         <div className='p-5'>
             <Fieldset
@@ -145,14 +171,24 @@ export const Filters = (props: Props) => {
                     toggler: { className: "p-[0.5rem_!important]  " }
 
                 }}
-                legend="Filters" toggleable collapsed={true} >
+                legend={legendTemplate} toggleable collapsed={true} >
                 <div className='grid grid-cols-4 gap-4  items-center w-full'>
                     <div className='flex flex-col gap-1  '>
-                        <ToggleButton checked={toggleClientFilters} onLabel='By Client' offLabel='Exclude Client'
-                            onChange={(e) => setToggleClientFilters(e.value)} className="p-1 text-sm w-16 "
-                            tooltip="Click to change Functionalty" tooltipOptions={{ position: "top", showDelay: 0, onHide: noop }} />
+                        <div className="flex">
+                            <ToggleButton checked={toggleClientFilters} onLabel='By Client' offLabel='Exclude Client'
+                                onChange={(e) => setToggleClientFilters(e.value)} className="px-2 py-0 text-sm max-w-fit "
+                            />
+                            <div className="p-tooltip p-component p-tooltip-right p-tooltip-active relative inset-0"  >
+                                <div className="p-tooltip-arrow" ></div>
+                                <div className="p-tooltip-text" data-pc-section="text">Click to change Functionalty</div>
+                            </div>
+                        </div>
                         <AdvanceSelect name={"client"} value={"name"} multiple={true}
                             lableValue={"name"} options={props.clients} callback={(data) => onClientSelect(data, toggleClientFilters ? "client" : "excludeClients")} />
+                    </div>
+                    <div>
+                        <label htmlFor="brans">By Brands</label>
+                        <BrandsSelect callback={onBrandSelect} />
                     </div>
 
                     <div className='flex flex-col gap-1'>
@@ -167,7 +203,7 @@ export const Filters = (props: Props) => {
                             onChange={onDateChange} dateFormat={"01-08-2023"}
                         />
                     </div>
-                    {filters.status === 1 ? (
+                    {filters.status?.includes(1) ? (
                         <div className='flex flex-col gap-1'>
                             <label htmlFor="" className='block font-semibold text-sm'>Paid At</label>
                             <DatePicker
@@ -180,14 +216,22 @@ export const Filters = (props: Props) => {
                             />
                         </div>
                     ) : null}
-
-
-                    <div className=" ml-auto mt-auto text-end w-full ">
-                        <SelectButton className='h-10' options={types} value={filters.type} onChange={(e) => (onChange(e, "type"))} optionLabel="name" />
-                        <SelectButton className='h-10' options={status} value={filters.status} onChange={(e) => (onChange(e, "status"))} optionLabel="name" />
-                    </div>
                 </div>
+
+                <Button label="Clear" raised size='small' severity='danger' icon={"pi pi-filter-slash"}
+                    onClick={() => router.push(pathname)} className='mt-3' />
+
+
             </Fieldset>
+            <div className="flex flex-wrap items-center  w-full mt-4 justify-end gap-4 ">
+                {/* <SelectButton options={types} value={filters.type} onChange={(e) =>)} optionLabel="name" /> */}
+                {/* <AdvanceSelect name={'types'} value={"name"} options={Types} /> */}
+                <MultiSelect value={filters.type} showClear
+                    onChange={(e) => (onChange(e, "type"))} options={types} optionLabel="name" optionValue='value'
+                    filter placeholder="Select Item Type" maxSelectedLabels={3} className="" />
+                <SelectButton multiple options={status} value={filters.status}
+                    onChange={(e) => (onChange(e, "status"))} optionLabel="name" />
+            </div>
         </div>
 
     );

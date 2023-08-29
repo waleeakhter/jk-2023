@@ -1,13 +1,11 @@
 'use server'
-import React, { Suspense, useMemo } from 'react';
+import React from 'react';
 import Filters from './../table/filters/Filters';
 import Datatable from '../../components/Datatable/Datatable';
 import Tooltips, { columns } from './columns';
 import { MixInterfaces, Sale } from '@/typings';
 import moment from 'moment';
 import SaleForm from './../form/SaleForm';
-import SaleActions from './../SaleActions';
-import ClientSelect from '../form/ClientSelect';
 import { getClients } from '../SaleActions/ServerActions';
 
 type Props = {

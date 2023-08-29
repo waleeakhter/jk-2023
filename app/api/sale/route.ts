@@ -6,47 +6,44 @@ import { AggregateOptions, ObjectId, PipelineStage, Types } from 'mongoose';
 import { revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
-// async function getTotalSaleToday(date?: Date) {
-//     const today = new Date();
-//     today.setHours(0, 0, 0, 0);
 
-//     console.log("Today:", today);
-
-//     try {
-//         const totalSale = await Sale.aggregate([
-//             {
-//                 $match: {
-//                     createdAt: { $gte: today },
-//                     // 'item.type': 'type'
-
-//                 },
-//             },
-//             {
-//                 $group: {
-//                     _id: null,
-//                     totalSale: { $sum: '$total_amount' },
-//                 },
-//             },
-//         ]);
-
-//         console.log("Total Sale:", totalSale);
-
-//         return totalSale.length > 0 ? totalSale[0].totalSale : 0;
-//     } catch (error) {
-//         console.error('Error while calculating total sale:', error);
-//         return 0;
-//     }
-// }
+interface DefaultParams {
+    status: string;
+    brands: string;
+    type: string;
+    createdAt: string | null;
+    endAt: string | null;
+    paidOn: string | null;
+    client: string;
+    excludeClients: string;
+}
+const defaultParams: DefaultParams = {
+    status: '[0]',
+    brands: '[]',
+    type: '[]',
+    createdAt: null,
+    endAt: null,
+    paidOn: null,
+    client: '[]',
+    excludeClients: '[]'
+};
 export async function GET(request: Request) {
     await dbConnect();
     const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status');
-    const type = searchParams.get('type');
-    const createdAt = searchParams.get('createdAt');
-    const endAt = searchParams.get('endAt');
-    const paidOn = searchParams.get('paidOn');
-    const client: Array<string> = JSON.parse(searchParams.get('client') ?? "[]");
-    const excludeClients: Array<string> = JSON.parse(searchParams.get('excludeClients') ?? "[]");
+
+
+    const params = {
+        ...defaultParams,
+        ...Object.fromEntries(searchParams.entries())
+    };
+    const { status, brands, type, createdAt, endAt, paidOn, client,
+        excludeClients } = params;
+    console.log(createdAt, endAt)
+    const parsedStatus = JSON.parse(status);
+    const parsedBrands = JSON.parse(brands);
+    const parsedType = JSON.parse(type);
+    const parsedClient = JSON.parse(client)
+    const parsedExcludeClients = JSON.parse(excludeClients);
 
     const getDate = new Date(paidOn ?? new Date());
     getDate.setHours(0o0, 0, 0, 0);
@@ -55,11 +52,11 @@ export async function GET(request: Request) {
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(endAt ?? new Date());
     endOfDay.setHours(23, 59, 59, 999);
-
+    console.log(parsedBrands)
     const pipeline: PipelineStage[] = [
         {
             $match: {
-                status: Number(status || 0),
+                status: { $in: parsedStatus },
                 ...(paidOn && { paidOn: { $gte: getDate } }),
                 ...(createdAt && { createdAt: { $gte: startOfDay, $lte: endOfDay } }),
             },
@@ -75,7 +72,12 @@ export async function GET(request: Request) {
         {
             $unwind: '$item',
         },
-        ...(type ? [{ $match: { 'item.type': type } }] : []),
+        {
+            $match: {
+                ...(parsedType.length > 0 && { 'item.type': { $in: parsedType } }),
+                ...(parsedBrands.length > 0 && { 'item.brand': { $in: parsedBrands } })
+            }
+        },
         {
             $lookup: {
                 from: 'clients',
@@ -113,8 +115,8 @@ export async function GET(request: Request) {
         },
     ];
 
-    if (client.length > 0) {
-        const clientObjectIds = client.map(el => new Types.ObjectId(el));
+    if (parsedClient.length > 0) {
+        const clientObjectIds = parsedClient.map((el: string) => new Types.ObjectId(el));
         pipeline.splice(10, 0, {
             $match: {
                 'client._id': { $in: clientObjectIds },
@@ -122,8 +124,8 @@ export async function GET(request: Request) {
         });
     }
 
-    if (excludeClients.length > 0) {
-        const excludeClientObjectIds = excludeClients.map(el => new Types.ObjectId(el));
+    if (parsedExcludeClients.length > 0) {
+        const excludeClientObjectIds = parsedExcludeClients.map((el: string) => new Types.ObjectId(el));
         pipeline.splice(10, 0, {
             $match: {
                 'client._id': { $nin: excludeClientObjectIds },

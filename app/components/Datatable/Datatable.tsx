@@ -10,7 +10,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import AddModal from './AddModal';
 import { MixInterfaces } from '@/typings';
 import { Headers } from 'react-csv/components/CommonPropTypes';
-import BulkUpdate from './BulkUpdate';
+import BulkUpdate from '../../sale/SaleActions/BulkUpdate';
 import { useRouter } from 'next/navigation';
 import { updateOrder } from './serverActions';
 import DatePicker from "react-datepicker";
@@ -42,7 +42,6 @@ const Datatable = (props: Props & actionButtons) => {
     const [selectedItems, setSelectedItems] = useState<Array<MixInterfaces> | []>([]);
     const [items, setItems] = useState<Object[]>(props.data ?? [])
     const [visible, setVisible] = useState(false);
-    const [paidDate, setPaidDate] = useState<Date>(new Date())
     const router = useRouter()
     const dt = useRef<DataTable<Props['data']>>(null);
     const inputsEditor = (options: any, type: string) => {
@@ -122,11 +121,9 @@ const Datatable = (props: Props & actionButtons) => {
                 <div className='flex gap-2'>
                     <div className=''>
                         <label htmlFor="paidby" className='block'>Select Paid Date<small>(if needed)</small> </label>
-                        <DatePicker wrapperClassName='  ' name="createdAt" selected={paidDate} className=' z-[100] '
-                            placeholderText="Select a date" maxDate={new Date()} showTimeInput
-                            onChange={(date) => setPaidDate(date ?? new Date())} />
+
                     </div>
-                    {/* {selectedItems.length > 0 && <BulkUpdate selection={selectedItems} emptySelection={setSelectedItems} paidOn={paidDate} />} */}
+                    {selectedItems.length > 0 && <BulkUpdate selection={selectedItems} emptySelection={setSelectedItems} />}
                     <span className="p-input-icon-left">
                         <i className="pi pi-search" />
                         <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
@@ -177,7 +174,7 @@ const Datatable = (props: Props & actionButtons) => {
                 <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
                 {!props.hideActionCol && <Column body={(rowData) =>
                     <div className='p-buttonset'>
-                        <SaleActions rowData={rowData} paidOn={paidDate} />
+                        <SaleActions rowData={rowData} />
                         <ActionButtons rowData={rowData} prevProps={props} />
                     </div>
                 }

@@ -3,12 +3,14 @@
 @tailwind utilities;
 
 input[type="number"] {
+
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
         -webkit-appearance: none;
         margin: 0;
     }
 }
+
 .react-select__option--is-focused:not(.react-select__option--is-selected) {
     background-color: rgba(90, 97, 105, 0.10196078431372549);
 }
@@ -16,16 +18,18 @@ input[type="number"] {
 .react-datepicker-popper {
     z-index: 100;
 }
+
 .p-tabview-panels {
     padding: 0 !important;
 }
 
 .p-selectbutton {
-    > div {
+    >div {
         font-size: 0.775rem;
         padding: 0.45625rem 1rem;
     }
 }
+
 .react-datepicker__input-container .react-datepicker__calendar-icon {
     z-index: 33;
     top: 4.5px;
@@ -33,4 +37,53 @@ input[type="number"] {
     width: 2em;
     height: 2em;
     fill: #6366f1;
+}
+
+.p-tooltip-text {
+    padding: 0.25rem 0.25rem !important;
+    font-size: 0.7rem;
+}
+
+
+.react-datepicker__input-container {
+    webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    cursor: default;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    outline: 0 !important;
+    position: relative;
+    -webkit-transition: all 100ms;
+    transition: all 100ms;
+    background-color: hsl(0, 0%, 100%);
+    border-color: hsl(0, 0%, 80%);
+    border-radius: 0.25rem;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: none;
+    box-sizing: border-box;
+    z-index: 98;
+    font-size: 14px;
+    border: 1px solid #e4e9f3;
+
+    input {
+        border: 0;
+
+        &:focus {
+            outline: 0 !important;
+            border: 0 !important;
+            box-shadow: none !important,
+        }
+    }
 }

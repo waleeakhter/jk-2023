@@ -36,7 +36,7 @@ const AdvanceSelect: React.FC<AdvanceSelectProps> = ({
 
     useEffect(() => {
         const newOptions = options ? options?.map((opt: any) => {
-            return { label: opt.name, value: opt._id, extra: opt['price'] }
+            return { label: opt.name ?? opt.toUpperCase(), value: opt._id ?? opt, extra: opt['price'] }
         }) : []
         setValues(newOptions)
     }, [options])

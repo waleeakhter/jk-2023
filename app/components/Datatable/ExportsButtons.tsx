@@ -27,7 +27,7 @@ const ExportsButtons = (props: Props) => {
             return res = { ...res, [key]: value, }
         });
 
-        return res.client! + res.type! + " " + " Sale List - " + moment(new Date()).format("DD-MM-YY")
+        return "IMRAN" + res.type! + " " + " Sale List - " + moment(new Date()).subtract(1, "d").format("DD-MM-YY")
     }
 
     const exportExcel = () => {

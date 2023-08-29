@@ -16,14 +16,19 @@ const ItemSchema = new Schema({
     },
     type: {
         type: String,
-        enum: types.map(type => type.value), // Add more types as needed
+        enum: types.map(type => type.value),
         required: true,
     },
     brand: {
         type: String,
         enum: brands,
-        required: false
+        required: true
     },
+    purchase_price: {
+        type: Number,
+        required: false,
+    },
+
     price: {
         type: Number,
         required: true,
