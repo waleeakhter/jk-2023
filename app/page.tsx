@@ -29,6 +29,7 @@ const Home = async ({ searchParams }: Props) => {
   const columns = [
     { field: 'name', header: 'Item', enabledEdit: true, type: "text" },
     { field: 'type', header: 'Type' },
+    { field: 'purchase_price', header: 'Purchase Price', enabledEdit: true, type: "number" },
     { field: 'price', header: 'Price', enabledEdit: true, type: "number" },
     { field: 'stock', header: 'Stock', enabledEdit: true, type: "number" },
   ]

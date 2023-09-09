@@ -1,5 +1,5 @@
 'use client'
-import React, { ReactComponentElement, useEffect, useRef, useState } from 'react'
+import React, { ReactComponentElement, ReactNode, useEffect, useRef, useState } from 'react'
 import { DataTable, DataTableRowEditCompleteEvent, DataTableStateEvent } from 'primereact/datatable';
 import { Column, ColumnEditorOptions } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
@@ -20,11 +20,10 @@ import SaleActions from '@/app/sale/SaleActions';
 
 type Props = {
     data: Array<MixInterfaces>, columns: Array<Object>, search: Array<string>, tableName: string,
-    addComponent?: React.ReactNode,
+    addComponent?: ReactNode,
     showSale?: number,
-    exportDate?: Object[],
-    exportColums?: Object[],
-    extraActionsButtons?: React.ReactNode
+    exportData?: ReactNode,
+    extraActionsButtons?: ReactNode
 }
 
 export type actionButtons = {
@@ -111,7 +110,7 @@ const Datatable = (props: Props & actionButtons) => {
                     {!props.hideAddBtn &&
                         <Button size='small' label='' text raised icon="pi pi-plus" onClick={() => setVisible(true)} />
                     }
-                    {props.exportDate ? <ExportsButtons data={props.exportDate} exportColumns={props.exportColums ?? []} /> : ""}
+                    {props.exportData && props.exportData}
 
                 </div>
                 <div className='text-center'>
@@ -120,8 +119,7 @@ const Datatable = (props: Props & actionButtons) => {
                 </div>
                 <div className='flex gap-2'>
                     <div className=''>
-                        <label htmlFor="paidby" className='block'>Select Paid Date<small>(if needed)</small> </label>
-
+                        {selectedItems.length > 0 ? (selectedItems.reduce((total, sale) => total + sale.sell_quantity, 0) + " " + selectedItems.reduce((total, sale) => total + sale.total_amount, 0)) : ""}
                     </div>
                     {selectedItems.length > 0 && <BulkUpdate selection={selectedItems} emptySelection={setSelectedItems} />}
                     <span className="p-input-icon-left">
@@ -133,12 +131,7 @@ const Datatable = (props: Props & actionButtons) => {
             </div>
         )
     }
-    const CSVheaders = [
-        { key: 'name', label: 'Item' },
-        { key: 'type', label: 'Type' },
-        { key: 'price', label: 'Price' },
-        { key: 'stock', label: 'Stock' },
-    ]
+
 
     const paginationHandler = (e: DataTableStateEvent) => {
         console.log(e, "DataTableStateEvent");

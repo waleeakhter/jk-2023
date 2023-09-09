@@ -1,7 +1,7 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import DatePicker, { ReactDatePickerProps } from "react-datepicker";
+import DatePicker from "react-datepicker";
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import Types from "@/app/utils/types.json";
 import Status from "@/app/utils/status.json";
@@ -11,13 +11,15 @@ import { ToggleButton } from 'primereact/togglebutton';
 import BrandsSelect from '@/app/components/BrandsSelect';
 import { Button } from 'primereact/button';
 import { MultiSelect } from 'primereact/multiselect';
-
-type date = {
+import Router from 'next/router';
+type FILTERS = {
     createdAt: Date | null | undefined,
     endAt: Date | null | undefined,
     status: Array<number> | undefined,
     paidOn: string | undefined,
     type: string[] | undefined
+    brand: string[] | undefined,
+    client: string[] | undefined,
 }
 
 
@@ -29,15 +31,18 @@ export const Filters = (props: Props) => {
     const searchParams = useSearchParams().toString()!;
     const params = new URLSearchParams(searchParams);
     const [toggleClientFilters, setToggleClientFilters] = useState(true);
-
-
-    const [filters, setFilters] = useState<date>({
+    const router = useRouter();
+    const pathname = usePathname();
+    const intialFilters = {
         status: [Status.at(0)?.value ?? 0],
         createdAt: null,
         endAt: null,
         paidOn: undefined,
-        type: []
-    });
+        type: [],
+        brand: [],
+        client: []
+    }
+    const [filters, setFilters] = useState<FILTERS>(intialFilters);
 
     useEffect(() => {
         // const checkParams = Object.fromEntries(params);
@@ -58,8 +63,7 @@ export const Filters = (props: Props) => {
 
         }
     ));
-    const router = useRouter();
-    const pathname = usePathname();
+
     const createQueryString = useCallback(
         (name: string, value: string) => {
 
@@ -72,6 +76,7 @@ export const Filters = (props: Props) => {
     const deleteParams = (name: string) => {
         params.delete(name)
         router.push(pathname + '?' + params.toString());
+
     }
     const onChange = (e: SelectButtonChangeEvent, name: string) => {
         const value = name === "status" ? e.value?.length > 0 ? e.value : [0] : e.value?.length > 0 ? e.value : null
@@ -103,9 +108,9 @@ export const Filters = (props: Props) => {
             ...prevFilters, "createdAt": start ? start : "",
             "endAt": end ? end : ""
         }));
-        if (start && end) {
+        if (start || end) {
             createQueryString("createdAt", start.toDateString())
-            createQueryString("endAt", end.toDateString())
+            end && createQueryString("endAt", end.toDateString())
         } else {
             params.delete("createdAt")
             params.delete("endAt")
@@ -125,6 +130,7 @@ export const Filters = (props: Props) => {
 
 
         router.push(pathname + '?' + params.toString());
+
     };
 
     const onClientSelect = (data: [{ value: string }], name: string) => {
@@ -197,10 +203,8 @@ export const Filters = (props: Props) => {
                             showIcon isClearable={true}
                             placeholderText='Select a date...'
                             selectsRange
-
-                            selected={filters.createdAt}
                             startDate={filters.createdAt} endDate={filters.endAt}
-                            onChange={onDateChange} dateFormat={"01-08-2023"}
+                            onChange={onDateChange} dateFormat={"dd-MM-yyyy"}
                         />
                     </div>
                     {filters.status?.includes(1) ? (
@@ -219,7 +223,7 @@ export const Filters = (props: Props) => {
                 </div>
 
                 <Button label="Clear" raised size='small' severity='danger' icon={"pi pi-filter-slash"}
-                    onClick={() => router.push(pathname)} className='mt-3' />
+                    onClick={() => { setFilters(intialFilters); router.push(pathname); }} className='mt-3' />
 
 
             </Fieldset>

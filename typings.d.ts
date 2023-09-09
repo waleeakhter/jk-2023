@@ -1,5 +1,6 @@
 import { Client } from '@/typings';
 import { SingleValue, Options } from 'react-select';
+import types from "@/app/utils/types.json"
 export interface Option {
     readonly label: string;
     readonly value: string;
@@ -13,7 +14,7 @@ export interface ReactSelect {
 export interface Item {
     name: string;
     quantity: number;
-    type: 'mobile' | 'lcd';
+    type: typeof types["values"];
     createdAt: Date;
 }
 
@@ -39,4 +40,15 @@ export interface Sale {
 export interface MixInterfaces extends Sale, Item, Client {
     _id: string;
 
+}
+
+export interface SaleApiDefaultParams {
+    status: string;
+    brands: string;
+    type: string;
+    createdAt: string | null;
+    endAt: string | null;
+    paidOn: string | null;
+    client: string;
+    excludeClients: string;
 }

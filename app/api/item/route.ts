@@ -44,7 +44,7 @@ export async function GET(request: Request) {
     // }
 
 
-    const totalAmount = res.reduce((total, item) => total + (item.price * item.stock), 0);
+    const totalAmount = res.reduce((total, item) => total + (item.purchase_price  * item.stock), 0);
     return NextResponse.json({ data: res, totalAmount: totalAmount });
 }
 
@@ -109,10 +109,10 @@ export async function GET(request: Request) {
 
 export async function PATCH(res: Response) {
     const body = await res.json();
-    const item = await ItemModal.findById(body._id);
-    item.price = body.price;
-    item.stock = body.stock;
-    item.name = body.name;
-    await item.save()
-    return NextResponse.json(item);
+    const item = await ItemModal.findByIdAndUpdate(body._id , {$set : {...body}});
+    // item.price = body.price;
+    // item.stock = body.stock;
+    // item.name = body.name;
+    // await item.save()
+    return NextResponse.json({ status: 200, success: true, message: "Item Updated Successfully" , data : item  }); 
 }

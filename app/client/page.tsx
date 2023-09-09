@@ -13,7 +13,6 @@ const Clients = async () => {
     })
 
     const Clients = await getClients.json()
-    console.log(Clients, "getClients")
     const columns = [
         { field: 'name', header: 'Item' },
         { field: 'credit', header: 'Credit' },

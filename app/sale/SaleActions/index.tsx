@@ -4,10 +4,9 @@ import { statusHandler } from './functions'
 import { Sale } from '@/typings'
 import { useSearchParams } from 'next/navigation'
 import AlertForSaleUpdates from './Alert'
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog'
 
 interface Props {
-    rowData?: Sale & { _id: string },
+    rowData?: Object[],
     selection: Array<{ _id: string }>, emptySelection?: Function
 }
 const SaleActions = ({ rowData, emptySelection, selection }: Props) => {
@@ -17,22 +16,17 @@ const SaleActions = ({ rowData, emptySelection, selection }: Props) => {
     const [currentStatus, setCurrentStatus] = useState(0)
     const [visible, setVisible] = useState<boolean>(false);
     const buttons = [
-        { status: 0, text: "Change to Pending ", icon: "pi-replay" },
-        { status: 1, text: "Amount Recevied", icon: "pi-check-square" },
-        { status: 2, text: "Credit Transfer: Add to client Account", icon: "pi-user-plus" }
+        { status: 0, text: "Change to Unpaid ", icon: "pi-replay", severity: "danger" },
+        { status: 1, text: "Amount Recevied", icon: "pi-check-square", severity: "primary" },
+        { status: 2, text: "Credit Transfer: Add to client Account", icon: "pi-user-plus", severity: "primary" }
     ]
 
 
     const updateHandler = (paidOn: Date) => {
-        const itemsID: string[] = []
-        if (rowData) {
-            itemsID.push(rowData._id)
-        } else if (selection) {
-            selection.map((val) => itemsID.push(val._id));
-        }
-        statusHandler(itemsID,
+
+        statusHandler(rowData ?? selection,
             currentStatus, currentStatus === 1 ? paidOn : undefined, undefined).then((res) => {
-                if (res?.acknowledged) {
+                if (res?.success) {
                     if (emptySelection) {
                         emptySelection((prev: Object[]) => prev = [])
                     }
@@ -41,13 +35,16 @@ const SaleActions = ({ rowData, emptySelection, selection }: Props) => {
     }
     return (
         <>
-            <AlertForSaleUpdates visible={visible} setVisible={setVisible} callback={updateHandler} />
+            <AlertForSaleUpdates visible={visible} setVisible={setVisible}
+                callback={updateHandler} currentStatus={currentStatus} />
             {
                 buttons.map(btn => (
 
-                    !status.includes(btn.status) ? <Button key={btn.text} icon={"pi " + btn.icon}
-                        tooltip={btn.text} tooltipOptions={{ position: 'bottom' }}
-                        size='small' onClick={(e) => { setCurrentStatus(btn.status); setVisible(true) }} /> : ""
+                    !status.includes(btn.status) ?
+                        <Button key={btn.text} icon={"pi " + btn.icon}
+                            severity={btn.severity as "warning" | "secondary" | "success" | "info" | "danger" | "help"}
+                            tooltip={btn.text} tooltipOptions={{ position: 'bottom' }}
+                            size='small' onClick={(e) => { setCurrentStatus(btn.status); setVisible(true) }} /> : ""
                 ))
             }
 

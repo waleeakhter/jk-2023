@@ -2,12 +2,12 @@
 
 import { revalidateTag } from "next/cache"
 
-export const onStatusChange = async (_id: string[], status: number, paidOn: Date) => {
-    console.log(_id)
+export const onStatusChange = async (data: Object[] | undefined, status: number, paidOn: Date) => {
+
     const res = await fetch('http://localhost:3000/api/sale',
         {
             method: "PATCH",
-            body: JSON.stringify({ _id: _id, status: status, paidOn }),
+            body: JSON.stringify({ data: data, status: status, paidOn, statusUpdate: true }),
             cache: 'no-cache',
         }
     )

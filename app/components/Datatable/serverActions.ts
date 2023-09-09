@@ -10,9 +10,12 @@ export const updateOrder = async (data: {
         body: JSON.stringify(data),
         cache: 'no-cache',
     })
-    console.log(data, "data")
-    revalidateTag(target)
     const update = await res.json()
+    console.log(update, "update")    
+    if(update.success){
+        revalidateTag(target)
+    }
+                    
     return update
 }
 

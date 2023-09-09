@@ -11,6 +11,9 @@ export const onSubmit = (values: typeof initialValues, actions: FormikHelpers<ty
         console.log(res, "ahp")
         actions.setSubmitting(false)
         // actions.resetForm()
+        if (!res.success) {
+            alert(res.message)
+        }
     })
 };
 

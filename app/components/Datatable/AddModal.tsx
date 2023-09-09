@@ -16,7 +16,7 @@ const AddModal = (
     }
 ) => {
     return (
-        <Dialog header="Header" visible={visible} style={{ width: '80vw' }} onHide={() => setVisible(false)}>
+        <Dialog closeOnEscape={false} header="Header" visible={visible} style={{ width: '80vw' }} onHide={() => setVisible(false)}>
             {visible ? children : ""}
         </Dialog>
     )

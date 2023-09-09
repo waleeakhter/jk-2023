@@ -1,10 +1,10 @@
 import { disabledBtns } from "@/app/components/Datatable/disableBtn";
 import { onStatusChange } from "./ServerActions";
 
-export const statusHandler = async (_id: string[], status: number, paidOn?: Date | undefined, e?: React.SyntheticEvent,) => {
+export const statusHandler = async (data: Object[] | undefined, status: number, paidOn?: Date | undefined, e?: React.SyntheticEvent,) => {
     const btn = e ? (e.target as HTMLButtonElement) : null
     disabledBtns(btn, true);
-    return onStatusChange(_id, status, paidOn as Date).then(res => {
+    return onStatusChange(data, status, paidOn as Date).then(res => {
         setTimeout(() => {
             disabledBtns(btn, false);
         }, 1000)

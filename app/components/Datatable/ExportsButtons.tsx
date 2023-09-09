@@ -1,17 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import autoTable, { RowInput } from 'jspdf-autotable';
 import moment from 'moment';
 import jsPDF from 'jspdf';
-import { Sale } from '@/typings';
 import { Button } from 'primereact/button';
 import { useSearchParams } from 'next/navigation';
 type Props = { data: Array<{}>, exportColumns: Object[] }
 
 const ExportsButtons = (props: Props) => {
     const params = useSearchParams();
-    const numberOfEmptyRows = 10;
+    const numberOfEmptyRows = 20;
     for (let i = 0; i < numberOfEmptyRows; i++) {
-        props.data.push({} as Sale);
+        props.data.push({} as any);
     }
 
     const getFileNameWithPrams = () => {
@@ -27,7 +26,7 @@ const ExportsButtons = (props: Props) => {
             return res = { ...res, [key]: value, }
         });
 
-        return "IMRAN" + res.type! + " " + " Sale List - " + moment(new Date()).subtract(1, "d").format("DD-MM-YY")
+        return "JOJO " + res.type! + " " + "List - " + moment(new Date()).format("DD-MM-YY")
     }
 
     const exportExcel = () => {
