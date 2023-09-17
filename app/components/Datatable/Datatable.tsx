@@ -22,7 +22,7 @@ type Props = {
     data: Array<MixInterfaces>, columns: Array<Object>, search: Array<string>, tableName: string,
     addComponent?: ReactNode,
     showSale?: number,
-    exportData?: ReactNode,
+    children?: ReactNode,
     extraActionsButtons?: ReactNode
 }
 
@@ -110,7 +110,7 @@ const Datatable = (props: Props & actionButtons) => {
                     {!props.hideAddBtn &&
                         <Button size='small' label='' text raised icon="pi pi-plus" onClick={() => setVisible(true)} />
                     }
-                    {props.exportData && props.exportData}
+                    {props.children && props.children}
 
                 </div>
                 <div className='text-center'>

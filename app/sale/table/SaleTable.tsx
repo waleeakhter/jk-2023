@@ -68,7 +68,7 @@ const SaleTable = async ({ searchParams }: Props) => {
             <Datatable data={sales.data} columns={columns ?? []} showSale={sales.totalSale}
                 search={['item.name', 'client.name', 'status , item.type,createdAt']}
                 tableName={'Sale'} targetRoute={'sale'} addComponent={<SaleForm />}
-                exportData={<ExportData data={exportData} exportColumns={exportColumns} />} />
+                children={<ExportData data={exportData} exportColumns={exportColumns} />} />
             <Tooltips />
         </div>
     )
