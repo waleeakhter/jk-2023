@@ -1,4 +1,4 @@
-import AdminSchema from '@/models/admin';
+import AdminSchema from '@/models/Admin';
 import ItemTypeSchema from '@/models/ItemType';
 
 export const seedAdmin = async () => {
@@ -23,6 +23,6 @@ export const seedType = async () => {
 
     if (count === 0) {
         const types = await ItemTypeSchema.insertMany(itemType)
-        console.log(`${types.insertedCount} documents were inserted`);
+        console.log(`${types.length} documents were inserted`);
     }
 };
