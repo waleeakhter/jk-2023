@@ -19,11 +19,11 @@ const AlertForSaleUpdates = ({ visible, setVisible, callback, currentStatus }: P
                         onChange={(date) => setPaidDate(date ?? new Date())} />
                 </>
             case 2:
-                return <p> Are you sure you want to add this item to the client's account?
+                return <p> Are you sure you want to add this item to the client&apos;s account?
                 </p>
             case 0:
                 return <p>
-                    Are you sure this action will affect the collected amount and change the item's status to unpaid?
+                    Are you sure this action will affect the collected amount and change the item&apos;s status to unpaid?
                 </p>
 
             default:
