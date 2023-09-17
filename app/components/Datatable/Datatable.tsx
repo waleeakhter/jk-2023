@@ -141,7 +141,9 @@ const Datatable = (props: Props & actionButtons) => {
     return (
         <>
 
-            <AddModal children={props.addComponent} visible={visible} setVisible={setVisible} />
+            <AddModal visible={visible} setVisible={setVisible} >
+                {props.addComponent}
+            </AddModal>
             <DataTable ref={dt} editMode="row" selectionMode={'checkbox'} size='small'
                 className='data-table' dataKey="_id" totalRecords={props.data.length}
                 scrollable paginator rows={props.rows ?? 10} first={first}
