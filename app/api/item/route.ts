@@ -34,7 +34,9 @@ export async function GET(request: Request) {
     await dbConnect()
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type')
-    const res = await ItemModal.find(({ ...(type && { type: type }) }))
+    const brand = searchParams.get('brand')
+    const res = await ItemModal.find(({ ...(type && { type: type }) , ...(brand && {brand : brand}) })).collation({ locale: 'en', caseLevel: true })
+    .sort({ name: 1 })
 
     // for (const item of res) {
     //     if (!item?.brand && !item.purchase_price) {

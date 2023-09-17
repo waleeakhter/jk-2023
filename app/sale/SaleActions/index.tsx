@@ -7,7 +7,7 @@ import AlertForSaleUpdates from './Alert'
 
 interface Props {
     rowData?: Object[],
-    selection: Array<{ _id: string }>, emptySelection?: Function
+    selection?: Array<{ _id: string }>, emptySelection?: Function
 }
 const SaleActions = ({ rowData, emptySelection, selection }: Props) => {
     const searchParams = useSearchParams().toString()!;
@@ -54,11 +54,5 @@ const SaleActions = ({ rowData, emptySelection, selection }: Props) => {
 }
 
 export default SaleActions
-function acceptFunc(): void {
-    throw new Error('Function not implemented.')
-}
 
-function rejectFunc(): void {
-    throw new Error('Function not implemented.')
-}
 

@@ -67,7 +67,7 @@ const Datatable = (props: Props & actionButtons) => {
     const dynamicColumns = props.columns.length > 0 ? props.columns.map((col: any, i) => {
         if (col) {
             return <Column className='  ' editor={(options) => col.enabledEdit ? inputsEditor(options, col.type) : ""} key={col.header}
-                {...col} sortable={i === 0 && true} style={{ flexGrow: 1, flexBasis: '100px' }}
+                {...col} style={{ flexGrow: 1, flexBasis: '100px' }}
             />
         }
     }) : null
@@ -145,7 +145,7 @@ const Datatable = (props: Props & actionButtons) => {
             <DataTable ref={dt} editMode="row" selectionMode={'checkbox'} size='small'
                 className='data-table' dataKey="_id" totalRecords={props.data.length}
                 scrollable paginator rows={props.rows ?? 10} first={first}
-
+                removableSort
                 onPage={paginationHandler}
                 rowsPerPageOptions={[10, 25, 50]}
 
