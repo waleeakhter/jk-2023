@@ -28,7 +28,7 @@ const Clients = async () => {
 
         <>
             {/* <Button onClick={addItems} >'Add Items'</Button> */}
-            <Datatable data={Clients} columns={columns} search={['name', 'type']} hideDeleteBtn={false} tableName={'Items'} addComponent={undefined} targetRoute={'item'} CSVheaders={CSVheaders} />
+            <Datatable data={Clients} columns={columns} search={['name', 'type']} hideDeleteBtn={false} tableName={'Items'} targetRoute={'item'} />
         </>
     )
 }
