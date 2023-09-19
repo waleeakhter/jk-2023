@@ -2,7 +2,6 @@
 
 import Admin from "@/models/Admin";
 import type { NextAuthOptions } from "next-auth"
-import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 let apiURL = ""
 if (process.env.NODE_ENV === "production") {
@@ -14,10 +13,7 @@ if (process.env.NODE_ENV == "development") {
 }
 export const nextAuthOptions: NextAuthOptions = {
     providers: [
-        GitHubProvider({
-            clientId: process.env.GITHUB_ID!,
-            clientSecret: process.env.GITHUB_SECRET!,
-        }),
+
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
