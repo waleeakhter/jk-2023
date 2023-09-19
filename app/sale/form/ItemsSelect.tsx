@@ -6,10 +6,17 @@ import AdvanceSelect from '@/app/components/AdvanceSelect'
 interface Props {
     setFieldValue?: Function
 }
+let apiURL = ""
+if (process.env.NODE_ENV === "production") {
+    apiURL = process.env.Live_API_URL ?? " "
+}
 
+if (process.env.NODE_ENV == "development") {
+    process.env.API_URL
+}
 const ItemsSelect = async ({ setFieldValue }: Props) => {
 
-    const res = await fetch("http://localhost:3000/api/item", {
+    const res = await fetch(apiURL + "item", {
         cache: "no-cache",
         next: {
             tags: ["item"]

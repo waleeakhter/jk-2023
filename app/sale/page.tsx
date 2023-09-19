@@ -5,11 +5,18 @@ import { getClients } from './SaleActions/ServerActions';
 type Props = {
     searchParams: { type: string };
 }
+let apiURL = ""
+if (process.env.NODE_ENV === "production") {
+    apiURL = process.env.Live_API_URL ?? " "
+}
 
+if (process.env.NODE_ENV == "development") {
+    process.env.API_URL
+}
 const page = async ({ searchParams }: Props) => {
     const q = new URLSearchParams(searchParams)
     const getSales = async () => {
-        const res = await fetch(process.env.API_URL + `sale?page=${1}&pageSize=${10}&` + q.toString(), {
+        const res = await fetch(apiURL + `sale?page=${1}&pageSize=${10}&` + q.toString(), {
             cache: 'no-cache',
             next: {
                 tags: ["sale"],
@@ -19,7 +26,7 @@ const page = async ({ searchParams }: Props) => {
         return res.json()
     }
     const getItems = async () => {
-        const res = await fetch("http://localhost:3000/api/item", {
+        const res = await fetch(apiURL + "item", {
             cache: "no-cache",
             next: {
                 tags: ["item"]
