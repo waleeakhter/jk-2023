@@ -3,9 +3,16 @@ import React from 'react'
 import Datatable from './Datatable';
 
 type Props = {}
+let apiURL = ""
+if (process.env.NODE_ENV === "production") {
+    apiURL = process.env.Live_API_URL ?? " "
+}
 
+if (process.env.NODE_ENV == "development") {
+    process.env.API_URL
+}
 const Clients = async () => {
-    const getClients = await fetch(process.env.API_URL + 'client', {
+    const getClients = await fetch(apiURL + 'client', {
         cache: "no-cache",
         next: {
             tags: ["Clients"]
