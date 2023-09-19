@@ -111,14 +111,14 @@ const Datatable = ({ data, showPrice }: Props) => {
                     }
                     <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
 
-                    <Column body={(rowData) =>
+                    {/* <Column body={(rowData) =>
                         <div className='p-buttonset'>
                             <Button severity='danger' icon="pi pi-trash"
                                 size='small' tooltip='Delete Item' className='btn-delete'
                                 tooltipOptions={{ position: 'bottom' }} onClick={(e) => cancelSaleItem(e, rowData)} />
                         </div>
                     }
-                        header={'Action'} frozen={true} style={{ flexGrow: 1, flexBasis: '100px' }} />
+                        header={'Action'} frozen={true} style={{ flexGrow: 1, flexBasis: '100px' }} /> */}
 
                 </DataTable>
             </div>
