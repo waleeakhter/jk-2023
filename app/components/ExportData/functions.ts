@@ -108,7 +108,14 @@ export const createFileNameWithParams = (params: ReadonlyURLSearchParams, client
         name += client + " "
     }
     if (params.get('type')) {
-        name += JSON.parse(params.get('type') ?? "") + " "
+        try {
+            const typeValue = JSON.parse(params.get('type') ?? "");
+            if (typeof typeValue === 'string') {
+                name += typeValue + " ";
+            }
+        } catch (error) {
+            name += params.get('type') + " "
+        }
     }
     name += "SALES LIST FOR "
     if (params.get('createdAt') && params.get('endAt')) {

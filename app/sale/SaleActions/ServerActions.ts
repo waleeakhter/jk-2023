@@ -1,5 +1,3 @@
-'use server'
-
 import { revalidateTag } from "next/cache"
 
 export const onStatusChange = async (data: Object[] | undefined, status: number, paidOn: Date) => {

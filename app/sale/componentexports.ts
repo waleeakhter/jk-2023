@@ -1,4 +1,3 @@
-'use client'
 import { TabView, TabPanel } from 'primereact/tabview';
 
 

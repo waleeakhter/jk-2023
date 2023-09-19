@@ -22,57 +22,36 @@ const inputsEditor = (options: any, type: string) => {
     }
 
 }
+
+
 export const columns: Array<ColumnProps> = [
     {
-        field: "client.name", header: 'Client', sortable: true,
+        field: 'name', header: 'Item', sortable: true,
     },
     {
-        body: (data: { item: { name: string } }) => <p data-pr-tooltip={data.item.name} className="itemName max-w-[20rem] text-ellipsis overflow-hidden whitespace-nowrap ">{data.item.name}</p>,
-        header: 'Item',
+        field: 'type', header: 'Type',
         sortable: true
     },
     {
-        field: 'item.type', header: 'Type', sortable: true,
-
-    },
-    {
-        field: "sell_price", header: 'Price',
-        editor: (options: ColumnEditorOptions) => {
+        field: 'purchase_price', header: 'Purchase Price', editor: (options: ColumnEditorOptions) => {
             return inputsEditor(options, "number")
         },
 
     },
     {
-        field: 'sell_quantity', header: 'Quantity',
+        field: 'price', header: 'Price', editor: (options: ColumnEditorOptions) => {
+            return inputsEditor(options, "number")
+        }
+    },
+    {
+        field: 'stock', header: 'Stock',
         editor: (options: ColumnEditorOptions) => {
             return inputsEditor(options, "number")
         },
     },
-    {
-        body: (data: { total_amount: number }) => <p className=" text-sm ">${data.total_amount}<i className='pi pi-euro'></i></p>, header: 'Total'
-    },
-    {
-        field: "createdAt",
-        header: 'created At',
-        sortable: true
-    },
-    // {
-    //     field: "paidOn",
-    //     header: 'Paid At',
-    //     enabledEdit: true,
-    //     type: "date"
-    // },
+
 
 ]
 
-import React from 'react'
 
-type Props = {}
 
-const Tooltips = (props: Props) => {
-    return (
-        <Tooltip target=".itemName" position='bottom'></Tooltip>
-    )
-}
-
-export default Tooltips

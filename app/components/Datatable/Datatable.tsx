@@ -144,13 +144,20 @@ const Datatable = (props: Props & actionButtons) => {
             <AddModal visible={visible} setVisible={setVisible} >
                 {props.addComponent}
             </AddModal>
-            <DataTable ref={dt} editMode="row" selectionMode={'checkbox'} size='small'
-                className='data-table' dataKey="_id" totalRecords={props.data.length}
-                scrollable paginator rows={props.rows ?? 10} first={first}
-                removableSort
+            <DataTable ref={dt}
+                className='data-table'
+                dataKey="_id"
+                totalRecords={props.data.length}
+                scrollable
+                paginator
+                first={first}
                 onPage={paginationHandler}
+                editMode="row"
+                selectionMode={'checkbox'}
+                size='small'
+                rows={props.rows ?? 10}
                 rowsPerPageOptions={[10, 25, 50]}
-
+                removableSort
                 currentPageReportTemplate="{first} to {last} of {totalRecords}"
                 paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                 value={props.data} header={renderHeader}
@@ -167,13 +174,15 @@ const Datatable = (props: Props & actionButtons) => {
                 <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                 {dynamicColumns}
                 <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
-                {!props.hideActionCol && <Column body={(rowData) =>
-                    <div className='p-buttonset'>
-                        <SaleActions rowData={rowData} />
-                        <ActionButtons rowData={rowData} prevProps={props} />
-                    </div>
+                {!props.hideActionCol &&
+                    <Column body={(rowData) =>
+                        <div className='p-buttonset'>
+                            <SaleActions rowData={rowData} />
+                            <ActionButtons rowData={rowData} prevProps={props} />
+                        </div>
+                    }
+                        header={'Action'} frozen={true} style={{ flexGrow: 1, flexBasis: '100px' }} />
                 }
-                    header={'Action'} frozen={true} style={{ flexGrow: 1, flexBasis: '100px' }} />}
             </DataTable>
         </>
 

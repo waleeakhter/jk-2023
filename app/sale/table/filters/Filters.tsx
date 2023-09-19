@@ -1,4 +1,3 @@
-"use client";
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import DatePicker from "react-datepicker";
@@ -44,10 +43,7 @@ export const Filters = (props: Props) => {
     }
     const [filters, setFilters] = useState<FILTERS>(intialFilters);
 
-    useEffect(() => {
-        // const checkParams = Object.fromEntries(params);
-        // setFilters(prev => ({ ...prev, ...checkParams, status: Number(checkParams.status) ?? 0 }))
-    }, [])
+
 
     const types = Types.map(type => (
         {
@@ -180,7 +176,7 @@ export const Filters = (props: Props) => {
                 legend={legendTemplate} toggleable collapsed={true} >
                 <div className='grid grid-cols-4 gap-4  items-center w-full'>
                     <div className='flex flex-col gap-1  '>
-                        <div className="flex">
+                        <div className="flex relative">
                             <ToggleButton checked={toggleClientFilters} onLabel='By Client' offLabel='Exclude Client'
                                 onChange={(e) => setToggleClientFilters(e.value)} className="px-2 py-0 text-sm max-w-fit "
                             />
@@ -212,11 +208,10 @@ export const Filters = (props: Props) => {
                             <label htmlFor="" className='block font-semibold text-sm'>Paid At</label>
                             <DatePicker
                                 isClearable
-                                value={filters.paidOn}
+                                value={filters.paidOn ?? ""}
                                 className='p-inputtext h-10'
                                 placeholderText='Select a date...'
                                 onChange={onPaidDateChange}
-                                dateFormat={"01-08-2023"}
                             />
                         </div>
                     ) : null}

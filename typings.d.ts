@@ -14,6 +14,9 @@ export interface ReactSelect {
 export interface Item {
     name: string;
     quantity: number;
+    purchase_price: number,
+    stock: number,
+    price: number,
     type: typeof types["values"];
     createdAt: Date;
 }
@@ -51,4 +54,13 @@ export interface SaleApiDefaultParams {
     paidOn: string | null;
     client: string;
     excludeClients: string;
+}
+
+export interface LazyTableState {
+    first: number;
+    rows: number;
+    page: number;
+    sortField?: string;
+    sortOrder?: number;
+    filters?: DataTableFilterMeta;
 }
