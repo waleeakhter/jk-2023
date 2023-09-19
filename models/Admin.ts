@@ -25,4 +25,5 @@ const AdminSchema = new Schema({
     }
 })
 
-export default module.exports = models.admin || model("admin", AdminSchema)
+
+export default models.Admin || model("Admin", AdminSchema)

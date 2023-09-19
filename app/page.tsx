@@ -1,8 +1,14 @@
 import React from 'react'
+import { nextAuthOptions } from './options'
+import { getServerSession } from 'next-auth'
+import Login from './auth/login/page'
 
-const Home = () => {
+const Home = async () => {
+    const session = await getServerSession(nextAuthOptions)
     return (
-        <div>Home</div>
+        <div>
+            {session ? "login" : <pre>{JSON.stringify(session, null, 2)}</pre>}
+        </div>
     )
 }
 

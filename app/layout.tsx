@@ -1,4 +1,4 @@
-'use client'
+
 // import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -7,9 +7,11 @@ import 'primeicons/primeicons.css';
 import Header from './components/Header';
 import "react-datepicker/dist/react-datepicker.css";
 import './globals.scss'
-import { QueryClient, QueryClientProvider } from './globalexport';
-import { Hydrate } from '@tanstack/react-query';
 import React from 'react';
+import { getServerSession } from 'next-auth';
+import { nextAuthOptions } from './options';
+import { Form } from 'formik';
+import Protected from './Protected';
 const inter = Inter({ subsets: ['latin'] })
 
 // export const metadata: Metadata = {
@@ -17,25 +19,27 @@ const inter = Inter({ subsets: ['latin'] })
 //   description: 'Developed By Waleed Akhter',
 // }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const [queryClient] = React.useState(() => new QueryClient())
+  const session = await getServerSession(nextAuthOptions)
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}
         className={inter.className}>
-        <QueryClientProvider client={queryClient}>
-          <Hydrate >
-            <>
-              <Header />
-              {children}
 
-            </>
-          </Hydrate>
-        </QueryClientProvider>
+        <Protected session={session}>
+          <>
+            <Header />
+            {children}
+          </>
+        </Protected>
+
+
+
+
       </body>
     </html>
   )

@@ -1,4 +1,4 @@
-import date from "./sale"
+import date from "./Sale"
 
 
 export { date }
