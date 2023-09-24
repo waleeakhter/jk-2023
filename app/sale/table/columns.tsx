@@ -54,7 +54,10 @@ export const columns: Array<ColumnProps> = [
     {
         field: "createdAt",
         header: 'created At',
-        sortable: true
+        sortable: true,
+        editor: (options: ColumnEditorOptions) => {
+            return inputsEditor(options, "date")
+        },
     },
     // {
     //     field: "paidOn",

@@ -110,9 +110,8 @@ export const createFileNameWithParams = (params: ReadonlyURLSearchParams, client
     if (params.get('type')) {
         try {
             const typeValue = JSON.parse(params.get('type') ?? "");
-            if (typeof typeValue === 'string') {
-                name += typeValue + " ";
-            }
+
+            name += typeValue + " ";
         } catch (error) {
             name += params.get('type') + " "
         }

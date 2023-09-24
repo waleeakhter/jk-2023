@@ -31,10 +31,9 @@ export default async function RootLayout({
         className={inter.className}>
 
         <Protected session={session}>
-          <>
-            <Header />
+          <div>
             {children}
-          </>
+          </div>
         </Protected>
 
 

@@ -2,16 +2,10 @@
 import { revalidateTag } from "next/cache"
 import initialValues from "./form/initialValues"
 
-let apiURL = ""
-if (process.env.NODE_ENV === "production") {
-    apiURL = process.env.Live_API_URL ?? " "
-}
 
-if (process.env.NODE_ENV == "development") {
-    process.env.API_URL
-}
+
 export const submitSale = async (values: typeof initialValues) => {
-    const res = await fetch(apiURL + 'sale', {
+    const res = await fetch(process.env.API_URL + 'sale', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -27,6 +27,9 @@ const inputsEditor = (options: any, type: string) => {
 export const columns: Array<ColumnProps> = [
     {
         field: 'name', header: 'Item', sortable: true,
+        editor: (options: ColumnEditorOptions) => {
+            return inputsEditor(options, "text")
+        },
     },
     {
         field: 'type', header: 'Type',

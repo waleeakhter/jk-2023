@@ -1,18 +1,12 @@
 'use server'
 import React from 'react'
 import Datatable from './Datatable';
+import LayoutWithHeader from '../LayoutWithHeader';
 
 type Props = {}
-let apiURL = ""
-if (process.env.NODE_ENV === "production") {
-    apiURL = process.env.Live_API_URL ?? " "
-}
 
-if (process.env.NODE_ENV == "development") {
-    process.env.API_URL
-}
 const Clients = async () => {
-    const getClients = await fetch(apiURL + 'client', {
+    const getClients = await fetch(process.env.API_URL + 'client', {
         cache: "no-cache",
         next: {
             tags: ["Clients"]
@@ -24,8 +18,10 @@ const Clients = async () => {
     return (
 
         <>
-            {/* <Button onClick={addItems} >'Add Items'</Button> */}
-            <Datatable data={Clients} />
+            <LayoutWithHeader>
+
+                <Datatable data={Clients} />
+            </LayoutWithHeader>
         </>
     )
 }

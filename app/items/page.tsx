@@ -1,11 +1,14 @@
 'use server'
 import React from 'react'
 import Datatable from './Datatable'
+import Protected from '../Protected'
+import LayoutWithHeader from '../LayoutWithHeader'
 
 type Props = {
-    searchParams: { type: string }
+    searchParams: { type: string },
+    router: any
 }
-const page = async ({ searchParams }: Props) => {
+const page = async ({ searchParams, router }: Props) => {
     const q = new URLSearchParams(searchParams).toString();
     const getItems = await fetch(process.env.API_URL + 'item?' + q, {
         cache: "no-cache",
@@ -15,11 +18,9 @@ const page = async ({ searchParams }: Props) => {
     })
     const Items = await getItems.json()
     return (
-        <div>
-            <>
-                <Datatable data={Items.data} showPrice={Items.totalAmount} />
-            </>
-        </div>
+        <LayoutWithHeader>
+            <Datatable data={Items.data} showPrice={Items.totalAmount} />
+        </LayoutWithHeader>
     )
 }
 

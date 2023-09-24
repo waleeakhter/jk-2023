@@ -1,15 +1,11 @@
+"use server"
 import { revalidateTag } from "next/cache"
 
-let apiURL = ""
-if (process.env.NODE_ENV === "production") {
-    apiURL = process.env.Live_API_URL ?? " "
-}
 
-if (process.env.NODE_ENV == "development") {
-    process.env.API_URL
-}
+
 export const onStatusChange = async (data: Object[] | undefined, status: number, paidOn: Date) => {
-    const res = await fetch(apiURL + 'sale',
+
+    const res = await fetch(process.env.API_URL + 'sale',
         {
             method: "PATCH",
             body: JSON.stringify({ data: data, status: status, paidOn, statusUpdate: true }),
@@ -18,11 +14,12 @@ export const onStatusChange = async (data: Object[] | undefined, status: number,
     )
     revalidateTag("sale")
     const update = await res.json()
+    console.log(update)
     return update
 }
 
 export const getClients = async () => {
-    const res = await fetch(apiURL + "client", {
+    const res = await fetch(process.env.API_URL + "client", {
         cache: "no-cache",
         next: {
             tags: ["clients"]

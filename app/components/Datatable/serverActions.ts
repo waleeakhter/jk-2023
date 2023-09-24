@@ -1,18 +1,11 @@
 'use server'
 import { revalidateTag } from 'next/cache';
-let apiURL = ""
-if (process.env.NODE_ENV === "production") {
-    apiURL = process.env.Live_API_URL ?? " "
-}
 
-if (process.env.NODE_ENV == "development") {
-    process.env.API_URL
-}
 export const updateOrder = async (data: {
     createdAt: string; _id: string, sell_price: number, sell_quantity: number
 }, target: string) => {
 
-    const res = await fetch(apiURL + target, {
+    const res = await fetch(process.env.API_URL + target, {
         method: "PATCH",
         body: JSON.stringify(data),
         cache: 'no-cache',
@@ -30,7 +23,7 @@ export const updateOrder = async (data: {
 
 export const returnItem = async (data: {} | Object[]) => {
 
-    const deleteItem = await fetch(apiURL + "sale", {
+    const deleteItem = await fetch(process.env.API_URL + "sale", {
         method: "DELETE",
         cache: "no-cache",
         body: JSON.stringify(data)
