@@ -11,10 +11,9 @@ import { updateOrder } from '../components/Datatable/serverActions'
 import AddModal from '../components/Datatable/AddModal'
 import { Column, ColumnProps } from 'primereact/column'
 import Tooltips from '../sale/table/columns'
-import { cancelSaleItem } from '../components/Datatable/functions'
 import { columns } from './columns'
-type Props = { data: Array<Item | string | any>, }
-const Datatable = ({ data }: Props) => {
+type Props = { data: Array<Item | string | any>, amount: Number }
+const Datatable = ({ data, amount }: Props) => {
     const [visible, setVisible] = useState(false);
     const router = useRouter()
     const [filters, setFilters] = useState({
@@ -59,7 +58,7 @@ const Datatable = ({ data }: Props) => {
                     <Button size='small' label='' text raised icon="pi pi-plus" onClick={() => setVisible(true)} />
                 </div>
                 <div className='text-center'>
-                    {/* <h1 className='text-xl'>{Number(showPrice ?? 0) > 0 ? <p>Total Amount: {showPrice}<i className='pi pi-euro'></i> </p> : ""} </h1> */}
+                    <h1 className='text-xl'>{Number(amount ?? 0) > 0 ? <p>Total Amount: {amount}<i className='pi pi-euro'></i> </p> : ""} </h1>
 
                 </div>
                 <div className='flex gap-2'>
@@ -87,7 +86,7 @@ const Datatable = ({ data }: Props) => {
                     paginator
                     first={lazyState.first}
                     onPage={onPage}
-                    // editMode="row"
+                    editMode="row"
                     size='small'
                     rows={lazyState.rows ?? 10}
                     rowsPerPageOptions={[10, 25, 50]}
@@ -107,13 +106,13 @@ const Datatable = ({ data }: Props) => {
                     {
                         columns.map((col: ColumnProps, i: number) => <Column {...col} key={i.toString()} />)
                     }
-                    {/* <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column> */}
+                    <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
 
                     <Column body={(rowData) =>
                         <div className='p-buttonset'>
-                            <Button severity='danger' icon="pi pi-trash"
-                                size='small' tooltip='Delete Item' className='btn-delete'
-                                tooltipOptions={{ position: 'bottom' }} onClick={(e) => cancelSaleItem(e, rowData)} />
+                            <Button severity='info' icon="pi pi-trash"
+                                size='small' tooltip='View Client Detail' className='btn-delete'
+                                tooltipOptions={{ position: 'bottom' }} onClick={(e) => ""} />
                         </div>
                     }
                         header={'Action'} frozen={true} style={{ flexGrow: 1, flexBasis: '100px' }} />

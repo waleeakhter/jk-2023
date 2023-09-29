@@ -9,7 +9,7 @@ interface Props {
 const ClientSelect = async ({ setFieldValue }: Props) => {
     const clientsData = await getClients();
     return (
-        <AdvanceSelect name={"client"} value={"name"} lableValue={"name"} options={clientsData} setFieldValue={setFieldValue ?? Function} />
+        <AdvanceSelect name={"client"} value={"name"} lableValue={"name"} options={clientsData.data ?? []} setFieldValue={setFieldValue ?? Function} />
     )
 }
 

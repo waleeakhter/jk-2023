@@ -14,13 +14,13 @@ const Clients = async () => {
     })
 
     const Clients = await getClients.json()
+    const { data, totalCredit } = Clients
 
     return (
 
         <>
             <LayoutWithHeader>
-
-                <Datatable data={Clients} />
+                <Datatable data={data ?? []} amount={totalCredit ?? 0} />
             </LayoutWithHeader>
         </>
     )

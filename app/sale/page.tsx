@@ -38,7 +38,9 @@ const page = async ({ searchParams }: Props) => {
 
     return (
         <LayoutWithHeader >
-            <SaleTable searchParams={searchParams} data={sales.data} clientsData={clients} itemsData={items.data} sale={sales.totalSale} />
+            <SaleTable searchParams={searchParams} data={sales.data}
+                clientsData={clients.data ?? []}
+                itemsData={items.data} sale={sales.totalSale} />
         </LayoutWithHeader>
     )
 }
