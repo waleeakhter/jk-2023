@@ -2,7 +2,7 @@ import React from 'react'
 import Header from './components/Header'
 import Protected from './Protected'
 import { getServerSession } from 'next-auth'
-import { nextAuthOptions } from './options'
+import { nextAuthOptions } from './authOptions'
 
 const LayoutWithHeader = async (
     {

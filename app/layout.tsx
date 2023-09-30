@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import './globals.scss'
 import React from 'react';
 import { getServerSession } from 'next-auth';
-import { nextAuthOptions } from './options';
+import { nextAuthOptions } from './authOptions';
 import { Form } from 'formik';
 import Protected from './Protected';
 const inter = Inter({ subsets: ['latin'] })

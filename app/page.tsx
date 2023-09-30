@@ -1,13 +1,12 @@
 import React from 'react'
-import LayoutWithHeader from './LayoutWithHeader'
+// import LayoutWithHeader from './LayoutWithHeader'
 
 const Home = async () => {
 
     return (
-        <LayoutWithHeader>
 
-            <h1>Dashboard</h1>
-        </LayoutWithHeader>
+        <h1>Dashboard</h1>
+
     )
 }
 
