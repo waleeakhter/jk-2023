@@ -1,7 +1,6 @@
 'use server'
 import React from 'react'
 import Datatable from './Datatable';
-import LayoutWithHeader from '../LayoutWithHeader';
 
 type Props = {}
 
@@ -19,9 +18,7 @@ const Clients = async () => {
     return (
 
         <>
-            <LayoutWithHeader>
                 <Datatable data={data ?? []} amount={totalCredit ?? 0} />
-            </LayoutWithHeader>
         </>
     )
 }
