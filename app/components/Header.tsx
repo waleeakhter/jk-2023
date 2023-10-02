@@ -14,7 +14,7 @@ const Header = (props: Props) => {
         <Link href={"/items"} title='Items' >Items</Link>
         <Link href={"/client"} >Clients</Link>
         <Link href={"/sale"} >Daily Sale </Link>
-        <Link href={"/sale"} >Daily Sale </Link>
+        <Link href={"/api/auth/signout"} >Logout</Link>
       </nav>
     </header>
   )

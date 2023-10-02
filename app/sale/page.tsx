@@ -1,8 +1,6 @@
 import React from 'react'
 import SaleTable from './table/SaleTable'
 import { getClients } from './SaleActions/ServerActions';
-import LayoutWithHeader from '../LayoutWithHeader';
-import Protected from '../Protected';
 import { getServerSessionGlobal } from '../authOptions';
 type Props = {
     searchParams: { type: string };

@@ -13,7 +13,7 @@ export const exportColumns = [
 
 export const exportData = (data: Array<Item>) => {
 
-    return data.map(el => {
+    return data?.map(el => {
         return {
             item: el.name,
             type: el.type,

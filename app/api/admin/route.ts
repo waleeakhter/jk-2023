@@ -2,20 +2,22 @@ import dbConnect from '@/app/utils/dbConnect';
 import Admin from '@/models/Admin';
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
-
+export async function POST(request: Request) {
     try {
+        await dbConnect();
+      
+        const body = await request.json();
 
-        await dbConnect()
-        const body = request.json()
-        const res = await Admin.findOne({ ...body })
-        console.log(res, "dsadasdasds")
-        return NextResponse.json({ data: res });
+        // Modify the query based on your database schema and requirements
+        const res = await Admin.findOne(body);
 
+        if (!res) {
+            return NextResponse.json({ data: null, message: "Data not found" });
+        }
+
+        return NextResponse.json({ data: res, message: "Success" });
     } catch (error) {
-        return NextResponse.json({ data: error, message: "Somthing went wrong" });
+        console.error(error);
+        return NextResponse.json({ data: null, message: "Something went wrong" });
     }
 }
-
-
-

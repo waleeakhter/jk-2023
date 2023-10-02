@@ -1,8 +1,7 @@
 'use server'
 import React from 'react'
 import Datatable from './Datatable'
-import Protected from '../Protected'
-import LayoutWithHeader from '../LayoutWithHeader'
+import {redirect} from "next/navigation"
 import { getServerSessionGlobal } from '../authOptions'
 
 type Props = {
@@ -11,21 +10,20 @@ type Props = {
 }
 const page = async ({ searchParams, router }: Props) => {
     const session = await getServerSessionGlobal()
+//   if(!session?.user?.name) {
+//     redirect('/api/auth/signin')
+//   }
+    const q = new URLSearchParams(searchParams).toString();
+    const getItems = await fetch(process.env.API_URL + 'item?' + q, {
+        cache: "no-cache",
+        next: {
+            tags: ["item"]
+        }
+    })
+    var Items = await getItems.json()
 
-    if (session?.user?.name) {
-        const q = new URLSearchParams(searchParams).toString();
-        const getItems = await fetch(process.env.API_URL + 'item?' + q, {
-            cache: "no-cache",
-            next: {
-                tags: ["item"]
-            }
-        })
-        var Items = await getItems.json()
-    }
     return (
-        <Protected session={session}>
             <Datatable data={Items?.data ?? []} showPrice={Items?.totalAmount ?? 0} />
-        </Protected>
     )
 }
 

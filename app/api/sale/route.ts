@@ -11,10 +11,15 @@ import updateSale from './updateSale';
 
 
 export async function GET(request: Request) {
+try {
     await dbConnect();
     const { searchParams } = new URL(request.url);
     const data = await getSaleList(searchParams)
     return NextResponse.json({ data: data.saleList, totalSale: Math.round(data.totalSaleAmount.toFixed(2)) });
+} catch (error) {
+    console.log(error);
+    return NextResponse.json({ data: error });
+}
 }
 
 
