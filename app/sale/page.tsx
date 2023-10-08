@@ -43,8 +43,7 @@ const page = async ({ searchParams }: Props) => {
         <SaleTable searchParams={searchParams} data={sales?.data ?? []}
             clientsData={clients?.data ?? []}
             itemsData={items?.data ?? []} sale={sales?.totalSale ?? 0} />
-        // <Protected session={session} >
-        // </Protected>
+
     )
 }
 

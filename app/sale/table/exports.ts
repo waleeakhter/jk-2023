@@ -23,7 +23,7 @@ export const exportData = (data: Array<Sale>) => {
     return data.map(el => {
         return {
             client: el.client.name,
-            item: el.item['name'],
+            item: el.reference ? el.item['name'] + " / " + el.reference : el.item['name'],
             type: el.item['type'],
             sell_price: el.sell_price,
             purchase_price: el.item["purchase_price"],
