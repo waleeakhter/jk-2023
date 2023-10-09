@@ -12,16 +12,16 @@ type Props = {
 const page = async ({ searchParams, router }: Props) => {
     const session = await getServerSessionGlobal()
 
-    if (session?.user?.name) {
-        const q = new URLSearchParams(searchParams).toString();
-        const getItems = await fetch(process.env.API_URL + 'item?' + q, {
-            cache: "no-cache",
-            next: {
-                tags: ["item"]
-            }
-        })
-        var Items = await getItems.json()
-    }
+
+    const q = new URLSearchParams(searchParams).toString();
+    const getItems = await fetch(process.env.API_URL + 'item?' + q, {
+        cache: "no-cache",
+        next: {
+            tags: ["item"]
+        }
+    })
+    var Items = await getItems.json()
+
     return (
         <Protected session={session}>
             <Datatable data={Items?.data ?? []} showPrice={Items?.totalAmount ?? 0} />
