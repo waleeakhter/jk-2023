@@ -1,8 +1,6 @@
 import React from 'react'
 import SaleTable from './table/SaleTable'
 import { getClients } from './SaleActions/ServerActions';
-import LayoutWithHeader from '../LayoutWithHeader';
-import Protected from '../Protected';
 import { getServerSessionGlobal } from '../authOptions';
 type Props = {
     searchParams: { type: string };
@@ -45,8 +43,7 @@ const page = async ({ searchParams }: Props) => {
         <SaleTable searchParams={searchParams} data={sales?.data ?? []}
             clientsData={clients?.data ?? []}
             itemsData={items?.data ?? []} sale={sales?.totalSale ?? 0} />
-        // <Protected session={session} >
-        // </Protected>
+
     )
 }
 

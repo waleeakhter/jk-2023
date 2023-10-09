@@ -10,8 +10,7 @@ import './globals.scss'
 import React from 'react';
 import { getServerSession } from 'next-auth';
 import { nextAuthOptions } from './authOptions';
-import { Form } from 'formik';
-import Protected from './Protected';
+import AuthProvider from './context/AuthProvider';
 const inter = Inter({ subsets: ['latin'] })
 
 // export const metadata: Metadata = {
@@ -30,11 +29,12 @@ export default async function RootLayout({
       <body suppressHydrationWarning={true}
         className={inter.className}>
 
-        <Protected session={session}>
-          <div>
-            {children}
-          </div>
-        </Protected>
+        <AuthProvider>
+          <Header />
+          <main>
+             {children}
+          </main>
+        </AuthProvider>
 
 
 
