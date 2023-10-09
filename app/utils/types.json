@@ -4,6 +4,10 @@
         "value": "lcd"
     },
     {
+        "name": "IPAD's",
+        "value": "ipad"
+    },
+    {
         "name": "Mobile's",
         "value": "mobile"
     },

@@ -9,10 +9,6 @@ type Props = {
     router: any
 }
 const page = async ({ searchParams, router }: Props) => {
-    const session = await getServerSessionGlobal()
-//   if(!session?.user?.name) {
-//     redirect('/api/auth/signin')
-//   }
     const q = new URLSearchParams(searchParams).toString();
     const getItems = await fetch(process.env.API_URL + 'item?' + q, {
         cache: "no-cache",
@@ -21,7 +17,6 @@ const page = async ({ searchParams, router }: Props) => {
         }
     })
     var Items = await getItems.json()
-
     return (
             <Datatable data={Items?.data ?? []} showPrice={Items?.totalAmount ?? 0} />
     )
