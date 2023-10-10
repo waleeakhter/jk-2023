@@ -1,8 +1,12 @@
 import React from 'react'
-// import LayoutWithHeader from './LayoutWithHeader'
+import { getServerSessionGlobal } from './authOptions'
+import { redirect } from 'next/navigation'
 
 const Home = async () => {
-
+    const session = await getServerSessionGlobal()
+    if (!session) {
+        return redirect('/api/auth/signin')
+    }
     return (
 
         <h1>Dashboard</h1>
