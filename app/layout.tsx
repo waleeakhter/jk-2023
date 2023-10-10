@@ -32,7 +32,7 @@ export default async function RootLayout({
         <AuthProvider>
           <Header />
           <main>
-             {children}
+            {children}
           </main>
         </AuthProvider>
 

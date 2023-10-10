@@ -2,15 +2,17 @@ import React from 'react'
 import SaleTable from './table/SaleTable'
 import { getClients } from './SaleActions/ServerActions';
 import { getServerSessionGlobal } from '../authOptions';
+import { redirect } from 'next/navigation';
 type Props = {
     searchParams: { type: string };
 }
 
 const page = async ({ searchParams }: Props) => {
     const session = await getServerSessionGlobal()
-    console.log(session, "session")
+    if (!session) {
+        return redirect('/api/auth/signin')
+    }
     const q = new URLSearchParams(searchParams)
-    // if (session?.user?.name) {
 
     const getSales = async () => {
         const res = await fetch(`${process.env.API_URL}sale?page=${1}&pageSize=${10}&` + q, {
@@ -38,7 +40,7 @@ const page = async ({ searchParams }: Props) => {
     const clientsData = getClients()
     const salesData = getSales()
     var [items, clients, sales] = await Promise.all([itemsData, clientsData, salesData])
-    // }
+
     return (
         <SaleTable searchParams={searchParams} data={sales?.data ?? []}
             clientsData={clients?.data ?? []}

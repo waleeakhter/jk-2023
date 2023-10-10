@@ -8,13 +8,13 @@ export const nextAuthOptions: NextAuthOptions = {
             name: 'Credentials',
             credentials: {
                 username: { label: "Username", type: "text", placeholder: "enter your email" },
-                password: { label: "Password", type: "password" , placeholder : "enter your password" }
+                password: { label: "Password", type: "password", placeholder: "enter your password" }
             },
             async authorize(credentials: any) {
                 const body = {
-                    id : "1234",
-                    "email" : "admin@gmail.com",
-                    "password" : "admin1234"
+                    id: "1234",
+                    "email": "admin@gmail.com",
+                    "password": "admin1234"
                 }
                 // const res = await fetch(process.env.API_URL + "api/admin", {
                 //     method: 'post',
@@ -23,7 +23,7 @@ export const nextAuthOptions: NextAuthOptions = {
                 // })
                 // const user = await res.json()
                 // If no error and we have user data, return it
-                console.log(credentials.username === body.email && credentials.password === body.password , credentials)
+                console.log(credentials.username === body.email && credentials.password === body.password, credentials)
                 if (credentials.username === body.email && credentials.password === body.password) {
                     return body
                 }
