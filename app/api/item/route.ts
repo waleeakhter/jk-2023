@@ -27,9 +27,10 @@ export async function GET(request: Request) {
         await dbConnect()
         const { searchParams } = new URL(request.url)
         const type = searchParams.get('type')
-        const brand = searchParams.get('brand')
+        const brand = searchParams.get('brand');
+        const qty = searchParams.get('qty')
 
-        const res = await ItemModal.find(({ ...(type && { type: type }), ...(brand && { brand: brand }) }))
+        const res = await ItemModal.find(({ ...(type && { type: type }), ...(brand && { brand: brand }), ...(qty && { stock: { $lte: qty } }) }))
             .sort({ name: 1 }).collation({ locale: "en" })
 
 
