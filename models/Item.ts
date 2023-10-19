@@ -37,6 +37,10 @@ const ItemSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    stockUpdated: {
+        type: Date,
+        default: Date.now,
+    },
 }, { timestamps: true });
 
 // Creating a Model from that Schema

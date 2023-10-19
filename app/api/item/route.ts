@@ -42,7 +42,25 @@ export async function GET(request: Request) {
     }
 }
 
+export async function POST(req: NextRequest) {
+    try {
+        const body = await req.json();
+        const name = body.name.trim().toUpperCase()
 
+        const existingItem = await ItemModal.findOne({ name: name });
+        if (existingItem) {
+            throw new Error(`Item ${name} already exists`);
+        }
+        const newItem = await ItemModal.create({ ...body, name: name })
+        console.log(newItem)
+        return NextResponse.json({ status: 200, success: true, message: `${newItem?.name} Updated Successfully`, data: newItem });
+
+    } catch (error) {
+        console.log(error)
+        return NextResponse.json({ status: 400, data: error, message: error });
+
+    }
+}
 
 export async function PATCH(req: NextRequest) {
     try {
