@@ -17,8 +17,10 @@ export interface Item {
     purchase_price: number,
     stock: number,
     price: number,
-    type: typeof types["values"];
-    createdAt: Date;
+    brand: string,
+    stockUpdate: Date | string,
+    type: string;
+    createdAt: Date | string;
 }
 
 export interface Client {

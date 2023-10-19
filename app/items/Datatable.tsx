@@ -14,6 +14,7 @@ import Tooltips from '../sale/table/columns'
 import { cancelSaleItem } from '../components/Datatable/functions'
 import { columns } from './columns'
 import { exportColumns, exportData } from './exports'
+import ItemForm from './itemForm'
 type Props = { data: Array<Item | string | any>, showPrice: number | undefined }
 const Datatable = ({ data, showPrice }: Props) => {
     const [visible, setVisible] = useState(false);
@@ -78,7 +79,7 @@ const Datatable = ({ data, showPrice }: Props) => {
     return (
         <div className=''>
             <AddModal visible={visible} setVisible={setVisible} >
-
+                <ItemForm />
             </AddModal>
             <div>
                 <DataTable
