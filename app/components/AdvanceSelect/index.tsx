@@ -15,7 +15,8 @@ type AdvanceSelectProps = {
     extraLabelValue?: string;
     extra?: any;
     setFieldValue?: Function | undefined,
-    multiple?: boolean
+    multiple?: boolean,
+    classes?: string
 };
 
 const AdvanceSelect: React.FC<AdvanceSelectProps> = ({
@@ -26,6 +27,7 @@ const AdvanceSelect: React.FC<AdvanceSelectProps> = ({
     setFieldValue,
     multiple,
     lableValue,
+    classes,
     extraLabelValue,
     extra
 }) => {
@@ -44,7 +46,7 @@ const AdvanceSelect: React.FC<AdvanceSelectProps> = ({
     const selectValue = async (selectedOption: SingleValue<Option> | MultiValue<Option>) => {
         console.log(selectedOption)
         setFieldValue && setFieldValue(name, selectedOption)
-        callback && callback(selectedOption, setFieldValue ? setFieldValue : () => "");
+        callback && callback(selectedOption);
     };
 
     return (
@@ -52,7 +54,7 @@ const AdvanceSelect: React.FC<AdvanceSelectProps> = ({
         <CreatableSelect
             isClearable
             isSearchable
-            classNamePrefix="react-select"
+            classNamePrefix={`react-select ${classes}`}
             id={name}
             key={value}
             isMulti={multiple ?? false}

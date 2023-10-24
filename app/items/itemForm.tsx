@@ -38,7 +38,7 @@ function ItemForm() {
 
 
     const { mutate: onSubmit, isLoading } = useMutation(async (newData: Item) => {
-        const response = await fetch('http://localhost:3000/api/item', {
+        const response = await fetch('/api/item', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

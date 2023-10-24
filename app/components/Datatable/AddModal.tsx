@@ -18,7 +18,7 @@ const AddModal = (
     }
 ) => {
     return (
-        <Dialog closeOnEscape={false} header={heading ?? ""} visible={visible} style={{ width: '80vw' }} onHide={() => setVisible(false)}>
+        <Dialog closeOnEscape={false} header={<p className=' capitalize '>{heading}</p> ?? ""} visible={visible} style={{ width: '80vw' }} onHide={() => setVisible(false)}>
             {children}
         </Dialog>
     )
