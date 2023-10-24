@@ -11,6 +11,8 @@ import React from 'react';
 import { getServerSession } from 'next-auth';
 import { nextAuthOptions } from './authOptions';
 import AuthProvider from './context/AuthProvider';
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
 const inter = Inter({ subsets: ['latin'] })
 
 // export const metadata: Metadata = {
@@ -23,6 +25,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  config.autoAddCss = false;
   const session = await getServerSession(nextAuthOptions)
   return (
     <html lang="en">

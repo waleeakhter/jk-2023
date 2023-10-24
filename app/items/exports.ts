@@ -13,7 +13,7 @@ export const exportColumns = [
 
 export const exportData = (data: Array<Item>) => {
 
-    return data?.map(el => {
+    return data ? data?.map(el => {
         return {
             item: el.name,
             type: el.type,
@@ -21,5 +21,5 @@ export const exportData = (data: Array<Item>) => {
             price: el.price,
             stock: el.stock
         }
-    }).sort((a, b) => a.item.localeCompare(b.item))
+    }).sort((a, b) => a.item.localeCompare(b.item)) : []
 }

@@ -22,9 +22,11 @@ const ExportData = ({ data, exportColumns }: Props) => {
     return (
         <>
             <ExportSetting columns={exportColumns} visible={visible} setVisible={setVisible}
-                dataForPreview={data} callback={letsExportPDF} params={params} filetype={fileType} />
-            <Button size='small' raised type="button" icon="pi pi-file" text onClick={() => { setFileType("xlxs"); setVisible(true) }} />
-            <Button size='small' raised type="button" icon="pi pi-file-pdf" text onClick={() => { setFileType("pdf"); setVisible(true) }} />
+                dataForPreview={data ?? []} callback={letsExportPDF} params={params} filetype={fileType} />
+            <span className='p-buttonset'>
+                <Button size='small' severity='success' raised type="button" icon="pi pi-file-excel" text onClick={() => { setFileType("xlxs"); setVisible(true) }} />
+                <Button size='small' severity='danger' raised type="button" icon="pi pi-file-pdf" text onClick={() => { setFileType("pdf"); setVisible(true) }} />
+            </span>
         </>
     )
 }

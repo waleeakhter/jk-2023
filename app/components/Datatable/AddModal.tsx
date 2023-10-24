@@ -9,14 +9,16 @@ const AddModal = (
         children,
         visible,
         setVisible,
+        heading
     }: {
         children: React.ReactNode,
         visible: boolean,
-        setVisible: Function
+        setVisible: Function,
+        heading?: string | React.ReactNode,
     }
 ) => {
     return (
-        <Dialog closeOnEscape={false} header="Header" visible={visible} style={{ width: '80vw' }} onHide={() => setVisible(false)}>
+        <Dialog closeOnEscape={false} header={heading ?? ""} visible={visible} style={{ width: '80vw' }} onHide={() => setVisible(false)}>
             {children}
         </Dialog>
     )

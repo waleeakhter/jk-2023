@@ -14,6 +14,11 @@ const ItemSchema = new Schema({
         required: true,
         default: 0,
     },
+    wearHouseStock: {
+        type: Number,
+        required: true,
+        default: 0,
+    },
     type: {
         type: String,
         enum: types.map(type => type.value),
@@ -39,7 +44,9 @@ const ItemSchema = new Schema({
     },
     stockUpdated: {
         type: Date,
-        default: Date.now,
+    },
+    wearhouseStockUpdated: {
+        type: Date,
     },
 }, { timestamps: true });
 
