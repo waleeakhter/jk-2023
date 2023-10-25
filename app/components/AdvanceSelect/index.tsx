@@ -46,7 +46,7 @@ const AdvanceSelect: React.FC<AdvanceSelectProps> = ({
     const selectValue = async (selectedOption: SingleValue<Option> | MultiValue<Option>) => {
         console.log(selectedOption)
         setFieldValue && setFieldValue(name, selectedOption)
-        callback && callback(selectedOption);
+        callback && callback(selectedOption, setFieldValue ? setFieldValue : () => "");
     };
 
     return (

@@ -29,12 +29,13 @@ export async function GET(request: Request) {
         const type = searchParams.get('type')
         const brand = searchParams.get('brand');
         const qty = searchParams.get('qty');
+        const gte = searchParams.get('gte');
         const name = searchParams.get('name')
 
         const res = await ItemModal.find(({
             ...(type && { type: type }),
             ...(brand && { brand: brand }),
-            ...(qty && { stock: { $lte: qty } }),
+            ...(qty && { stock: { $gte: gte, $lte: qty } }),
             ...(name && { name: { $regex: new RegExp(name, "i") } }),
         })).sort({ name: 1 }).collation({ locale: "en" })
 

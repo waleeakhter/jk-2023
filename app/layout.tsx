@@ -13,6 +13,7 @@ import { nextAuthOptions } from './authOptions';
 import AuthProvider from './context/AuthProvider';
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
+import StyledComponentsRegistry from './lib/AntdRegistry';
 const inter = Inter({ subsets: ['latin'] })
 
 // export const metadata: Metadata = {
@@ -34,9 +35,9 @@ export default async function RootLayout({
 
         <AuthProvider>
           <Header />
-          <main>
+          <StyledComponentsRegistry>
             {children}
-          </main>
+          </StyledComponentsRegistry>
         </AuthProvider>
 
 

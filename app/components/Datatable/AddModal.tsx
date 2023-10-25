@@ -1,5 +1,5 @@
 'use client';
-import { Dialog } from 'primereact/dialog'
+import { Modal } from 'antd'
 import React from 'react'
 
 type Props = {}
@@ -18,9 +18,9 @@ const AddModal = (
     }
 ) => {
     return (
-        <Dialog closeOnEscape={false} header={<p className=' capitalize '>{heading}</p> ?? ""} visible={visible} style={{ width: '80vw' }} onHide={() => setVisible(false)}>
+        <Modal title={<p className=' capitalize '>{heading}</p> ?? ""} open={visible} style={{ width: '80vw' }} onCancel={() => setVisible(false)}>
             {children}
-        </Dialog>
+        </Modal>
     )
 }
 

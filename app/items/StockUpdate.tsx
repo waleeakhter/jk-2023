@@ -1,17 +1,16 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import React, { forwardRef, useRef } from 'react'
-import AdvanceSelect from '../components/AdvanceSelect'
+import React, { useRef, useState } from 'react'
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Item } from '@/typings';
 import { Toast } from 'primereact/toast';
-import { MultiSelect } from 'primereact/multiselect';
-import { Dropdown } from 'primereact/dropdown';
-import { InputNumber } from 'primereact/inputnumber';
-import { Badge } from 'primereact/badge';
-import ReactDatePicker from 'react-datepicker';
-import { InputText } from 'primereact/inputtext';
+import moment from "moment";
+import { InputNumber, DatePicker, Select, Badge, Tag, Radio } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEuro } from "@fortawesome/free-solid-svg-icons";
+import types from '@/app/utils/types.json';
+import { type } from 'os';
 type Props = { check: string }
 type stockUpdate = {
     item: string,
@@ -28,6 +27,9 @@ const validationSchema = Yup.object().shape({
 
 const StockUpdate = ({ check }: Props) => {
     const toast = useRef<Toast>(null);
+    const [fillObject, setFilters] = useState({
+        type: ''
+    })
     const {
         handleSubmit,
         control,
@@ -38,9 +40,9 @@ const StockUpdate = ({ check }: Props) => {
 
 
     const { data, isLoading, status } = useQuery({
-        queryKey: ["items"],
+        queryKey: ["items", { fillObject }],
         queryFn: async () => {
-            const res = await fetch(`/api/item`)
+            const res = await fetch(`/api/item?${fillObject.type && "type=" + fillObject.type}`)
             console.log(`${process.env.API_URL}item`, "react query")
             return res.json().then(data => data?.data as Array<Item>)
         }
@@ -48,7 +50,7 @@ const StockUpdate = ({ check }: Props) => {
     })
     const { mutate: onSubmit, isLoading: isSubbmiting } = useMutation(
         async (newData: stockUpdate) => {
-            const response = await fetch('http://localhost:3000/api/item', {
+            const response = await fetch('http://localhost:3000/api/item?', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -67,87 +69,98 @@ const StockUpdate = ({ check }: Props) => {
             reset()
             toast.current?.show({ severity: 'success', summary: 'Info', detail: message });
 
-        },
+        }
     });
 
     const getStock = () => {
         const item = data && data?.filter(item => item?._id === watch("item") ? item.stock : "");
-        return item?.at(0)?.stock
+        return item?.at(0)?.stock ?? 0
     }
-    const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-        <button className="example-custom-input" onClick={onClick} ref={ref}>
-            {value}
-        </button>
-    ));
+
     return (
-        <>
-            <Toast ref={toast} />
-            <form onSubmit={handleSubmit((data) => onSubmit(data))}>
-                <div className="grid grid-cols-1 gap-4">
-                    <div className="w-full">
-                        <label htmlFor="item"><strong>Item</strong></label>
-                        <Controller
-                            name="item"
-                            control={control}
-                            render={({ field: { onChange, value } }) => (
-                                <Dropdown filter multiple={false} name={'items'} value={value ?? ""} id='item'
-                                    optionLabel='name' optionValue='_id' options={data ?? []} showClear placeholder='Select an Item'
-                                    className={`w-full ${errors.item ? 'p-invalid' : ''}`} onChange={onChange} />
-
-                            )}
-                        />
-                        <div className="p-message p-message-error">{errors.item?.message}</div>
-                    </div>
-                    <div className="w-full">
-                        <Controller
-                            name="stock"
-                            control={control}
-                            render={({ field: { onChange, value } }) => (
-                                <>
-                                    <div className='flex mb-2'>
-                                        <label htmlFor="stock"><strong>Stock</strong></label>
-                                        <Badge className='ml-auto' value={<span>Available: {getStock()}</span>} />
-                                    </div>
-                                    <InputNumber name={'items'} value={value ?? 0}
-                                        placeholder='Select an Item' min={0} id='stock'
-                                        className={`w-full ${errors.stock ? 'p-invalid' : ''}`} onChange={(e) => onChange(e.value ?? 0)} />
-                                </>
-
-                            )}
-                        />
-                        <div className="p-message p-message-error">{errors.stock?.message}</div>
-                    </div>
-                    <div className="w-full">
-                        <Controller
-                            name="stockUpdate"
-                            control={control}
-                            render={({ field: { onChange, value } }) => (
-                                <>
-                                    <label htmlFor="stock"><strong>Stock Update Date</strong></label>
-                                    <ReactDatePicker customInput={ }
-                                        name={'items'} value={value ?? new Date()}
-                                        placeholderText='Select an Item' id='stockUpdate'
-                                        className={`w-full ${errors.stock ? 'p-invalid' : ''}`} onChange={(e) => onChange(e ?? 0)} />
-                                </>
-
-                            )}
-                        />
-                        <div className="p-message p-message-error">{errors.stock?.message}</div>
-                    </div>
+        <div>
+            <>
+                <Toast ref={toast} />
+                <div className='my-5 w-48 ml-auto'>
+                    <label htmlFor="item"><strong>Select Type</strong></label>
+                    <Select showSearch value={fillObject.type} id='item' size='large' className='w-full'
+                        filterOption={(input, option) =>
+                            (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
+                        options={types ?? []} placeholder='Select an type'
+                        onChange={(e) => setFilters(prev => { return { ...prev, type: e ?? "" } })} />
                 </div>
+                <form onSubmit={handleSubmit((data) => onSubmit(data))}>
+                    <div className="grid grid-cols-1 gap-4">
+                        <div className="w-full">
+                            <label htmlFor="item"><strong>Item</strong></label>
+                            <Controller
+                                name="item"
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                                    <Select showSearch value={value ?? ""} id='item' size='large' loading={isLoading} disabled={isLoading}
+                                        filterOption={(input, option) =>
+                                            (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
+                                        fieldNames={{ label: "name", value: "_id" }}
+                                        options={data ?? []} placeholder='Select an Item'
+                                        className={`w-full ${errors.item ? 'p-invalid' : ''}`} onChange={onChange} />
 
-                <div>
-                    <div className={'col-12'}>
-                        <code>
-                            <pre>Errors: {JSON.stringify(watch(), null, 2)}</pre>
-                        </code>
-                        <code>
-                            <pre>Errors: {JSON.stringify(errors, null, 2)}</pre>
-                        </code>
+                                )}
+                            />
+                            <div className="p-message p-message-error">{errors.item?.message}</div>
+                        </div>
+                        <div className="w-full">
+                            <Controller
+                                name="stock"
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                                    <>
+                                        <div className='flex mb-2'>
+                                            <label htmlFor="stock"><strong>Stock</strong></label>
+                                            <Tag className='ml-auto'> <Badge status="success" text={<span>Available: {getStock()}</span>} /> </Tag>
+                                        </div>
+                                        <InputNumber name={'items'} value={value ?? 0} size='large'
+                                            parser={(value) => value ? parseInt(value) : 0}
+                                            placeholder='Select an Item' min={0} id='stock' addonBefore={<FontAwesomeIcon icon={faEuro} />}
+                                            className={`w-full ${errors.stock ? 'p-invalid' : ''}`} onChange={(e) => onChange(e ?? 0)} />
+                                    </>
+
+                                )}
+                            />
+                            <div className="p-message p-message-error">{errors.stock?.message}</div>
+                        </div>
+                        <div className="w-full">
+                            <Controller
+                                name="stockUpdate"
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                                    <>
+                                        <label htmlFor="stock"><strong>Stock Update Date</strong></label>
+                                        <DatePicker size='large' className='w-full'
+                                            onChange={(date, dateString) =>
+                                                onChange(moment(dateString).add(1, "h"))} format="YYYY-MM-D HH:m:s" />
+
+                                    </>
+
+                                )}
+                            />
+                            <div className="p-message p-message-error">{errors.stock?.message}</div>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </>
+
+                    <div>
+                        <div className={'col-12'}>
+                            <code>
+                                <pre>Errors: {JSON.stringify(watch(), null, 2)}</pre>
+                            </code>
+                            <code>
+                                <pre>Errors: {JSON.stringify(errors, null, 2)}</pre>
+                            </code>
+                        </div>
+                    </div>
+                </form>
+            </>
+
+        </div>
     )
 }
 
