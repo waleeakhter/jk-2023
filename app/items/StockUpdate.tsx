@@ -10,7 +10,6 @@ import { InputNumber, DatePicker, Select, Badge, Tag, Radio } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEuro } from "@fortawesome/free-solid-svg-icons";
 import types from '@/app/utils/types.json';
-import { type } from 'os';
 type Props = { check: string }
 type stockUpdate = {
     item: string,
@@ -45,7 +44,8 @@ const StockUpdate = ({ check }: Props) => {
             const res = await fetch(`/api/item?${fillObject.type && "type=" + fillObject.type}`)
             console.log(`${process.env.API_URL}item`, "react query")
             return res.json().then(data => data?.data as Array<Item>)
-        }
+        },
+        enabled: false
 
     })
     const { mutate: onSubmit, isLoading: isSubbmiting } = useMutation(

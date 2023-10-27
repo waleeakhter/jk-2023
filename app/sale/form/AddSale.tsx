@@ -8,14 +8,27 @@ import { validationSchema } from './validationSchema';
 import initialValues from './initialValues';
 import { callback, onSubmit } from "./submit"
 import DatePicker from "react-datepicker";
-
+import { Select } from 'antd';
+import types from '@/app/utils/types.json';
+import { useQuery } from '@tanstack/react-query';
 
 type Props = { items: Item[], clients: Client[] }
 
 const AddSale = ({ items, clients }: Props) => {
     const [startDate, setStartDate] = useState(new Date());
+    const [fillObject, setFilters] = useState({
+        type: ''
+    })
+    const { data: itemsData, isLoading, status } = useQuery({
+        queryKey: ["items", { fillObject }],
+        queryFn: async () => {
+            const res = await fetch(`/api/item?${fillObject.type && "type=" + fillObject.type}`)
+            console.log(`${process.env.API_URL}item`, "react query")
+            return res.json().then(data => data?.data as Array<Item>)
+        },
+        initialData: items
 
-
+    })
     const onDateChange = (date: Date, setFieldValue: Function) => {
         console.log(new Date(date).toLocaleString())
         setStartDate(prev => prev = date)
@@ -23,6 +36,14 @@ const AddSale = ({ items, clients }: Props) => {
     }
 
     return <React.Fragment>
+        <div className='my-5 w-48 ml-auto'>
+            <label htmlFor="item"><strong>Select Type</strong></label>
+            <Select showSearch value={fillObject.type} id='item' size='large' className='w-full'
+                filterOption={(input, option) =>
+                    (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
+                options={types ?? []} placeholder='Select an type'
+                onChange={(e) => setFilters(prev => { return { ...prev, type: e ?? "" } })} />
+        </div>
         <Formik
             validationSchema={validationSchema("1")}
             initialValues={initialValues}
@@ -38,7 +59,7 @@ const AddSale = ({ items, clients }: Props) => {
                         <div className='from-group'>
                             <label>Item Name</label>
                             <AdvanceSelect name={"item"} value={"name"} lableValue={"name"}
-                                options={items} extra={"price"} callback={callback} setFieldValue={setFieldValue} />
+                                options={itemsData} extra={"price"} callback={callback} setFieldValue={setFieldValue} />
                             <span className=' text-red-600 '><ErrorMessage name="item" /></span>
                         </div>
                         <div className='from-group'>
