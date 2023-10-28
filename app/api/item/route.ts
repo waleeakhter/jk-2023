@@ -28,10 +28,16 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url)
         const type = searchParams.get('type')
         const brand = searchParams.get('brand');
-        const qty = searchParams.get('qty')
+        const qty = searchParams.get('qty');
+        const gte = searchParams.get('gte');
+        const name = searchParams.get('name')
 
-        const res = await ItemModal.find(({ ...(type && { type: type }), ...(brand && { brand: brand }), ...(qty && { stock: { $lte: qty } }) }))
-            .sort({ name: 1 }).collation({ locale: "en" })
+        const res = await ItemModal.find(({
+            ...(type && { type: type }),
+            ...(brand && { brand: brand }),
+            ...(qty && { stock: { $gte: gte, $lte: qty } }),
+            ...(name && { name: { $regex: new RegExp(name, "i") } }),
+        })).sort({ name: 1 }).collation({ locale: "en" })
 
 
         const totalAmount = res.reduce((total, item) => total + (item.purchase_price * item.stock), 0);
