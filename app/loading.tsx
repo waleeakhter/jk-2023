@@ -10,7 +10,7 @@ const Loading = (props: Props) => {
     return (
         <div className=' text-center h-screen flex items-center justify-center w-full'>
             <div className=' text-white '>
-                <Spin tip="Loading" size="large" />
+                <Spin size="large" />
             </div>
         </div>
     )
