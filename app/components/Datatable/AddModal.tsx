@@ -18,7 +18,7 @@ const AddModal = (
     }
 ) => {
     return (
-        <Modal centered className='w-[80%_!important]' title={<p className=' capitalize '>{heading}</p> ?? ""} open={visible} style={{ width: '80vw' }} onCancel={() => setVisible(false)}>
+        <Modal keyboard={false} destroyOnClose={true} centered className='w-[80%_!important]' title={<p className=' capitalize '>{heading}</p> ?? ""} open={visible} style={{ width: '80vw' }} onCancel={() => setVisible(false)}>
             {children}
         </Modal>
     )

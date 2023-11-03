@@ -12,16 +12,19 @@ export interface ReactSelect {
 
 
 export interface Item {
-    _id: string;
+    _id?: string;
     name: string;
     quantity: number;
     purchase_price: number,
     stock: number,
+    wearHouseStock: number,
     price: number,
     brand: string,
     stockUpdate: Date | string,
     type: string;
     createdAt: Date | string;
+    stockUpdated?: Date | string,
+    wearhouseStockUpdated?: Date | string,
 }
 
 export interface Client {

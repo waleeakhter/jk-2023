@@ -93,7 +93,7 @@ const Datatable = ({ data, showPrice }: Props) => {
                 heading={form === "newItem" ? "Add New Item" : form === "wearhouse" ? "Update Wearhouse Stock" : "Update Shop Stock"} >
 
                 {form === "newItem" ? <ItemForm /> :
-                    <StockUpdate check={form} />}
+                    visible && <StockUpdate check={form} />}
             </AddModal>
             <div>
                 <DataTable

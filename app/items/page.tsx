@@ -14,6 +14,7 @@ const page = async ({ searchParams, router }: Props) => {
     if (!session) {
         return redirect('/api/auth/signin')
     }
+    console.log(process.env.API_URL , "/api/auth/signin")
     const q = new URLSearchParams(searchParams).toString();
     const getItems = await fetch(process.env.API_URL + 'item?' + q, {
         cache: "no-cache",

@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
+    await dbConnect()
     // const session = await getServerSession(nextAuthOptions)
     function customSort(a: { name: string; }, b: { name: string; }): number {
         // Compare the names of the items
@@ -20,11 +21,7 @@ export async function GET(request: Request) {
         return 0;
     }
     try {
-        // if (!session) {
-        //     // User is not authenticated
-        //     return NextResponse.json({ authError: true, error: "Authentication required" });
-        // }
-        await dbConnect()
+     
         const { searchParams } = new URL(request.url)
         const type = searchParams.get('type')
         const brand = searchParams.get('brand');
