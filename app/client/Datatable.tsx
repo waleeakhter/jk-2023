@@ -5,14 +5,14 @@ import { Button } from 'primereact/button'
 import { InputText } from 'primereact/inputtext'
 import { useRouter } from 'next/navigation'
 import { FilterMatchMode } from 'primereact/api'
-import { Item, LazyTableState } from '@/typings'
+import { Client, LazyTableState } from '@/typings'
 import { DataTable, DataTablePageEvent, DataTableRowEditCompleteEvent } from 'primereact/datatable'
-import { updateOrder } from '../components/Datatable/serverActions'
 import AddModal from '../components/Datatable/AddModal'
 import { Column, ColumnProps } from 'primereact/column'
 import Tooltips from '../sale/table/columns'
 import { columns } from './columns'
-type Props = { data: Array<Item | string | any>, amount: Number }
+import { updateClientCredit } from './serverAction'
+type Props = { data: Array<Client | string | any>, amount: Number }
 const Datatable = ({ data, amount }: Props) => {
     const [visible, setVisible] = useState(false);
     const router = useRouter()
@@ -30,11 +30,13 @@ const Datatable = ({ data, amount }: Props) => {
         setlazyState(prev => { return { ...prev, ...event } });
     };
 
-    const onRowEditComplete = (e: DataTableRowEditCompleteEvent) => {
+    const onRowEditComplete = async (e: DataTableRowEditCompleteEvent) => {
+        console.log(e)
         let _items = [...data];
         let { newData, index } = e;
         _items[index] = newData;
-        updateOrder(newData as any, "item")
+       const update =  updateClientCredit(newData as Client & {_id : string,});
+       console.log(update)
     };
 
     const onGlobalFilterChange = (e: any) => {
