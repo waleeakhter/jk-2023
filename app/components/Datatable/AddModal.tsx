@@ -18,8 +18,10 @@ const AddModal = (
     }
 ) => {
     return (
-        <Modal keyboard={false} destroyOnClose={true} centered className='w-[80%_!important]' title={<p className=' capitalize '>{heading}</p> ?? ""} open={visible} style={{ width: '80vw' }} onCancel={() => setVisible(false)}>
-            {children}
+        <Modal footer="" styles={{content : {maxHeight : "85vh" , overflowY : "auto"}}} keyboard={false} destroyOnClose={true} centered className='w-[80%_!important]' title={<p className=' capitalize '>{heading}</p> ?? ""} open={visible} style={{ width: '80vw' }} onCancel={() => setVisible(false)}>
+           <div className='mt-8'>
+           {children}
+           </div>
         </Modal>
     )
 }

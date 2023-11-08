@@ -45,6 +45,7 @@
     "react-hook-form": "^7.47.0",
     "react-select": "^5.7.4",
     "react-to-print": "^2.14.13",
+    "run": "^1.4.0",
     "sass": "^1.63.6",
     "typescript": "5.1.6",
     "write-excel-file": "^1.4.27",

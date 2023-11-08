@@ -17,63 +17,38 @@ const messages = (id: number) => {
     }
 }
 
-const creditClient = async (data: Array<Sale> | Sale, status: number) => {
-    const isArrayData = Array.isArray(data);
 
-    // Check if the status is 2 or if the first sale item has a status of 2
-    if (
-        status === 2 ||
-        (isArrayData && data[0]?.status === 2) ||
-        (data && data.hasOwnProperty("status")) ||
-        (status === 2 && data && data.hasOwnProperty("status"))
-    ) {
-        const clientIds = isArrayData
-            ? data.map((el) => el.client._id)
-            : data && data.client
-                ? [data.client._id]
-                : [];
-
-        try {
-            const clients = await ClientModal.find({ _id: clientIds });
-            console.log(clients, status);
-
-            const updatedClients = clients.map((client) => {
-                let totalAmount = 0;
-
-                if (isArrayData) {
-                    totalAmount = data.reduce((total, sale) => {
-                        if (sale.client._id === String(client._id)) {
-                            return total + sale.total_amount;
-                        } else {
-                            return total;
-                        }
-                    }, 0);
-                } else if (data && data.hasOwnProperty("status") && data.status === 2) {
-                    totalAmount = data.total_amount;
-                }
-
-                if (status === 2) {
-                    client.credit += totalAmount;
-                } else {
-                    client.credit -= totalAmount;
-                }
-
-                // Save the updated client data
-                console.log(clients, status);
-                return client.save(); // Return the promise returned by .save()
-            });
-
-            // Wait for all the save operations to complete
-            await Promise.all(updatedClients);
-
-            return updatedClients; // Return the updated clients
-        } catch (error) {
-            console.error("Error updating client credit:", error);
-            throw error;
+ const updateClientCredit = async (data : Array<Sale & { _id: string, status: number }> , status : number) => {
+    try {
+      if (!Array.isArray(data)) {
+        data = [data]; // Convert a single object to an array
+      }
+  
+      for (const item of data) {
+        const saleItem = await SaleModal.findById(item._id);
+        const client = await ClientModal.findById(item.client);
+  
+        if (saleItem && client) {
+          if (saleItem.status === 2 && (status === 0 || status === 1)) {
+            // Decrease client credit when the sale status changes from 2 to 0 or 1
+            const creditToDeduct = saleItem.total_amount;
+            client.credit -= creditToDeduct;
+            await client.save();
+          } else if (status === 2) {
+            // Increase client credit when the status changes to 2
+            const creditToAdd = item.total_amount;
+            client.credit += creditToAdd;
+            await client.save();
+          }
+  
         }
+      }
+    } catch (error) {
+      // Handle any potential errors here
+      console.error("An error occurred:", error);
     }
-
-};
+  };
+  
 
 const updateSale = async (body:
     {
@@ -85,15 +60,23 @@ const updateSale = async (body:
         sell_quantity: number;
         createdAt: any;
         statusUpdate: boolean,
-        data: Array<Sale & { _id: string, status: number }> | Sale & { _id: string, status: number }
+        data: Array<Sale & { _id: string, status: number }> & { _id: string, status: number }
     }) => {
     try {
-        console.log(body)
+     
         if (body?.statusUpdate) {
             console.log(" in ")
             const $in = Array.isArray(body.data) ? { $in: body.data.map(el => el._id) } : body.data?._id;
             const $paidOn = (body.status === 0 || body.status === 2) ? null : body.paidOn;
-            await creditClient(body.data, body.status)
+           await updateClientCredit(body.data , body.status)
+            // if(Array.isArray(body.data)){
+            //     updateBulkClient(body.data , body.status)
+            // }
+
+            // if(!Array.isArray(body.data)){
+            //     await singleClientUpdate(body.data as Sale & { _id: string, status: number } , body.status)
+            // }
+           
             const updateSaleItem = await SaleModal.updateMany(
                 { _id: $in },
                 { $set: { status: body.status, paidOn: $paidOn } }
@@ -111,7 +94,7 @@ const updateSale = async (body:
 
             if (body.sell_quantity > updateSaleItem.sell_quantity) {
                 const stock = body.sell_quantity - updateSaleItem.sell_quantity
-                if (getItem.stock > stock) {
+                if (getItem.stock >= stock) {
 
                     getItem.stock -= stock
                 } else {

@@ -51,10 +51,10 @@ const AdvanceSelect: React.FC<AdvanceSelectProps> = ({
 
     return (
 
-        <CreatableSelect
+        <CreatableSelect aria-live="polite"
             isClearable
             isSearchable
-            classNamePrefix={`react-select ${classes}`}
+            classNamePrefix='react-select'
             id={name}
             key={value}
             isMulti={multiple ?? false}

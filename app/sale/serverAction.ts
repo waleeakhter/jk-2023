@@ -14,7 +14,6 @@ export const submitSale = async (values: typeof initialValues) => {
         body: JSON.stringify(values),
     })
     const data = await res.json()
-    console.log(data)
     if (data?.success) {
         if (values.item.__isNew__) {
             revalidateTag('items')

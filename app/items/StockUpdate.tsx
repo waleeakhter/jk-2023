@@ -5,17 +5,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Item } from '@/typings';
 import { Toast } from 'primereact/toast';
-import moment from "moment";
 import { InputNumber, DatePicker, Select, Badge, Tag, Radio, Button } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEuro } from "@fortawesome/free-solid-svg-icons";
 import types from '@/app/utils/types.json';
+import brands from '@/app/utils/brands.json';
 import dayjs from 'dayjs';
 type Props = { check: string }
 type stockUpdate = {
     item: { purchase_price?: number, stock?: number, name: string, wearHouseStock?: number },
     stock: number,
-    stockUpdate: string,
+    stockUpdate: dayjs.Dayjs,
     purchase_price?: number
 }
 
@@ -24,7 +24,8 @@ type stockUpdate = {
 const StockUpdate = ({ check }: Props) => {
     const toast = useRef<Toast>(null);
     const [fillObject, setFilters] = useState({
-        type: ''
+        type: '',
+        brand : '',
     })
     const initialValues: stockUpdate = {
         item: {
@@ -34,18 +35,19 @@ const StockUpdate = ({ check }: Props) => {
             wearHouseStock: 0
         },
         stock: 0,
-        stockUpdate: '',
+        stockUpdate: dayjs(new Date()),
         ...(check === "wearhouse" ? { purchase_price: 0 } : null)
     }
     const validationSchema = Yup.object().shape({
         item: Yup.object().shape({ name: Yup.string().required('Item name is required') }),
         stock: Yup.number().required().default(0).positive().min(1),
-        ...(check === "wearhouse" ? { purchase_price: Yup.number().required().default(0).min(1) } : null),
-        stockUpdate: Yup.string().default(new Date().toISOString()).required(),
+        ...(check === "wearhouse" ? { purchase_price: Yup.number().default(0).min(1) } : null),
+        stockUpdate: Yup.date().default(new Date()).required(),
     });
     const {
         handleSubmit,
         control,
+        setValue,
         reset,
         watch,
         formState: { errors },
@@ -55,7 +57,7 @@ const StockUpdate = ({ check }: Props) => {
     const { data, isLoading, refetch } = useQuery({
         queryKey: ["items", { fillObject }],
         queryFn: async () => {
-            const res = await fetch(`/api/item?${fillObject.type && "type=" + fillObject.type}`)
+            const res = await fetch(`/api/item?${fillObject.type && "type=" + fillObject.type}${fillObject.brand && "&brand=" + fillObject.brand}`)
             console.log(`${process.env.API_URL}item`, "react query")
             return res.json().then(data => data?.data as Array<Item>)
         },
@@ -92,13 +94,23 @@ const StockUpdate = ({ check }: Props) => {
         <div>
             <>
                 <Toast ref={toast} />
-                <div className='my-5 w-48 ml-auto'>
-                    <label htmlFor="item"><strong>Select Type</strong></label>
-                    <Select showSearch value={fillObject.type} id='item' size='large' className='w-full'
+                <div className='flex gap-3 justify-end'>
+                <div className='my-5 w-48 '>
+                    <label htmlFor="brand"><strong>Select Brand</strong></label>
+                    <Select showSearch value={fillObject.brand} id='brand' size='large' className='w-full'
+                        filterOption={(input, option) =>
+                            (option?.value?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
+                        options={brands.map(brand => ({label : brand.toLocaleUpperCase() , value : brand})) ?? []} placeholder='Select a brand'
+                        onChange={(e) => setFilters(prev => { return { ...prev, brand: e ?? "" } })} />
+                </div>
+                <div className='my-5 w-48 '>
+                    <label htmlFor="type"><strong>Select Type</strong></label>
+                    <Select showSearch value={fillObject.type} id='type' size='large' className='w-full'
                         filterOption={(input, option) =>
                             (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
-                        options={types ?? []} placeholder='Select an type'
+                        options={types ?? []} placeholder='Select a type'
                         onChange={(e) => setFilters(prev => { return { ...prev, type: e ?? "" } })} />
+                </div>
                 </div>
                 <form onSubmit={handleSubmit((data) => onSubmit(data))}>
                     <div className="grid grid-cols-1 gap-4">
@@ -113,7 +125,7 @@ const StockUpdate = ({ check }: Props) => {
                                             (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
                                         fieldNames={{ label: "name", value: "_id" }}
                                         options={data ?? []} placeholder='Select an Item'
-                                        className={`w-full ${errors.item?.name?.message ? 'p-invalid' : ''}`} onChange={(value, option) => onChange(option)} />
+                                        className={`w-full ${errors.item?.name?.message ? 'p-invalid' : ''}`} onChange={(value, option) => {onChange(option); setValue("purchase_price" , option?.purchase_price ?? 0)}} />
 
                                 )}
                             />
@@ -167,9 +179,9 @@ const StockUpdate = ({ check }: Props) => {
                                 render={({ field: { onChange, value } }) => (
                                     <>
                                         <label htmlFor="stock"><strong>Stock Update Date</strong></label>
-                                        <DatePicker size='large' className='w-full' value={dayjs(moment(value).subtract(1, "h").toString())}
+                                        <DatePicker size='large' className='w-full' value={value}
                                             onChange={(date, dateString) =>
-                                                onChange(moment(dateString).add(1, "h"))} format="YYYY-MM-D HH:m:s" />
+                                                onChange(dateString)} format="DD-MM-YYYY hh:mm:ss" />
 
                                     </>
 
