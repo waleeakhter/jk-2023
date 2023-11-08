@@ -37,7 +37,7 @@ export async function GET(request: Request) {
         })).sort({ name: 1 }).collation({ locale: "en" })
 
 
-        const totalAmount = res.reduce((total, item) => total + (item.purchase_price * item.stock), 0);
+        const totalAmount = res.reduce((total, item) => total + (item.purchase_price * (item.stock + item.wearHouseStock)), 0);
         return NextResponse.json({ data: res.sort(customSort), totalAmount: totalAmount });
 
     } catch (error) {

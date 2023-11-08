@@ -17,56 +17,8 @@ const messages = (id: number) => {
     }
 }
 
-const updateBulkClient = async (data : Array<Sale & { _id: string, status: number }> , status : number) => {
-    try {
-        for (const item of data) {
-          const saleItem = await SaleModal.findById(item._id);
-          const client = await ClientModal.findById(item.client);
-    
-          if (status === 2 && client) {
-            // Increase client credit when the status changes to 2
-            client.credit += item.total_amount;
-            await client.save();
-          }
-    
-          if (saleItem && client) {
-            if (saleItem.status === 2 && (status === 0 || status === 1)) {
-              // Decrease client credit when the sale status changes from 2 to 0 or 1
-              client.credit -= saleItem.total_amount;
-              await client.save();
-            }
-          }
-        }
-      } catch (error) {
-        // Handle any potential errors here
-        console.error("An error occurred:", error);
-      }
-}
 
-const singleClientUpdate = async (data: Sale & { _id: string, status: number } , status : number) => {
-
-    const saleItem = await SaleModal.findById(data._id);
-    const client = await ClientModal.findById(saleItem.client);
-    console.log(status , "status")
-    if(saleItem && client){
-        if(saleItem.status === 2 && (status === 0 || status === 1)){ 
-            console.log("return case")
-            if(client){
-                client.credit -= saleItem.total_amount;
-                await client.save();
-            }
-        }
-    }
-
-    if(status === 2 && client){
-        console.log("add case")
-            client.credit += data.total_amount;
-            await client.save();
-    }
-
-};
-
-const updateClientCredit = async (data : Array<Sale & { _id: string, status: number }> , status : number) => {
+ const updateClientCredit = async (data : Array<Sale & { _id: string, status: number }> , status : number) => {
     try {
       if (!Array.isArray(data)) {
         data = [data]; // Convert a single object to an array

@@ -12,6 +12,7 @@ import { Column, ColumnProps } from 'primereact/column'
 import Tooltips from '../sale/table/columns'
 import { columns } from './columns'
 import { updateClientCredit } from './serverAction'
+import PaymentForm from './PaymentForm'
 type Props = { data: Array<Client | string | any>, amount: Number }
 const Datatable = ({ data, amount }: Props) => {
     const [visible, setVisible] = useState(false);
@@ -76,8 +77,8 @@ const Datatable = ({ data, amount }: Props) => {
     }
     return (
         <div className=''>
-            <AddModal visible={visible} setVisible={setVisible} >
-
+            <AddModal heading="Payments" visible={visible} setVisible={setVisible} >
+               <PaymentForm clients={data} />
             </AddModal>
             <div>
                 <DataTable

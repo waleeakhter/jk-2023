@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import getSaleList from './getData';
 import createSale from './createSale';
 import updateSale from './updateSale';
+import Client from '@/models/Client';
 
 
 
@@ -53,7 +54,7 @@ export async function DELETE(request: Request, res: NextResponse) {
             _id: string | string[];
         }
 
-        const body = await request.json();
+        let body = await request.json();
 
         interface DataItem {
             _id: string,
@@ -76,7 +77,18 @@ export async function DELETE(request: Request, res: NextResponse) {
         console.log(body, "deleteItem")
 
         if (deleteItem.acknowledged) {
-            if (isDataArray(body)) {
+            if (!Array.isArray(body)) {
+                body = [body]; // Convert a single object to an array
+              }
+              for (const data of body) {
+                const client = await Client.findById(data.client._id);
+
+                if (client && client.credit >= data.total_amount && client.credit > 0 && data.status === 2) {
+                    client.credit -= data.total_amount;
+                    await client.save();
+                }
+
+            }
 
                 for (const data of body) {
                     const item = await Item.findById(data.item._id);
@@ -88,16 +100,7 @@ export async function DELETE(request: Request, res: NextResponse) {
 
                 }
                 return NextResponse.json({ data: deleteItem, message: "Items Deleted", status: true });
-            } else {
-                const item = await Item.findById(body.item._id);
-
-                if (item) {
-                    item.stock += body.sell_quantity;
-                    await item.save();
-                    return NextResponse.json({ data: deleteItem, message: "Items Deleted", status: true });
-
-                }
-            }
+            
         }
 
 

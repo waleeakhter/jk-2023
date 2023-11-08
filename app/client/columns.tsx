@@ -29,7 +29,9 @@ export const columns: Array<ColumnProps> = [
     },
     {
         field: 'credit', header: 'Credit',
-        sortable: true,
+        sortable: true,editor: (options: ColumnEditorOptions) => {
+            return inputsEditor(options, "number")
+        }
     },
     {
         field: 'debit', header: 'Debit', editor: (options: ColumnEditorOptions) => {
