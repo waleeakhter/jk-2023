@@ -21,12 +21,11 @@ const Clients = async () => {
     })
 
     const Clients = await getClients.json()
-    const { data, totalCredit } = Clients
 
     return (
 
         <>
-            <Datatable data={data ?? []} amount={totalCredit ?? 0} />
+            <Datatable values={Clients ?? []}  />
         </>
     )
 }

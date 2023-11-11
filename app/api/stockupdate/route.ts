@@ -5,6 +5,7 @@ import ItemModal from '@/models/Item';
 import { Item } from '@/typings';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server'
+import Log from '@/models/Log';
 
 type stockProps = { check: string, item: Item, stockUpdate: string, stock: number, purchase_price: number }
 export async function POST(req: NextRequest) {
@@ -25,7 +26,20 @@ export async function POST(req: NextRequest) {
                         purchase_price: body.purchase_price,
                     }
                 })
-            console.log(stockUpdateItem)
+            await Log.create({
+                name: `${item.name} stock updated: Transferred to warehouse.`, source: "inventory", logType: "stockupdate",
+                "details": {
+                    "item": item.name,
+                    "action": "update",
+                    "from": "warehouse",
+                    "to": "warehouse",
+                    "initialStock": item.wearHouseStock,
+                    "quantityUpdated": body.stock,
+                    "currentStock": item.wearHouseStock + body.stock
+                }
+            })
+
+
             return NextResponse.json({ status: 200, success: true, message: `Updated Successfully`, data: stockUpdateItem });
         }
         if (check === "shop") {
@@ -42,6 +56,18 @@ export async function POST(req: NextRequest) {
             if (stockUpdateItem && getItem.wearHouseStock > 0) {
                 getItem.wearHouseStock = getItem.wearHouseStock - body.stock;
                 getItem.save()
+                await Log.create({
+                    name: `${item.name} stock updated: Transferred to shop.`, source: "inventory", logType: "stockupdate",
+                    "details": {
+                        "item": item.name,
+                        "action": "update",
+                        "from": "warehouse",
+                        "to": "shop",
+                        "initialStock": item.stock,
+                        "quantityUpdated": body.stock,
+                        "currentStock": item.stock + body.stock,
+                    }
+                })
             }
             return NextResponse.json({ status: 200, success: true, message: `Shop Stock Updated Successfully`, data: stockUpdateItem });
         }
@@ -49,7 +75,7 @@ export async function POST(req: NextRequest) {
 
     } catch (error) {
         console.log(error)
-        return NextResponse.json({ status: 400, data: error, message: error });
+        return NextResponse.json({ status: 500, data: error, message: error }, { status: 500 });
 
     }
 }

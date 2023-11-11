@@ -17,11 +17,15 @@ import ItemForm from './itemForm'
 import StockUpdate from './StockUpdate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWarehouse, faPlus, faShop } from "@fortawesome/free-solid-svg-icons";
+import { getClient } from '../client/functions'
 type Props = { data: Array<Item | string | any>, showPrice: number | undefined }
 const Datatable = ({ data, showPrice }: Props) => {
     const [visible, setVisible] = useState(false);
     const [form, setForm] = useState("newItem");
     const router = useRouter()
+
+ 
+
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
@@ -104,6 +108,7 @@ const Datatable = ({ data, showPrice }: Props) => {
                     paginator
                     first={lazyState.first}
                     onPage={onPage}
+                    
                     editMode="row"
                     size='small'
                     rows={lazyState.rows ?? 10}
