@@ -14,8 +14,14 @@ const WithTheme = (children: JSX.Element) => (
         >
             <ConfigProvider
                 theme={{
+                    components: {
+                        Form: {
+                            labelHeight: 0,
+                        }
+                    },
                     token: {
                         borderRadius: 16,
+
                     },
                 }}
             >

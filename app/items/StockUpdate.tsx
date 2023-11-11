@@ -58,13 +58,12 @@ const StockUpdate = ({ check }: Props) => {
         queryKey: ["items", { fillObject }],
         queryFn: async () => {
             const res = await fetch(`/api/item?${fillObject.type && "type=" + fillObject.type}${fillObject.brand && "&brand=" + fillObject.brand}`)
-            console.log(`${process.env.API_URL}item`, "react query")
             return res.json().then(data => data?.data as Array<Item>)
         },
 
     })
-    const { mutate: onSubmit, isLoading: isSubbmiting } = useMutation(
-        async (newData: stockUpdate) => {
+    const { mutate: onSubmit, isPending: isSubbmiting } = useMutation({
+        mutationFn :async (newData: stockUpdate) => {
             const response = await fetch('/api/stockupdate', {
                 method: 'POST',
                 headers: {
@@ -74,7 +73,7 @@ const StockUpdate = ({ check }: Props) => {
                 body: JSON.stringify({ ...newData, check: check }),
             })
             return response.json().then(data => data);
-        }, {
+        }, 
         onError: (error: { data: Error, message: string }) => {
             toast.current?.show({ severity: 'warn', summary: 'Error', detail: error.data.message });
             toast.current?.show({ severity: 'error', summary: 'Error', detail: error.message });
@@ -86,7 +85,8 @@ const StockUpdate = ({ check }: Props) => {
             toast.current?.show({ severity: 'success', summary: 'Info', detail: message });
 
         }
-    });
+    
+});
 
 
 
@@ -125,7 +125,8 @@ const StockUpdate = ({ check }: Props) => {
                                             (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
                                         fieldNames={{ label: "name", value: "_id" }}
                                         options={data ?? []} placeholder='Select an Item'
-                                        className={`w-full ${errors.item?.name?.message ? 'p-invalid' : ''}`} onChange={(value, option) => {onChange(option); setValue("purchase_price" , option?.purchase_price ?? 0)}} />
+                                        className={`w-full ${errors.item?.name?.message ? 'p-invalid' : ''}`} 
+                                        onChange={(value, option) => {onChange(option); setValue("purchase_price" , option?.purchase_price ?? 0)}} />
 
                                 )}
                             />
@@ -191,7 +192,7 @@ const StockUpdate = ({ check }: Props) => {
                         </div>
                     </div>
                     <div className='w-full text-end'>
-                        <Button loading={isSubbmiting} type="primary" htmlType='submit' >Update</Button>
+                        <Button loading={isSubbmiting} type="dashed" htmlType='submit' >Update</Button>
                     </div>
                     <div>
                         <div className={'col-12'}>

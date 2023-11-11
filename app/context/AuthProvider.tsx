@@ -8,7 +8,7 @@ const Protected = ({ children }: Props) => {
     const queryClient = new QueryClient({
         defaultOptions: {
             queries: {
-                refetchOnWindowFocus: false, // default: true
+                refetchOnWindowFocus: false, 
             },
         },
     })
