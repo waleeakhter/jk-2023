@@ -37,17 +37,18 @@ function ItemForm() {
     // const onSubmit = handleSubmit((data) => console.log(data))
 
 
-    const { mutate: onSubmit, isLoading } = useMutation(async (newData: Item) => {
-        const response = await fetch('/api/item', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            cache: "no-cache",
-            body: JSON.stringify(newData),
-        })
-        return response;
-    }, {
+    const { mutate: onSubmit, isPending } = useMutation({
+        mutationFn: async (newData: Item) => {
+            const response = await fetch('/api/item', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                cache: "no-cache",
+                body: JSON.stringify(newData),
+            })
+            return response.json().then(data => data);
+        },
         onError: (error: { data: Error, message: string }) => {
             toast.current?.show({ severity: 'warn', summary: 'Error', detail: error.data.message });
             toast.current?.show({ severity: 'error', summary: 'Error', detail: error.message });
@@ -148,7 +149,7 @@ function ItemForm() {
                     </div>
                 </div>
                 <div className="p-field p-col-12 text-end ">
-                    <Button type="submit" label="Submit" outlined raised loading={isLoading} />
+                    <Button type="submit" label="Submit" outlined raised loading={isPending} />
                 </div>
 
                 <div>

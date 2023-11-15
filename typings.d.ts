@@ -1,6 +1,7 @@
 import { Client } from '@/typings';
 import { SingleValue, Options } from 'react-select';
 import types from "@/app/utils/types.json"
+import { Payments } from '@/models/Payments';
 export interface Option {
     readonly label: string;
     readonly value: string;
@@ -43,7 +44,8 @@ export interface Sale {
     sell_price: number;
     sell_quantity: number;
     status?: number;
-    paidOn?: Date
+    paidOn?: Date,
+    wearhouseStock?: boolean | undefined
 }
 
 export interface MixInterfaces extends Sale, Item, Client {
@@ -69,4 +71,18 @@ export interface LazyTableState {
     sortField?: string;
     sortOrder?: number;
     filters?: DataTableFilterMeta;
+}
+
+
+export interface Payments {
+    client: Client;
+    amount: number;
+    paymentDate: Date | string;
+}
+export interface Log {
+    "name": string
+    "source": string,
+    "logType": string,
+    "details": {},
+    "createdAt": Date
 }

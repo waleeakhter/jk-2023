@@ -47,6 +47,11 @@ const SaleSchema: Schema<Sale> = new Schema<Sale>(
       type: Date,
       required: false,
       default: "" as unknown as Date
+    },
+    wearhouseStock: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   { timestamps: true, strict: false }
