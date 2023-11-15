@@ -1,7 +1,5 @@
 'use client'
 import React, { useState } from 'react'
-import ExportData from '../components/ExportData'
-import { Button } from 'primereact/button'
 import { InputText } from 'primereact/inputtext'
 import { useRouter } from 'next/navigation'
 import { FilterMatchMode } from 'primereact/api'
@@ -14,21 +12,29 @@ import { columns } from './columns'
 import { updateClientCredit } from './serverAction'
 import PaymentForm from './PaymentForm'
 import { useQuery } from '@tanstack/react-query'
-import { getClient } from './functions'
+import { Button, Tooltip } from 'antd';
+import { PlusOutlined, ReloadOutlined, EyeOutlined } from '@ant-design/icons';
+import ClientDetail from './ClinetDetail'
 type Props = { values: Array<Client | string | any> }
 const Datatable = ({ values }: Props) => {
     const [visible, setVisible] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [clinetID, setClientID] = useState("");
     const router = useRouter()
 
+    const showModal = (rowData: Client & { _id: string }, val: boolean) => {
+        setClientID(rowData._id)
+        setIsModalOpen(true);
+    };
 
     const { data: { data, totalCredit }, isLoading } = useQuery({
-        queryKey: ['client', {values} ],
+        queryKey: ['client', { values }],
         queryFn: async () => {
             const res = await fetch(`/api/client`)
             return res.json().then(data => data)
         },
         initialData: values ?? [],
-        staleTime : 10000,
+        staleTime: 10000,
     })
 
 
@@ -73,7 +79,7 @@ const Datatable = ({ values }: Props) => {
             <div className="flex justify-between items-center">
                 <div className='flex  gap-3 items-center '>
                     <h5 className="m-0 text-2xl text-gray-800 ">{"Sale"}</h5>
-                    <Button size='small' label='' text raised icon="pi pi-plus" onClick={() => setVisible(true)} />
+                    <Button size='middle' type='dashed' icon={<PlusOutlined />} onClick={() => setVisible(true)} />
                 </div>
                 <div className='text-center'>
                     <h1 className='text-xl'>{Number(totalCredit ?? 0) > 0 ? <p>Total Amount: {totalCredit}<i className='pi pi-euro'></i> </p> : ""} </h1>
@@ -85,7 +91,7 @@ const Datatable = ({ values }: Props) => {
                         <i className="pi pi-search" />
                         <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
                     </span>
-                    <Button type="button" icon="pi pi-refresh" text onClick={refreshTable} />
+                    <Button type="dashed" icon={<ReloadOutlined />} onClick={refreshTable} />
                 </div>
             </div>
         )
@@ -95,6 +101,7 @@ const Datatable = ({ values }: Props) => {
             <AddModal heading="Payments" visible={visible} setVisible={setVisible} >
                 <PaymentForm clients={data} />
             </AddModal>
+            <ClientDetail setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} id={clinetID} />
             <div>
                 <DataTable
                     className='data-table w-full'
@@ -128,11 +135,11 @@ const Datatable = ({ values }: Props) => {
                     <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
 
                     <Column body={(rowData) =>
-                        <div className='p-buttonset'>
-                            <Button severity='info' icon="pi pi-trash"
-                                size='small' tooltip='View Client Detail' className='btn-delete'
-                                tooltipOptions={{ position: 'bottom' }} onClick={(e) => ""} />
-                        </div>
+                        <Tooltip style={{ fontSize: "9px" }} color={"blue"} showArrow placement="bottom" title={"View Client Detail"}>
+                            <Button shape='circle' icon={<EyeOutlined />}
+                                size='small' type='dashed'
+                                onClick={(e) => showModal(rowData, true)} />
+                        </Tooltip>
                     }
                         header={'Action'} frozen={true} style={{ flexGrow: 1, flexBasis: '100px' }} />
 

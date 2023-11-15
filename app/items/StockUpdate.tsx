@@ -13,7 +13,7 @@ import brands from '@/app/utils/brands.json';
 import dayjs from 'dayjs';
 type Props = { check: string }
 type stockUpdate = {
-    item: { purchase_price?: number, stock?: number, name: string, wearHouseStock?: number },
+    item: { purchase_price: number, stock: number, name: string, wearHouseStock: number },
     stock: number,
     stockUpdate: dayjs.Dayjs,
     purchase_price?: number
@@ -25,7 +25,7 @@ const StockUpdate = ({ check }: Props) => {
     const toast = useRef<Toast>(null);
     const [fillObject, setFilters] = useState({
         type: '',
-        brand : '',
+        brand: '',
     })
     const initialValues: stockUpdate = {
         item: {
@@ -36,7 +36,7 @@ const StockUpdate = ({ check }: Props) => {
         },
         stock: 0,
         stockUpdate: dayjs(new Date()),
-        ...(check === "wearhouse" ? { purchase_price: 0 } : null)
+        ...(check === "wearhouse" ? { purchase_price: 0 } : "")
     }
     const validationSchema = Yup.object().shape({
         item: Yup.object().shape({ name: Yup.string().required('Item name is required') }),
@@ -63,7 +63,7 @@ const StockUpdate = ({ check }: Props) => {
 
     })
     const { mutate: onSubmit, isPending: isSubbmiting } = useMutation({
-        mutationFn :async (newData: stockUpdate) => {
+        mutationFn: async (newData: stockUpdate) => {
             const response = await fetch('/api/stockupdate', {
                 method: 'POST',
                 headers: {
@@ -73,7 +73,7 @@ const StockUpdate = ({ check }: Props) => {
                 body: JSON.stringify({ ...newData, check: check }),
             })
             return response.json().then(data => data);
-        }, 
+        },
         onError: (error: { data: Error, message: string }) => {
             toast.current?.show({ severity: 'warn', summary: 'Error', detail: error.data.message });
             toast.current?.show({ severity: 'error', summary: 'Error', detail: error.message });
@@ -85,8 +85,8 @@ const StockUpdate = ({ check }: Props) => {
             toast.current?.show({ severity: 'success', summary: 'Info', detail: message });
 
         }
-    
-});
+
+    });
 
 
 
@@ -95,22 +95,22 @@ const StockUpdate = ({ check }: Props) => {
             <>
                 <Toast ref={toast} />
                 <div className='flex gap-3 justify-end'>
-                <div className='my-5 w-48 '>
-                    <label htmlFor="brand"><strong>Select Brand</strong></label>
-                    <Select showSearch value={fillObject.brand} id='brand' size='large' className='w-full'
-                        filterOption={(input, option) =>
-                            (option?.value?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
-                        options={brands.map(brand => ({label : brand.toLocaleUpperCase() , value : brand})) ?? []} placeholder='Select a brand'
-                        onChange={(e) => setFilters(prev => { return { ...prev, brand: e ?? "" } })} />
-                </div>
-                <div className='my-5 w-48 '>
-                    <label htmlFor="type"><strong>Select Type</strong></label>
-                    <Select showSearch value={fillObject.type} id='type' size='large' className='w-full'
-                        filterOption={(input, option) =>
-                            (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
-                        options={types ?? []} placeholder='Select a type'
-                        onChange={(e) => setFilters(prev => { return { ...prev, type: e ?? "" } })} />
-                </div>
+                    <div className='my-5 w-48 '>
+                        <label htmlFor="brand"><strong>Select Brand</strong></label>
+                        <Select showSearch value={fillObject.brand} id='brand' size='large' className='w-full'
+                            filterOption={(input, option) =>
+                                (option?.value?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
+                            options={brands.map(brand => ({ label: brand.toLocaleUpperCase(), value: brand })) ?? []} placeholder='Select a brand'
+                            onChange={(e) => setFilters(prev => { return { ...prev, brand: e ?? "" } })} />
+                    </div>
+                    <div className='my-5 w-48 '>
+                        <label htmlFor="type"><strong>Select Type</strong></label>
+                        <Select showSearch value={fillObject.type} id='type' size='large' className='w-full'
+                            filterOption={(input, option) =>
+                                (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
+                            options={types ?? []} placeholder='Select a type'
+                            onChange={(e) => setFilters(prev => { return { ...prev, type: e ?? "" } })} />
+                    </div>
                 </div>
                 <form onSubmit={handleSubmit((data) => onSubmit(data))}>
                     <div className="grid grid-cols-1 gap-4">
@@ -125,8 +125,8 @@ const StockUpdate = ({ check }: Props) => {
                                             (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
                                         fieldNames={{ label: "name", value: "_id" }}
                                         options={data ?? []} placeholder='Select an Item'
-                                        className={`w-full ${errors.item?.name?.message ? 'p-invalid' : ''}`} 
-                                        onChange={(value, option) => {onChange(option); setValue("purchase_price" , option?.purchase_price ?? 0)}} />
+                                        className={`w-full ${errors.item?.name?.message ? 'p-invalid' : ''}`}
+                                        onChange={(val, option) => { onChange(option); setValue("purchase_price", option.purchase_price ?? 0) }} />
 
                                 )}
                             />
@@ -166,7 +166,7 @@ const StockUpdate = ({ check }: Props) => {
                                 name="purchase_price"
                                 control={control}
                                 render={({ field: { onChange, value } }) => (
-                                    <InputNumber size='large' placeholder='Enter purchase price' min={0} value={value ?? watch("item.purchase_price")}
+                                    <InputNumber size='large' placeholder='Enter purchase price' min={0} value={value}
                                         className={`w-full ${errors.purchase_price ? 'p-invalid' : ''}`} onChange={onChange} />
 
                                 )}
@@ -182,7 +182,7 @@ const StockUpdate = ({ check }: Props) => {
                                         <label htmlFor="stock"><strong>Stock Update Date</strong></label>
                                         <DatePicker size='large' className='w-full' value={value}
                                             onChange={(date, dateString) =>
-                                                onChange(dateString)} format="DD-MM-YYYY hh:mm:ss" />
+                                                onChange(date)} format="DD-MM-YYYY hh:mm:ss" />
 
                                     </>
 
