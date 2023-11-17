@@ -11,11 +11,12 @@ const createSale = async (body: {
     item: { __isNew__: boolean; value: string };
     sell_price: number;
     sell_quantity: number;
+    resource: string;
 }) => {
     try {
         let newItemId: Types.ObjectId | null = null;
         let newClientId: Types.ObjectId | null = null;
-
+        const { resource } = body
         if (body.client.__isNew__) {
             const name = body.client.value.trim().toUpperCase()
             const existingClient = await Client.findOne({ name: name });
@@ -40,17 +41,30 @@ const createSale = async (body: {
             });
             newItemId = newItem._id;
         } else {
+
             const item = await Item.findById(body.item.value);
             if (!item) {
                 return { status: 404, success: false, message: "Item not found" };
             }
-            if (body.sell_quantity > item.stock) {
-                return { status: 404, success: false, message: `${item.name} is out of stock` };
+            if (resource === "shop") {
+                if (body.sell_quantity > item.stock) {
+                    return { status: 404, success: false, message: `${item.name} is out of stock` };
+                }
+                item.stock -= body.sell_quantity;
+                await item.save();
             }
-            item.stock -= body.sell_quantity;
-            await item.save();
+
+            if (resource === "wearhouse") {
+                if (body.sell_quantity > item.wearHouseStock) {
+                    return { status: 404, success: false, message: `${item.name} is out of stock` };
+                }
+                item.wearHouseStock -= body.sell_quantity;
+                await item.save();
+            }
+
+
+
         }
-        console.log(moment(body.createdAt).isSame(moment(), 'day') ? body.createdAt : moment(body.createdAt).add(1, "minutes"))
         const newSale = await Sale.create({
             ...body,
             createdAt: moment(body.createdAt).isSame(moment(), 'day') ? body.createdAt : moment(body.createdAt).add(1, "minutes"),

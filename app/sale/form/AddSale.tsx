@@ -8,9 +8,10 @@ import { validationSchema } from './validationSchema';
 import initialValues from './initialValues';
 import { callback, onSubmit } from "./submit"
 import DatePicker from "react-datepicker";
-import { Select } from 'antd';
+import { Select, Tooltip } from 'antd';
 import types from '@/app/utils/types.json';
 import { useQuery } from '@tanstack/react-query';
+import { Switch, Space } from 'antd';
 
 type Props = { items: Item[], clients: Client[] }
 
@@ -37,12 +38,15 @@ const AddSale = ({ items, clients }: Props) => {
 
     return <React.Fragment>
         <div className='my-5 w-48 ml-auto'>
-            <label htmlFor="item"><strong>Select Type</strong></label>
-            <Select showSearch value={fillObject.type} id='item' size='large' className='w-full'
-                filterOption={(input, option) =>
-                    (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
-                options={types ?? []} placeholder='Select an type'
-                onChange={(e) => setFilters(prev => { return { ...prev, type: e ?? "" } })} />
+            <div>
+                <label htmlFor="item"><strong>Select Type</strong></label>
+                <Select showSearch value={fillObject.type} id='item' size='large' className='w-full'
+                    filterOption={(input, option) =>
+                        (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
+                    options={types ?? []} placeholder='Select an type'
+                    onChange={(e) => setFilters(prev => { return { ...prev, type: e ?? "" } })} />
+            </div>
+
         </div>
         <Formik
             validationSchema={validationSchema("1")}
@@ -68,7 +72,13 @@ const AddSale = ({ items, clients }: Props) => {
                             <span className=' text-red-600 '><ErrorMessage name="client" /></span>
                         </div>
                         <div className='from-group'>
-                            <label className='block w-full'>Sell Quantity</label>
+                            <label className='w-full flex justify-between relative'>Sell Quantity
+                                <div className=' absolute right-0 -top-2'>
+                                    <Tooltip open placement='left' title="Switch if you are using wearhouse stock">
+                                        <Switch id='stockControl' checkedChildren="wearhouse" unCheckedChildren="shop" onChange={(e) => setFieldValue("resource", e ? "wearhouse" : "shop")} />
+                                    </Tooltip>
+                                </div>
+                            </label>
                             <Field type="number" name="sell_quantity"
                                 placeholder="Selling Quantity" min="0"
                                 className=" min-h-[50px] focus:outline-none border w-full p-3 rounded-md  " />

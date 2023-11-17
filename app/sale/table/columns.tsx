@@ -49,7 +49,10 @@ export const columns: Array<ColumnProps> = [
         },
     },
     {
-        body: (data: { total_amount: number }) => <p className=" text-sm ">${data.total_amount}<i className='pi pi-euro'></i></p>, header: 'Total'
+        body: (data: { total_amount: number }) => <p className=" text-sm ">{data.total_amount}€</p>, header: 'Total'
+    },
+    {
+        body: (data: { resource: string }) => <p className=" text-sm ">{data?.resource ?? "shop"}</p>, header: 'Resource'
     },
     {
         field: "createdAt",
