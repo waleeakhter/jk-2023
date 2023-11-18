@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import DatePicker from "react-datepicker";
+import { DatePicker } from 'antd';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import Types from "@/app/utils/types.json";
 import Status from "@/app/utils/status.json";
@@ -11,11 +11,13 @@ import BrandsSelect from '@/app/components/BrandsSelect';
 import { Button } from 'primereact/button';
 import { MultiSelect } from 'primereact/multiselect';
 import Router from 'next/router';
+import type { Dayjs } from 'dayjs';
+import { RangePickerProps } from 'antd/es/date-picker';
 type FILTERS = {
-    createdAt: Date | null | undefined,
-    endAt: Date | null | undefined,
+    createdAt: Dayjs | string | Date | null | undefined,
+    endAt: Dayjs | string | Date | string | undefined,
     status: Array<number> | undefined,
-    paidOn: string | undefined,
+    paidOn: Dayjs | string,
     type: string[] | undefined
     brand: string[] | undefined,
     client: string[] | undefined,
@@ -23,10 +25,11 @@ type FILTERS = {
 
 
 type Props = { searchParams: URLSearchParams, clients: Object[] }
-
+type RangeValue = [Dayjs | null, Dayjs | null] | null;
 
 
 export const Filters = (props: Props) => {
+    const { RangePicker } = DatePicker;
     const searchParams = useSearchParams().toString()!;
     const params = new URLSearchParams(searchParams);
     const [toggleClientFilters, setToggleClientFilters] = useState(true);
@@ -36,7 +39,7 @@ export const Filters = (props: Props) => {
         status: [Status.at(0)?.value ?? 0],
         createdAt: null,
         endAt: null,
-        paidOn: undefined,
+        paidOn: "",
         type: [],
         brand: [],
         client: []
@@ -97,22 +100,21 @@ export const Filters = (props: Props) => {
 
 
     };
-    const onDateChange = (dates: [Date, Date] | [any, any]) => {
-        console.log(dates)
-        const [start, end] = dates;
-        setFilters(prevFilters => ({
-            ...prevFilters, "createdAt": start ? start : "",
-            "endAt": end ? end : ""
-        }));
-        if (start || end) {
-            createQueryString("createdAt", start.toDateString())
-            end && createQueryString("endAt", end.toDateString())
+    const onDateChange = (rawValues: RangeValue, dates: Array<string>) => {
+        console.log(dates, rawValues)
+        if (rawValues) {
+            setFilters(prevFilters => ({
+                ...prevFilters, "createdAt": dates.at(0), "endAt": dates.at(1)
+            }));
+
+            createQueryString("createdAt", dates.at(0) as string)
+            createQueryString("endAt", dates.at(1) as string)
+
+
         } else {
             params.delete("createdAt")
             params.delete("endAt")
         }
-
-
         router.push(pathname + '?' + params.toString());
     };
 
@@ -195,23 +197,18 @@ export const Filters = (props: Props) => {
 
                     <div className='flex flex-col gap-1'>
                         <label htmlFor="" className='block font-semibold text-sm'>Created At</label>
-                        <DatePicker className='p-inputtext h-10 relative'
-                            showIcon isClearable={true}
-                            placeholderText='Select a date...'
-                            selectsRange
-                            startDate={filters.createdAt} endDate={filters.endAt}
-                            onChange={onDateChange} dateFormat={"dd-MM-yyyy"}
+                        <RangePicker className='p-inputtext h-10 relative'
+
+                            onChange={onDateChange}
                         />
                     </div>
                     {filters.status?.includes(1) ? (
                         <div className='flex flex-col gap-1'>
                             <label htmlFor="" className='block font-semibold text-sm'>Paid At</label>
                             <DatePicker
-                                isClearable
-                                value={filters.paidOn ?? ""}
-                                className='p-inputtext h-10'
-                                placeholderText='Select a date...'
-                                onChange={onPaidDateChange}
+                                value={filters.paidOn ?? null}
+
+
                             />
                         </div>
                     ) : null}

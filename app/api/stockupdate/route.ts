@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
             await Log.create({
                 name: `${item.name} stock updated: Transferred to warehouse.`, source: "inventory", logType: "stockupdate",
                 "details": {
-                    "item": item.name,
+                    "item": item?._id,
                     "action": "update",
                     "from": "warehouse",
                     "to": "warehouse",
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
                 await Log.create({
                     name: `${item.name} stock updated: Transferred to shop.`, source: "inventory", logType: "stockupdate",
                     "details": {
-                        "item": item.name,
+                        "item": item?._id,
                         "action": "update",
                         "from": "warehouse",
                         "to": "shop",
