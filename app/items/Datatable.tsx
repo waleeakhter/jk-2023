@@ -24,7 +24,7 @@ const Datatable = ({ data, showPrice }: Props) => {
     const [form, setForm] = useState("newItem");
     const router = useRouter()
 
- 
+
 
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -62,7 +62,7 @@ const Datatable = ({ data, showPrice }: Props) => {
 
     const renderHeader = () => {
         return (
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center flex-wrap lg:gap:1 gap-3">
 
                 <div className='flex  gap-3 items-center '>
                     <h5 className="m-0 text-2xl text-gray-800 ">{"Items List"}</h5>
@@ -108,7 +108,7 @@ const Datatable = ({ data, showPrice }: Props) => {
                     paginator
                     first={lazyState.first}
                     onPage={onPage}
-                    
+
                     editMode="row"
                     size='small'
                     rows={lazyState.rows ?? 10}
