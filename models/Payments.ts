@@ -18,6 +18,10 @@ const paymentSchema = new Schema({
     type: String,
     // You can use enum to specify allowed values (e.g., LCD collection, mobiles collection, client credit collection)
   },
+  details :{
+    type: Object,
+    default: {}
+  }
 });
 
 export default module.exports = models.Payment || model("Payment", paymentSchema);

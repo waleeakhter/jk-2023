@@ -3,16 +3,13 @@ import React, { useState } from 'react';
 import Filters from './../table/filters/Filters';
 import Tooltips, { columns } from './columns';
 import { Client, Item, LazyTableState, MixInterfaces, Sale } from '@/typings';
-import moment from 'moment';
-import SaleForm from './../form/SaleForm';
-import { getClients } from '../SaleActions/ServerActions';
 import ExportData from '@/app/components/ExportData';
 import { useRouter } from 'next/navigation';
 import { Column, ColumnProps } from 'primereact/column';
 import { DataTablePageEvent, DataTable, DataTableRowEditCompleteEvent } from 'primereact/datatable';
 import { updateOrder } from '@/app/components/Datatable/serverActions';
 import { FilterMatchMode } from 'primereact/api';
-import { Button } from 'primereact/button';
+import { Button } from 'antd'
 import BulkUpdate from '../SaleActions/BulkUpdate';
 import { InputText } from 'primereact/inputtext';
 import SaleActions from '../SaleActions';
@@ -20,8 +17,7 @@ import { cancelSaleItem } from '@/app/components/Datatable/functions';
 import { exportColumns, exportData } from './exports';
 import AddModal from '@/app/components/Datatable/AddModal';
 import AddSale from '../form/AddSale';
-import { useQuery } from '@tanstack/react-query';
-
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 type Props = {
     searchParams: { type: string }
     data: Array<Sale | any>,
@@ -74,26 +70,28 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
     }
     const renderHeader = () => {
         return (
-            <div className="flex justify-between items-center">
-                <div className='flex  gap-3 items-center '>
-                    <h5 className="m-0 text-2xl text-gray-800 ">{"Sale"}</h5>
-                    <Button size='small' label='' text raised icon="pi pi-plus" onClick={() => setVisible(true)} />
+            <div className="flex md:justify-between justify-center items-center flex-wrap gap-2">
+                <div className='flex  gap-1 items-center mr-auto '>
+                    <h5 className="m-0 md:text-2xl text-lg text-gray-800 ">{"Sale"}</h5>
+                    <Button size='middle' onClick={() => setVisible(true)} type='dashed' icon={<PlusOutlined />} />
                     <ExportData data={exportData(data ?? [])} exportColumns={exportColumns} />
                 </div>
                 <div className='text-center'>
-                    <h1 className='text-xl'>{Number(sale ?? 0) > 0 ? <p>Total Amount: {sale}<i className='pi pi-euro'></i> </p> : ""} </h1>
+                    <h1 className='md:text-xl text-base'>{Number(sale ?? 0) > 0 ? <p>T/A: {sale}<i className='pi pi-euro'></i> </p> : ""} </h1>
 
                 </div>
-                <div className='flex gap-2'>
-                    <div className=''>
+                <div className='flex items-center gap-2 justify-between md:flex-auto flex-1 lg:flex-nowrap flex-wrap'>
+                    <div className='flex-1 md-flex-auto'>
                         {selectedItems.length > 0 ? (selectedItems.reduce((total, sale) => total + sale.sell_quantity, 0) + " " + selectedItems.reduce((total, sale) => total + sale.total_amount, 0)) : ""}
                     </div>
-                    {selectedItems.length > 0 && <BulkUpdate selection={selectedItems} emptySelection={setSelectedItems} />}
-                    <span className="p-input-icon-left">
-                        <i className="pi pi-search" />
-                        <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
-                    </span>
-                    <Button type="button" icon="pi pi-refresh" text onClick={refreshTable} />
+                    {selectedItems.length > 0 && <div className='flex-1 lg:flex-auto'><BulkUpdate selection={selectedItems} emptySelection={setSelectedItems} /></div>}
+                    <div className="lg:flex-auto w-full flex">
+                        <span className="p-input-icon-left">
+                            <i className="pi pi-search" />
+                            <InputText className='' value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+                        </span>
+                        <Button type="dashed" size="large" className='h-[3rem_!important]' icon={<ReloadOutlined />} onClick={refreshTable} />
+                    </div>
                 </div>
             </div>
         )

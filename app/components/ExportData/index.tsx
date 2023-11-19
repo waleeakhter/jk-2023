@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
-
-import { Button } from 'primereact/button';
+import { FilePdfTwoTone, FileExcelTwoTone } from '@ant-design/icons';
+import { Button } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { createFileNameWithParams, exportExcel, exportPdf } from './functions';
 import ExportSetting from './ExportSetting';
@@ -23,10 +23,10 @@ const ExportData = ({ data, exportColumns }: Props) => {
         <>
             <ExportSetting columns={exportColumns} visible={visible} setVisible={setVisible}
                 dataForPreview={data ?? []} callback={letsExportPDF} params={params} filetype={fileType} />
-            <span className='p-buttonset'>
-                <Button size='small' severity='success' raised type="button" icon="pi pi-file-excel" text onClick={() => { setFileType("xlxs"); setVisible(true) }} />
-                <Button size='small' severity='danger' raised type="button" icon="pi pi-file-pdf" text onClick={() => { setFileType("pdf"); setVisible(true) }} />
-            </span>
+
+            <Button className=' border-[#52c41a_!important] ' size='middle' type="dashed" icon={<FileExcelTwoTone twoToneColor='#52c41a' />} onClick={() => { setFileType("xlxs"); setVisible(true) }} />
+            <Button size='middle' danger type="dashed" icon={<FilePdfTwoTone twoToneColor="#ff4d4f" />} onClick={() => { setFileType("pdf"); setVisible(true) }} />
+
         </>
     )
 }

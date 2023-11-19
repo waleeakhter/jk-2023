@@ -12,7 +12,7 @@ const defaultParams: SaleApiDefaultParams = {
     client: '[]',
     excludeClients: '[]'
 };
-  const getSaleList = async (searchParams: any[] | URLSearchParams ) => {
+const getSaleList = async (searchParams: any[] | URLSearchParams) => {
     const params = {
         ...defaultParams,
         ...Object.fromEntries(searchParams.entries())
@@ -78,8 +78,8 @@ const defaultParams: SaleApiDefaultParams = {
                     type: '$item.type',
                     price: '$item.price',
                     stock: '$item.stock',
-                    purchase_price : '$item.purchase_price',
-                    brand : '$item.brand'
+                    purchase_price: '$item.purchase_price',
+                    brand: '$item.brand',
                 },
                 client: {
                     _id: '$client._id',
@@ -91,6 +91,8 @@ const defaultParams: SaleApiDefaultParams = {
                 sell_price: 1,
                 sell_quantity: 1,
                 status: 1,
+                resource: 1,
+                paidOn: 1,
             },
         },
         {
@@ -118,8 +120,8 @@ const defaultParams: SaleApiDefaultParams = {
 
     const saleList = await Sale.aggregate(pipeline);
     const totalSaleAmount = saleList.reduce((total, sale) => total + sale.total_amount, 0);
-
-    return {saleList , totalSaleAmount}
+    console.log(saleList)
+    return { saleList, totalSaleAmount }
 
 }
 

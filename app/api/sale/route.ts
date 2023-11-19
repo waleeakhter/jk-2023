@@ -12,15 +12,15 @@ import Client from '@/models/Client';
 
 
 export async function GET(request: Request) {
-try {
-    await dbConnect();
-    const { searchParams } = new URL(request.url);
-    const data = await getSaleList(searchParams)
-    return NextResponse.json({ data: data.saleList, totalSale: Math.round(data.totalSaleAmount.toFixed(2)) });
-} catch (error) {
-    console.log(error);
-    return NextResponse.json({ data: error });
-}
+    try {
+        await dbConnect();
+        const { searchParams } = new URL(request.url);
+        const data = await getSaleList(searchParams)
+        return NextResponse.json({ data: data.saleList, totalSale: Math.round(data.totalSaleAmount.toFixed(2)) });
+    } catch (error) {
+        console.log(error);
+        return NextResponse.json({ data: error });
+    }
 }
 
 
@@ -37,10 +37,10 @@ export async function POST(res: NextRequest) {
 
 export async function PATCH(request: Request, res: NextResponse) {
 
-        await dbConnect();
-        const body = await request.json();
-        const resData = await updateSale(body)
-        return NextResponse.json({ ...resData });
+    await dbConnect();
+    const body = await request.json();
+    const resData = await updateSale(body)
+    return NextResponse.json({ ...resData });
 }
 
 
@@ -79,8 +79,8 @@ export async function DELETE(request: Request, res: NextResponse) {
         if (deleteItem.acknowledged) {
             if (!Array.isArray(body)) {
                 body = [body]; // Convert a single object to an array
-              }
-              for (const data of body) {
+            }
+            for (const data of body) {
                 const client = await Client.findById(data.client._id);
 
                 if (client && client.credit >= data.total_amount && client.credit > 0 && data.status === 2) {
@@ -90,17 +90,30 @@ export async function DELETE(request: Request, res: NextResponse) {
 
             }
 
-                for (const data of body) {
-                    const item = await Item.findById(data.item._id);
+            for (const data of body) {
+                const item = await Item.findById(data.item._id);
 
-                    if (item) {
+                if (item) {
+                    if (item.resource === "shop"
+                        || item.resource === undefined
+                        || item.resource === null
+                    ) 
+                    {
                         item.stock += data.sell_quantity;
                         await item.save();
                     }
+                    if (item.resource === "warehouse") 
+                    {
+                        item.wearHouseStock += data.sell_quantity;
+                        await item.save();
+                    }
+
 
                 }
-                return NextResponse.json({ data: deleteItem, message: "Items Deleted", status: true });
-            
+
+            }
+            return NextResponse.json({ data: deleteItem, message: "Items Deleted", status: true });
+
         }
 
 

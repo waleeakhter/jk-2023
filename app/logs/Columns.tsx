@@ -28,8 +28,11 @@ export const logTableColumns: ColumnsType<Log> = [
         ellipsis: {
             showTitle: false,
         },
-        filterMode: "menu",
+       filters:[],
         width: "fit-content",
+        filterMode: 'tree',
+        filterSearch: true,
+        onFilter: (value: string, record) => record.name.includes(value),
     },
     {
         title: 'Type',

@@ -7,6 +7,7 @@ const initialValues: Sale = {
   sell_price: 0,
   sell_quantity: 0,
   status: 0,
-  reference: ''
+  reference: '',
+  resource: 'shop'
 };
 export default initialValues

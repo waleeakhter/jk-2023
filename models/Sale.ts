@@ -48,13 +48,13 @@ const SaleSchema: Schema<Sale> = new Schema<Sale>(
       required: false,
       default: "" as unknown as Date
     },
-    wearhouseStock: {
-      type: Boolean,
+    resource: {
+      type: String,
       required: false,
-      default: false
+      default: "shop"
     }
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false, collection: "sales" }
 );
 
 

@@ -21,12 +21,17 @@ export async function POST(request: Request) {
     for (const payment of payments) {
       const getClient = await ClientModal.findById(payment.client);
       if (getClient) {
+        const credit = getClient.credit;
         getClient.credit -= payment.amount;
-        const resPay = await Payments.create({ client: payment.client, amount: payment.amount, paymentDate: payment.paymentDate })
+        const resPay = await Payments.create({ client: payment.client, amount: payment.amount, paymentDate: payment.paymentDate ,     "details": {
+          "initialPayment": credit,
+          "receviedPayment":payment.amount,
+          "newCredit": getClient.credit,
+        } })
      
         if (resPay) {
+       
           getClient.save()
-          await Log.create({ name: `${getClient.name} has paid ${payment.amount}€ to ${new Date(payment.paymentDate).toDateString()}` , source : "financial" , logType : "payment" })
 
         }
       } else {

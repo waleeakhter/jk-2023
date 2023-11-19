@@ -17,6 +17,9 @@ const WithTheme = (children: JSX.Element) => (
                     components: {
                         Form: {
                             labelHeight: 0,
+                        },
+                        Switch : {
+                            handleBg : "#f5f5f5"
                         }
                     },
                     token: {

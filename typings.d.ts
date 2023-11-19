@@ -45,7 +45,8 @@ export interface Sale {
     sell_quantity: number;
     status?: number;
     paidOn?: Date,
-    wearhouseStock?: boolean | undefined
+    wearhouseStock?: boolean | undefined,
+    resource?:string
 }
 
 export interface MixInterfaces extends Sale, Item, Client {
