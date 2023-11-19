@@ -1,30 +1,28 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import { DatePicker } from 'antd';
+import { DatePicker, Button } from 'antd';
 import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import Types from "@/app/utils/types.json";
 import Status from "@/app/utils/status.json";
 import { Fieldset } from 'primereact/fieldset';
-import AdvanceSelect from '@/app/components/AdvanceSelect';
 import { ToggleButton } from 'primereact/togglebutton';
 import BrandsSelect from '@/app/components/BrandsSelect';
-import { Button } from 'primereact/button';
-import { MultiSelect } from 'primereact/multiselect';
-import Router from 'next/router';
 import type { Dayjs } from 'dayjs';
-import { RangePickerProps } from 'antd/es/date-picker';
+import { DatePickerProps, RangePickerProps } from 'antd/es/date-picker';
+import { Select } from 'antd';
+import { Client } from '@/typings';
+import { ClearOutlined } from '@ant-design/icons';
 type FILTERS = {
-    createdAt: Dayjs | string | Date | null | undefined,
-    endAt: Dayjs | string | Date | string | undefined,
+    createdAt: RangeValue,
     status: Array<number> | undefined,
-    paidOn: Dayjs | string,
+    paidOn: Dayjs | null | undefined,
     type: string[] | undefined
-    brand: string[] | undefined,
+    brand: string[] | string | undefined,
     client: string[] | undefined,
 }
 
 
-type Props = { searchParams: URLSearchParams, clients: Object[] }
+type Props = { searchParams: URLSearchParams, clients: Array<Client> | undefined }
 type RangeValue = [Dayjs | null, Dayjs | null] | null;
 
 
@@ -39,7 +37,7 @@ export const Filters = (props: Props) => {
         status: [Status.at(0)?.value ?? 0],
         createdAt: null,
         endAt: null,
-        paidOn: "",
+        paidOn: null,
         type: [],
         brand: [],
         client: []
@@ -64,7 +62,7 @@ export const Filters = (props: Props) => {
     ));
 
     const createQueryString = useCallback(
-        (name: string, value: string) => {
+        async (name: string, value: string) => {
 
             params.set(name, value);
             return params.toString();
@@ -77,51 +75,44 @@ export const Filters = (props: Props) => {
         router.push(pathname + '?' + params.toString());
 
     }
-    const onChange = (e: SelectButtonChangeEvent, name: string) => {
-        const value = name === "status" ? e.value?.length > 0 ? e.value : [0] : e.value?.length > 0 ? e.value : null
+    const onSelectType = async (value: string[] | number[], name: string) => {
+        console.log(value)
         setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
-        console.log(e.value)
-        if (value?.length > 0) {
-            createQueryString(name, JSON.stringify(value))
-            if (name === "status") {
-                const checkStatus = [0, 2];
-                const check1 = checkStatus.some(el => value.includes(el))
-                console.log(check1)
-                if (check1) {
-                    deleteParams("paidOn");
-                    return;
-                }
-            }
+        if (value.length > 0) {
+            await createQueryString(name, JSON.stringify(value))
             router.push(pathname + '?' + params.toString());
         } else {
             deleteParams(name);
-
         }
 
 
     };
-    const onDateChange = (rawValues: RangeValue, dates: Array<string>) => {
+    const onDateChange = async (rawValues: RangeValue, dates: Array<string>) => {
         console.log(dates, rawValues)
         if (rawValues) {
             setFilters(prevFilters => ({
-                ...prevFilters, "createdAt": dates.at(0), "endAt": dates.at(1)
+                ...prevFilters, "createdAt": rawValues
             }));
 
-            createQueryString("createdAt", dates.at(0) as string)
-            createQueryString("endAt", dates.at(1) as string)
+            await createQueryString("createdAt", dates.at(0) as string)
+            await createQueryString("endAt", dates.at(1) as string)
 
 
         } else {
+            setFilters(prevFilters => ({
+                ...prevFilters, "createdAt": rawValues
+            }));
             params.delete("createdAt")
             params.delete("endAt")
         }
         router.push(pathname + '?' + params.toString());
     };
 
-    const onPaidDateChange = (date: Date) => {
+    const onPaidDateChange: DatePickerProps['onChange'] = (date, dateString) => {
 
         if (date) {
-            createQueryString("paidOn", date.toDateString())
+            setFilters(prev => ({ ...prev, paidOn: date }))
+            createQueryString("paidOn", dateString)
         } else {
             params.delete("paidOn")
         }
@@ -131,24 +122,25 @@ export const Filters = (props: Props) => {
 
     };
 
-    const onClientSelect = (data: [{ value: string }], name: string) => {
+    const onClientSelect = async (data: string[], name: string) => {
 
         if (data?.length > 0) {
-            const client = data.map(el => el.value)
-
-            router.push(pathname + '?' + createQueryString(name, JSON.stringify(client)));
+            setFilters(prev => ({ ...prev, [name]: data }))
+            await createQueryString(name, JSON.stringify(data))
+            router.push(pathname + '?' + params.toString());
         } else {
             deleteParams(name)
+            setFilters(prev => ({ ...prev, [name]: data }))
             router.push(pathname + '?' + params.toString());
 
         }
     }
     const noop = () => { };
-    const onBrandSelect = (res: Array<{ name: string, value: string }>) => {
+    const onBrandSelect = async (res: Array<string> | string) => {
+        setFilters(prev => ({ ...prev, brand: res }))
         if (res?.length > 0) {
-            const client = res.map(el => el.value)
-
-            router.push(pathname + '?' + createQueryString("brands", JSON.stringify(client)));
+            await createQueryString("brands", JSON.stringify(res))
+            router.push(pathname + '?' + params.toString());
         } else {
             deleteParams("brands")
             router.push(pathname + '?' + params.toString());
@@ -176,7 +168,7 @@ export const Filters = (props: Props) => {
 
                 }}
                 legend={legendTemplate} toggleable collapsed={true} >
-                <div className='grid grid-cols-4 gap-4  items-center w-full'>
+                <div className='grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4  items-center w-full'>
                     <div className='flex flex-col gap-1  '>
                         <div className="flex relative">
                             <ToggleButton checked={toggleClientFilters} onLabel='By Client' offLabel='Exclude Client'
@@ -187,19 +179,32 @@ export const Filters = (props: Props) => {
                                 <div className="p-tooltip-text" data-pc-section="text">Click to change Functionalty</div>
                             </div>
                         </div>
-                        <AdvanceSelect name={"client"} value={"name"} multiple={true}
-                            lableValue={"name"} options={props.clients} callback={(data) => onClientSelect(data, toggleClientFilters ? "client" : "excludeClients")} />
+                        <Select
+                            mode="multiple"
+                            placeholder="Filter by client"
+                            value={filters.client}
+                            onChange={(values) => onClientSelect(values, toggleClientFilters ? "client" : "excludeClients")}
+                            options={props.clients}
+                            optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
+                            fieldNames={{ label: "name", value: "_id" }}
+                            size='large'
+                        />
+                        {/* <AdvanceSelect name={"client"} value={"name"} multiple={true}
+                            lableValue={"name"} options={props.clients} callback={(data) => onClientSelect(data, toggleClientFilters ? "client" : "excludeClients")} /> */}
                     </div>
-                    <div>
-                        <label htmlFor="brans">By Brands</label>
-                        <BrandsSelect callback={onBrandSelect} />
+                    <div className='flex flex-col gap-1'>
+                        <label htmlFor="brans" className='block font-semibold text-sm'>By Brands</label>
+                        <BrandsSelect callback={onBrandSelect} value={filters.brand ?? ""} />
                     </div>
 
                     <div className='flex flex-col gap-1'>
                         <label htmlFor="" className='block font-semibold text-sm'>Created At</label>
-                        <RangePicker className='p-inputtext h-10 relative'
-
+                        <RangePicker size='large'
+                            value={filters?.createdAt}
                             onChange={onDateChange}
+                            format={"DD-MM-YYYY"}
                         />
                     </div>
                     {filters.status?.includes(1) ? (
@@ -207,28 +212,44 @@ export const Filters = (props: Props) => {
                             <label htmlFor="" className='block font-semibold text-sm'>Paid At</label>
                             <DatePicker
                                 value={filters.paidOn ?? null}
-
-
+                                onChange={onPaidDateChange}
+                                size='large'
+                                format={"DD-MM-YYYY"}
                             />
                         </div>
                     ) : null}
                 </div>
 
-                <Button label="Clear" raised size='small' severity='danger' icon={"pi pi-filter-slash"}
-                    onClick={() => { setFilters(intialFilters); router.push(pathname); }} className='mt-3' />
+                <Button title="Clear" size='middle' danger type='dashed' icon={<ClearOutlined />}
+                    onClick={() => { setFilters(intialFilters); router.push(pathname); }}
+                    className='mt-3' >
+                    Clear
+                </Button>
 
 
             </Fieldset>
             <div className="flex flex-wrap items-center  w-full mt-4 justify-end gap-4 ">
-                {/* <SelectButton options={types} value={filters.type} onChange={(e) =>)} optionLabel="name" /> */}
-                {/* <AdvanceSelect name={'types'} value={"name"} options={Types} /> */}
-                <MultiSelect value={filters.type} showClear
-                    onChange={(e) => (onChange(e, "type"))} options={types} optionLabel="name" optionValue='value'
-                    filter placeholder="Select Item Type" maxSelectedLabels={3} className="" />
-                <SelectButton multiple options={status} value={filters.status}
-                    onChange={(e) => (onChange(e, "status"))} optionLabel="name" />
+                <Select
+                    mode="multiple"
+                    placeholder="Filter by type"
+                    value={filters.type}
+                    onChange={(e) => (onSelectType(e, "type"))}
+                    options={types}
+                    size='large'
+                    className='flex-1 max-w-[20rem]'
+                />
+                <Select
+                    mode="multiple"
+                    placeholder="Filter by status"
+                    value={filters.status}
+                    onChange={(e) => (onSelectType(e, "status"))}
+                    options={status}
+                    size='large'
+                    fieldNames={{ label: "name", value: "value" }}
+                    className='flex-1 max-w-[20rem]'
+                />
             </div>
-        </div>
+        </div >
 
     );
 };
