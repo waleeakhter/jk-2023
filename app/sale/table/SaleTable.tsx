@@ -76,16 +76,16 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
                     <Button size='middle' onClick={() => setVisible(true)} type='dashed' icon={<PlusOutlined />} />
                     <ExportData data={exportData(data ?? [])} exportColumns={exportColumns} />
                 </div>
-                <div className='text-center'>
+                <div className='text-center md:flex-1'>
                     <h1 className='md:text-xl text-base'>{Number(sale ?? 0) > 0 ? <p>T/A: {sale}<i className='pi pi-euro'></i> </p> : ""} </h1>
 
                 </div>
-                <div className='flex items-center gap-2 justify-between md:flex-auto flex-1 lg:flex-nowrap flex-wrap'>
+                <div className='flex items-center gap-2 justify-between md:flex-none flex-1 lg:flex-nowrap flex-wrap'>
                     <div className='flex-1 md-flex-auto'>
                         {selectedItems.length > 0 ? (selectedItems.reduce((total, sale) => total + sale.sell_quantity, 0) + " " + selectedItems.reduce((total, sale) => total + sale.total_amount, 0)) : ""}
                     </div>
                     {selectedItems.length > 0 && <div className='flex-1 lg:flex-auto'><BulkUpdate selection={selectedItems} emptySelection={setSelectedItems} /></div>}
-                    <div className="lg:flex-auto w-full flex">
+                    <div className="lg:w-auto w-full flex">
                         <span className="p-input-icon-left">
                             <i className="pi pi-search" />
                             <InputText className='' value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />

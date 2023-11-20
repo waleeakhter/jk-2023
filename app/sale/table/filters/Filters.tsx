@@ -8,6 +8,7 @@ import { Fieldset } from 'primereact/fieldset';
 import { ToggleButton } from 'primereact/togglebutton';
 import BrandsSelect from '@/app/components/BrandsSelect';
 import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { DatePickerProps, RangePickerProps } from 'antd/es/date-picker';
 import { Select } from 'antd';
 import { Client } from '@/typings';
@@ -94,8 +95,8 @@ export const Filters = (props: Props) => {
                 ...prevFilters, "createdAt": rawValues
             }));
 
-            await createQueryString("createdAt", dates.at(0) as string)
-            await createQueryString("endAt", dates.at(1) as string)
+            await createQueryString("createdAt", dayjs(rawValues[0]).toString())
+            await createQueryString("endAt", dayjs(rawValues[1]).toString())
 
 
         } else {

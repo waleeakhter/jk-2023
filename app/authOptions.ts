@@ -16,7 +16,7 @@ export const nextAuthOptions: NextAuthConfig = {
             },
             async authorize(credentials, req) {
                 // Find your user in the database using MongoDBAdapter
-                if (credentials.password === undefined && credentials.password === undefined) {
+               
                     await dbConnect()
                     const user = await Admin.findOne({ email: credentials.username, password: credentials.password })
                     if (user) {
@@ -24,9 +24,7 @@ export const nextAuthOptions: NextAuthConfig = {
                     } else {
                         return null;
                     }
-                } else {
-                    return null;
-                }
+              
             },
         }),
     ],
