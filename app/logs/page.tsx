@@ -3,6 +3,8 @@ import React from 'react'
 import DataTable from './DataTable'
 import { getServerSessionGlobal } from '../authOptions'
 import { redirect } from 'next/navigation'
+import { getLogs } from './functions'
+import { Log } from '@/typings'
 
 const Logs = async () => {
     const session = await getServerSessionGlobal()
@@ -11,14 +13,8 @@ const Logs = async () => {
     }
 
 
-    const getLogs = await fetch(process.env.API_URL + 'logs', {
-        cache: "no-cache",
-        next: {
-            tags: ["logs"]
-        }
-    })
 
-    const logs = await getLogs.json().then(data => data.data)
+    const logs: Array<Log> = await getLogs(process.env.API_URL)
     return (
         <DataTable data={logs ?? []}></DataTable>
     )

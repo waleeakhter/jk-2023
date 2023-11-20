@@ -120,7 +120,7 @@ const getSaleList = async (searchParams: any[] | URLSearchParams) => {
 
     const saleList = await Sale.aggregate(pipeline);
     const totalSaleAmount = saleList.reduce((total, sale) => total + sale.total_amount, 0);
-    console.log(saleList)
+
     return { saleList, totalSaleAmount }
 
 }

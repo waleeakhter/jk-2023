@@ -6,10 +6,13 @@ import type { MenuProps } from 'antd';
 import { Menu, Tag } from 'antd';
 import { usePathname } from 'next/navigation'
 import Image from 'next/image';
+import { useSession } from "next-auth/react"
 type Props = {}
 
 const Header = (props: Props) => {
   const pathname = usePathname()
+  const { data: session, status } = useSession()
+  session
   console.log(pathname.replace("/", ''))
   const items: MenuProps['items'] = [
     {
@@ -46,7 +49,6 @@ const Header = (props: Props) => {
   const [current, setCurrent] = useState(pathname.replace("/", ''));
 
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
     setCurrent(e.key);
   };
   return (
@@ -63,8 +65,7 @@ const Header = (props: Props) => {
         </div>
       </Link>
       <div className='flex-1 lg:max-w-md'>
-        <Menu style={{ minWidth: 0, flex: "auto" }} className=' ml-auto w-full' onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
-
+        {session?.user?.role === "admin" && <Menu style={{ minWidth: 0, flex: "auto" }} className=' ml-auto w-full' onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />}
       </div>
     </header>
   )

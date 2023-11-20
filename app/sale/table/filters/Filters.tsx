@@ -125,12 +125,12 @@ export const Filters = (props: Props) => {
     const onClientSelect = async (data: string[], name: string) => {
 
         if (data?.length > 0) {
-            setFilters(prev => ({ ...prev, [name]: data }))
+            setFilters(prev => ({ ...prev, client: data }))
             await createQueryString(name, JSON.stringify(data))
             router.push(pathname + '?' + params.toString());
         } else {
             deleteParams(name)
-            setFilters(prev => ({ ...prev, [name]: data }))
+            setFilters(prev => ({ ...prev, client: data }))
             router.push(pathname + '?' + params.toString());
 
         }
