@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import ExportData from '../components/ExportData'
-import { Button } from 'primereact/button'
+import { Button, Input, Tooltip } from 'antd'
 import { InputText } from 'primereact/inputtext'
 import { useRouter } from 'next/navigation'
 import { FilterMatchMode } from 'primereact/api'
@@ -15,9 +15,7 @@ import { columns } from './columns'
 import { exportColumns, exportData } from './exports'
 import ItemForm from './itemForm'
 import StockUpdate from './StockUpdate'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faWarehouse, faPlus, faShop } from "@fortawesome/free-solid-svg-icons";
-import { getClient } from '../client/functions'
+import { PlusOutlined, HomeOutlined, ShopOutlined, RedoOutlined } from '@ant-design/icons';
 type Props = { data: Array<Item | string | any>, showPrice: number | undefined }
 const Datatable = ({ data, showPrice }: Props) => {
     const [visible, setVisible] = useState(false);
@@ -66,13 +64,21 @@ const Datatable = ({ data, showPrice }: Props) => {
 
                 <div className='flex  gap-3 items-center '>
                     <h5 className="m-0 text-2xl text-gray-800 ">{"Items List"}</h5>
-                    <span className='p-buttonset'>
-                        <Button size='small' label='' text raised icon={<FontAwesomeIcon fade icon={faPlus} />} onClick={() => { setForm(prev => prev = "newItem"); setVisible(true) }} tooltip='Add New Item' tooltipOptions={{ position: "bottom" }} />
-                        <Button size='small' severity='info' raised onClick={() => { setForm(prev => prev = "wearhouse"); setVisible(true) }} icon={<FontAwesomeIcon icon={faWarehouse} />}
-                            tooltip='Update Wearhouse Stock' tooltipOptions={{ position: "bottom" }} />
-                        <Button size='small' label='' severity='help' raised icon={<FontAwesomeIcon icon={faShop} />}
-                            onClick={() => { setForm(prev => prev = "shop"); setVisible(true) }}
-                            tooltip='Update Shop Stock' tooltipOptions={{ position: "bottom" }} />
+                    <span className='flex gap-1'>
+                        <Tooltip title="Add New Item" placement='bottom'>
+                            <Button size='middle' type='dashed' icon={<PlusOutlined />}
+                                onClick={() => { setForm(prev => prev = "newItem"); setVisible(true) }} />
+                        </Tooltip>
+                        <Tooltip title="Update wearhous stock" placement='bottom'>
+                            <Button size='middle' onClick={() => { setForm(prev => prev = "wearhouse"); setVisible(true) }}
+                                icon={<HomeOutlined />}
+                            />
+                        </Tooltip>
+                        <Tooltip title="Update shop stock" placement='bottom'>
+                            <Button size='middle' icon={<ShopOutlined />}
+                                onClick={() => { setForm(prev => prev = "shop"); setVisible(true) }}
+                            />
+                        </Tooltip>
                     </span>
                     <ExportData data={exportData(data ?? [])} exportColumns={exportColumns} />
                 </div>
@@ -80,13 +86,13 @@ const Datatable = ({ data, showPrice }: Props) => {
                     <h1 className='text-xl'>{Number(showPrice ?? 0) > 0 ? <p>Total Amount: {showPrice}<i className='pi pi-euro'></i> </p> : ""} </h1>
 
                 </div>
-                <div className='flex gap-2'>
+                <div className='flex'>
 
                     <span className="p-input-icon-left">
                         <i className="pi pi-search" />
-                        <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
+                        <Input.Search size='large' className={" font-normal "}  value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
                     </span>
-                    <Button type="button" icon="pi pi-refresh" text onClick={refreshTable} />
+                    <Button type="dashed" icon={<RedoOutlined />} onClick={refreshTable} size='large' className='h-full' />
                 </div>
             </div>
         )

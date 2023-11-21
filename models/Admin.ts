@@ -20,10 +20,14 @@ const AdminSchema = new Schema({
         required: true,
         index: true
     },
+    role: {
+        type: String,
+        default: 'admin'
+    },
     token: {
         type: String
     }
 })
 
 
-export default models.Admin || model("Admin", AdminSchema)
+export default models.Admins || model("Admins", AdminSchema)

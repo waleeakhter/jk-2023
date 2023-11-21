@@ -1,37 +1,59 @@
-import { getServerSession, type NextAuthOptions } from "next-auth"
+import getServerSession, { NextAuthConfig } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
 
-export const nextAuthOptions: NextAuthOptions = {
+import clientPromise from "./utils/clientPromise";
+import { MongoDBAdapter } from "@auth/mongodb-adapter"
+import Admin from "@/models/Admin";
+import dbConnect from "./utils/dbConnect";
+export const nextAuthOptions: NextAuthConfig = {
+    adapter: MongoDBAdapter(clientPromise),
     providers: [
-
         CredentialsProvider({
-            name: 'Credentials',
+            name: "credentials",
             credentials: {
-                username: { label: "Username", type: "text", placeholder: "enter your email" },
-                password: { label: "Password", type: "password", placeholder: "enter your password" }
+                username: { label: "Username", type: "text", placeholder: "Aaron" },
+                password: { label: "Password", type: "password" },
             },
-            async authorize(credentials: any) {
-                const body = {
-                    id: "1234",
-                    "email": "admin@gmail.com",
-                    "password": "admin1234"
-                }
-                // const res = await fetch(process.env.API_URL + "api/admin", {
-                //     method: 'post',
-                //     body: JSON.stringify({ email: credentials.usename, password: credentials.password }),
-                //     cache: 'no-cache',
-                // })
-                // const user = await res.json()
-                // If no error and we have user data, return it
-                console.log(credentials.username === body.email && credentials.password === body.password, credentials)
-                if (credentials.username === body.email && credentials.password === body.password) {
-                    return body
-                }
-                // Return null if user data could not be retrieved
-                return null
-            }
-        })
+            async authorize(credentials, req) {
+                // Find your user in the database using MongoDBAdapter
+               
+                    await dbConnect()
+                    const user = await Admin.findOne({ email: credentials.username, password: credentials.password })
+                    if (user) {
+                        return user;
+                    } else {
+                        return null;
+                    }
+              
+            },
+        }),
     ],
+    secret: process.env.NEXTAUTH_SECRET,
+    session: {
+        // Set it as jwt instead of database
+        strategy: "jwt",
+    },
+    callbacks: {
+        async jwt({ token, user }) {
+            // Persist the OAuth access_token and or the user id to the token right after signin
+            if (user) {
+                token.accessToken = user.access_token as string;
+                token.id = user.id;
+                token.role = user.role;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            // Send properties to the client, like an access_token and user id from a provider.
+            if (session.user) {
+                session.accessToken = token.accessToken as string;
+                session.user.id = token.id as string;
+                session.user.role = token.role as string;
+            }
+
+            return session;
+        },
+    },
 }
 
 

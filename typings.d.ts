@@ -46,7 +46,7 @@ export interface Sale {
     status?: number;
     paidOn?: Date,
     wearhouseStock?: boolean | undefined,
-    resource?:string
+    resource?: string
 }
 
 export interface MixInterfaces extends Sale, Item, Client {
@@ -82,6 +82,7 @@ export interface Payments {
 }
 export interface Log {
     "name": string
+    "_id"?: string;
     "source": string,
     "logType": string,
     "details": {},

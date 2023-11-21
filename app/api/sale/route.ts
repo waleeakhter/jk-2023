@@ -92,17 +92,17 @@ export async function DELETE(request: Request, res: NextResponse) {
 
             for (const data of body) {
                 const item = await Item.findById(data.item._id);
-
+                 console.log(body.resource  , "item.resource")
                 if (item) {
-                    if (item.resource === "shop"
-                        || item.resource === undefined
-                        || item.resource === null
+                    if (body.resource === "shop"
+                        || body.resource === undefined
+                        || body.resource === null
                     ) 
                     {
                         item.stock += data.sell_quantity;
                         await item.save();
                     }
-                    if (item.resource === "warehouse") 
+                    if (body.resource === "warehouse") 
                     {
                         item.wearHouseStock += data.sell_quantity;
                         await item.save();

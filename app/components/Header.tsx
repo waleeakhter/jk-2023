@@ -6,10 +6,13 @@ import type { MenuProps } from 'antd';
 import { Menu, Tag } from 'antd';
 import { usePathname } from 'next/navigation'
 import Image from 'next/image';
+import { useSession } from "next-auth/react"
 type Props = {}
 
 const Header = (props: Props) => {
   const pathname = usePathname()
+  const { data: session, status } = useSession()
+  session
   console.log(pathname.replace("/", ''))
   const items: MenuProps['items'] = [
     {
@@ -46,12 +49,11 @@ const Header = (props: Props) => {
   const [current, setCurrent] = useState(pathname.replace("/", ''));
 
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
     setCurrent(e.key);
   };
   return (
     <header className='header justify-between h-20 gap-8 border-b-2 sticky top-0 z-50 bg-white  text-slate-800 flex p-4 items-center shadow-gray-300 shadow-md'>
-      <Link href={"/"} className='relative overflow-hidden  flex md:flex-auto flex-0'>
+      <Link href={"/"} className='relative overflow-hidden  flex md:flex-none flex-[0_0_40%]'>
         <div className="w-16 h-12 relative block">
           <Image src={"/logo.svg"} quality={100} fill
             priority alt='logo' />
@@ -62,9 +64,9 @@ const Header = (props: Props) => {
             fill src="/text.svg" alt='logo' />
         </div>
       </Link>
-      <div className='flex-1 lg:max-w-md'>
-        <Menu style={{ minWidth: 0, flex: "auto" }} className=' ml-auto w-full' onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
-
+      <div className=' lg:max-w-md flex'>
+        {session?.user?.role === "admin" && <Menu style={{ minWidth: 0, flex: "auto" }} className=' ml-auto ' 
+        onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />}
       </div>
     </header>
   )

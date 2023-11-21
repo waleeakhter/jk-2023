@@ -3,6 +3,7 @@ import React from 'react'
 import Datatable from './Datatable'
 import { redirect } from "next/navigation"
 import { getServerSessionGlobal } from '../authOptions'
+import { auth } from '../auth'
 
 type Props = {
     searchParams: { type: string },
@@ -10,8 +11,8 @@ type Props = {
 }
 const page = async ({ searchParams, router }: Props) => {
 
-    const session = await getServerSessionGlobal()
-    if (!session) {
+    const session = await auth()
+    if (!session?.user.id) {
         return redirect('/api/auth/signin')
     }
     console.log(process.env.API_URL , "/api/auth/signin")
