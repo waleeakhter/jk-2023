@@ -1,3 +1,4 @@
+import { auth } from '@/app/auth';
 import dbConnect from '@/app/utils/dbConnect';
 import fetchCall from '@/app/utils/fetch';
 import ClientModal from '@/models/Client';
@@ -7,6 +8,11 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   await dbConnect()
+  const session  = await auth()
+  //  if(!session?.user.id){
+  //   return NextResponse.json({ message : 'Unauthorized' } , {status : 401});
+
+  //  }
   const { searchParams } = new URL(request.url)
   const id = searchParams.get('id')
   const res = await ClientModal.find(({ ...(id && { _id: id }) })).sort({ name: 1 }).collation({ locale: "en" })
