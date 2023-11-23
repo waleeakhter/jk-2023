@@ -10,7 +10,7 @@ import { Toast } from 'primereact/toast';
 // Define the validation schema using Yup
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Item name is required").uppercase(),
-    stock: Yup.number().required().default(0).positive().min(1),
+    stock: Yup.number().required().default(0).positive().min(0),
     type: Yup.string().required(),
     brand: Yup.string().required(),
     purchase_price: Yup.number().required().default(0),
