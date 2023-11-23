@@ -11,12 +11,14 @@ import { faEuro } from "@fortawesome/free-solid-svg-icons";
 import types from '@/app/utils/types.json';
 import brands from '@/app/utils/brands.json';
 import dayjs from 'dayjs';
+import { Switch, Space } from 'antd';
 type Props = { check: string }
 type stockUpdate = {
     item: { purchase_price: number, stock: number, name: string, wearHouseStock: number },
     stock: number,
     stockUpdate: dayjs.Dayjs,
-    purchase_price?: number
+    purchase_price?: number,
+    resource?:boolean | undefined
 }
 
 
@@ -36,7 +38,8 @@ const StockUpdate = ({ check }: Props) => {
         },
         stock: 0,
         stockUpdate: dayjs(new Date()),
-        ...(check === "wearhouse" ? { purchase_price: 0 } : "")
+        ...(check === "wearhouse" ? { purchase_price: 0 } : ""),
+        ...(check === "shop" ? { resource: false } : ""),
     }
     const validationSchema = Yup.object().shape({
         item: Yup.object().shape({ name: Yup.string().required('Item name is required') }),
@@ -113,6 +116,15 @@ const StockUpdate = ({ check }: Props) => {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit((data) => onSubmit(data))}>
+                    <Space direction="vertical" align='end' className='w-full'>
+                        <label><small>Direct Stock : Toggle</small></label>
+                        <Controller
+                                name="resource"
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                        <Switch checkedChildren="Direct Stock" unCheckedChildren="Wearhouse" checked={value} onChange={onChange} />
+                        )} />
+                    </Space>
                     <div className="grid grid-cols-1 gap-4">
                         <div className="w-full">
                             <label htmlFor="item"><strong>Item</strong></label>

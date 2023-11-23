@@ -3,11 +3,12 @@ import { nextAuthOptions } from '@/app/authOptions';
 import dbConnect from '@/app/utils/dbConnect';
 import ItemModal from '@/models/Item';
 import { Item } from '@/typings';
-import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server'
 import Log from '@/models/Log';
 
-type stockProps = { check: string, item: Item, stockUpdate: string, stock: number, purchase_price: number }
+type stockProps = {
+    resource: boolean; check: string, item: Item, stockUpdate: string, stock: number, purchase_price: number
+}
 export async function POST(req: NextRequest) {
     try {
         const body: stockProps = await req.json();
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ status: 200, success: true, message: `Updated Successfully`, data: stockUpdateItem });
         }
         if (check === "shop") {
-            if (getItem.wearHouseStock <= 0) {
+            if (getItem.wearHouseStock <= 0 && getItem.wearHouseStock >= body.stock && !body.resource) {
                 throw new Error(`Insufficient stock`)
             }
             const stockUpdateItem = await ItemModal.findByIdAndUpdate(item._id,
@@ -53,15 +54,17 @@ export async function POST(req: NextRequest) {
                         stock: body.stock + (getItem.stock ?? 0),
                     }
                 })
-            if (stockUpdateItem && getItem.wearHouseStock > 0) {
-                getItem.wearHouseStock = getItem.wearHouseStock - body.stock;
+            if (stockUpdateItem) {
+                if (!body.resource) {
+                    getItem.wearHouseStock = getItem.wearHouseStock - body.stock;
+                }
                 getItem.save()
                 await Log.create({
                     name: `${item.name} stock updated: Transferred to shop.`, source: "inventory", logType: "stockupdate",
                     "details": {
                         "item": item?._id,
                         "action": "update",
-                        "from": "warehouse",
+                        "from": body.resource ? "newstock" : "warehouse",
                         "to": "shop",
                         "initialStock": item.stock,
                         "quantityUpdated": body.stock,
