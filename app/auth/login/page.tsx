@@ -1,13 +1,19 @@
 'use client'
+import { signIn } from '@/app/auth'
 import { Button } from 'primereact/button'
 import { InputText } from 'primereact/inputtext'
 import React, { useState } from 'react'
-import { signIn } from 'next-auth/react'
+import { authenticate } from './functrion'
 const Login = () => {
     const [values, setValues] = useState({
-        email: "",
+        username: "",
         password: ""
     })
+
+    const signIn = async () => {
+    const res =    await authenticate(values);
+    console.log(res, "rssss login")
+    }
     return (
         <section className="h-screen">
             <div className="container h-full px-6 py-24 mx-auto">
@@ -23,16 +29,16 @@ const Login = () => {
 
                     {/* <!-- Right column container with form --> */}
                     <div className="md:w-8/12 lg:ml-6 lg:w-5/12">
-                        <form>
+                        <form >
                             {/* <!-- Email input --> */}
                             <label htmlFor='email'>Email</label>
                             <InputText
                                 id='email'
-                                value={values.email}
+                                value={values.username}
                                 type="email"
                                 className="mb-6 w-full"
                                 placeholder='Enter email...'
-                                onChange={(e) => setValues({ ...values, email: e.target.value })}
+                                onChange={(e) => setValues({ ...values, username: e.target.value })}
                             ></InputText>
 
                             {/* <!--Password input--> */}
@@ -94,7 +100,7 @@ const Login = () => {
 
                             {/* <!-- Submit button --> */}
 
-                            <Button className="w-full" label='Sign in' type='button' onClick={() => signIn("credentials", { username: values.email, password: values.password })}> </Button>
+                            <Button className="w-full" label='Sign in' type='button' onClick={signIn}> </Button>
 
                             {/* <!-- Divider --> */}
                             <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">

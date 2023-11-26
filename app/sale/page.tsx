@@ -1,17 +1,18 @@
 import React from 'react'
 import SaleTable from './table/SaleTable'
 import { getClients } from './SaleActions/ServerActions';
-import { getServerSessionGlobal } from '../authOptions';
+import { auth } from '../auth';
 import { redirect } from 'next/navigation';
 type Props = {
     searchParams: { type: string };
 }
 
 const page = async ({ searchParams }: Props) => {
-    const session = await getServerSessionGlobal()
-    if (!session) {
-        return redirect('/api/auth/signin')
+    const session = await auth()
+    if (!session?.user.email) {
+        return redirect('/auth/login')
     }
+
     const q = new URLSearchParams(searchParams)
 
     const getSales = async () => {
