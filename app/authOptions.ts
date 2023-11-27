@@ -1,22 +1,19 @@
-import { NextRequest } from "next/server";
-import getServerSession from "next-auth"
-export const nextAuthOptions = {
-  providers:[],
+import { NextAuthConfig, Session } from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
+
+export const nextAuthOptions : NextAuthConfig = {
+  providers: [],
   pages: {
     signIn: "/auth/login",
   },
   callbacks: {
-    authorized({ auth, request  } : { auth: {user : Object}, request :any }) {
-
+    async authorized({ auth, request }: { auth: Session | null, request: NextRequest  }) {
       const isLoggedIn = auth?.user;
-      const isOnDashboard = request.nextUrl.pathname.startsWith("/");
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false;
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL("/", request.nextUrl));
+      if (!isLoggedIn) {
+        return false
       }
-      return true;
+      return true
     },
   },
+  
 };

@@ -17,7 +17,7 @@ import { cancelSaleItem } from '@/app/components/Datatable/functions';
 import { exportColumns, exportData } from './exports';
 import AddModal from '@/app/components/Datatable/AddModal';
 import AddSale from '../form/AddSale';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined , DeleteFilled } from '@ant-design/icons';
 type Props = {
     searchParams: { type: string }
     data: Array<Sale | any>,
@@ -143,9 +143,9 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
                     <Column body={(rowData) =>
                         <div className='p-buttonset'>
                             <SaleActions rowData={rowData} />
-                            <Button severity='danger' icon="pi pi-trash"
-                                size='small' tooltip='Delete Item' className='btn-delete'
-                                tooltipOptions={{ position: 'bottom' }} onClick={(e) => cancelSaleItem(e, rowData)} />
+                            <Button  danger 
+                                size='large' type='primary' icon={<DeleteFilled />} className='btn-delete'
+                                onClick={(e) => cancelSaleItem(e, rowData)} />
                         </div>
                     }
                         header={'Action'} frozen={true} style={{ flexGrow: 1, flexBasis: '100px' }} />
