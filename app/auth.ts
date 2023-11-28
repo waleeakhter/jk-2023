@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { nextAuthOptions } from "./authOptions";
 import  dbConnect  from "./utils/dbConnect";
 import  AdminModal  from "@/models/Admin";
 import  bcrypt from 'bcrypt';
@@ -29,7 +28,9 @@ const login = async (credentials: Partial<Record<string, unknown>>) => {
 };
 
 export const { signIn, signOut, auth  ,  handlers: { GET, POST },  } = NextAuth({
-  ...nextAuthOptions,
+  pages: {
+    signIn: "/auth/login",
+  },
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
@@ -60,13 +61,7 @@ export const { signIn, signOut, auth  ,  handlers: { GET, POST },  } = NextAuth(
       }
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url
-      return baseUrl
-    }
+ 
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: {

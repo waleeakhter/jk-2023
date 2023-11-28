@@ -8,8 +8,7 @@ import Header from './components/Header';
 import "react-datepicker/dist/react-datepicker.css";
 import './globals.scss'
 import React from 'react';
-import getServerSession from 'next-auth';
-import { nextAuthOptions } from './authOptions';
+import { auth } from './auth'
 import AuthProvider from './context/AuthProvider';
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import StyledComponentsRegistry from './lib/AntdRegistry';
@@ -25,14 +24,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = getServerSession(nextAuthOptions)
+  const session = await auth()
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}
         className={inter.className}>
 
         <AuthProvider>
-          <Header />
+          <Header session={session} />
           <StyledComponentsRegistry>
             {children}
           </StyledComponentsRegistry>

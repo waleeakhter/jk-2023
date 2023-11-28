@@ -1,5 +1,3 @@
-
-import { nextAuthOptions } from '@/app/authOptions';
 import dbConnect from '@/app/utils/dbConnect';
 import ItemModal from '@/models/Item';
 import { Item } from '@/typings';
@@ -10,6 +8,7 @@ type stockProps = {
     resource: boolean; check: string, item: Item, stockUpdate: string, stock: number, purchase_price: number
 }
 export async function POST(req: NextRequest) {
+    dbConnect()
     try {
         const body: stockProps = await req.json();
         console.log(body)
@@ -85,6 +84,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
     try {
+        dbConnect()
         const body = await req.json();
         const item = await ItemModal.findByIdAndUpdate(body._id, { $set: { ...body } });
         return NextResponse.json({ status: 200, success: true, message: "Item Updated Successfully", data: item });

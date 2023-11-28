@@ -2,17 +2,33 @@
 import React, { useState } from 'react'
 import { authenticate } from './functrion'
 import { Form, Input, Button } from 'antd'
+import { useMutation } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation'
 type FieldType = {
     username: string;
     password: string;
 };
 const Login = () => {
-
-    const signIn = async (values : FieldType) => {
-        console.log(values)
-        const res = await authenticate(values);
-        console.log(res, "rssss login")
+    const router = useRouter();
+    const { data: session } = useSession()
+    if (session?.user.email) {
+        redirect(`/`)
     }
+    const { mutate: signFn, isPending } = useMutation({
+        mutationFn: authenticate,
+        onSuccess: (data) => {
+            let url = new URL(data);
+            let callbackUrl = url.searchParams.get("callbackUrl");
+            console.log(callbackUrl)
+            router.replace( callbackUrl ?? "/");
+
+        },
+        onError: (error) => {
+            console.log(error);
+        }
+    })
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
@@ -34,7 +50,7 @@ const Login = () => {
                         <Form
                             name="loginform"
                             initialValues={{ remember: true }}
-                            onFinish={signIn}
+                            onFinish={signFn}
                             onFinishFailed={onFinishFailed}
                             autoComplete="off"
                             layout='vertical'
@@ -56,7 +72,7 @@ const Login = () => {
                             </Form.Item>
 
                             <Form.Item className='text-center'>
-                                <Button type="dashed" className=' shadow-md ' htmlType="submit">
+                                <Button type="dashed" className=' shadow-md ' htmlType="submit" disabled={isPending} loading={isPending}>
                                     Submit
                                 </Button>
                             </Form.Item>
