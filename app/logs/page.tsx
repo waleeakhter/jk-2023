@@ -1,15 +1,15 @@
 "use server"
 import React from 'react'
 import DataTable from './DataTable'
-import { getServerSessionGlobal } from '../authOptions'
+import { auth } from '../auth'
 import { redirect } from 'next/navigation'
 import { getLogs } from './functions'
 import { Log } from '@/typings'
 
 const Logs = async () => {
-    const session = await getServerSessionGlobal()
-    if (!session) {
-        return redirect('/api/auth/signin')
+    const session = await auth()
+    if (!session?.user.email) {
+        return redirect('/auth/login')
     }
 
 
