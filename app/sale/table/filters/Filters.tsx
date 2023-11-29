@@ -23,7 +23,8 @@ type FILTERS = {
 }
 
 
-type Props = { searchParams: URLSearchParams, clients: Array<Client> | undefined }
+type Props = { searchParams: URLSearchParams, clients: Array<Client> | undefined , 
+    startTransition :  React.TransitionStartFunction }
 type RangeValue = [Dayjs | null, Dayjs | null] | null;
 
 
@@ -32,7 +33,8 @@ export const Filters = (props: Props) => {
     const searchParams = useSearchParams().toString()!;
     const params = new URLSearchParams(searchParams);
     const [toggleClientFilters, setToggleClientFilters] = useState(true);
-    const router = useRouter();
+
+    const { replace } = useRouter();
     const pathname = usePathname();
     const intialFilters = {
         status: [Status.at(0)?.value ?? 0],
@@ -73,7 +75,7 @@ export const Filters = (props: Props) => {
 
     const deleteParams = (name: string) => {
         params.delete(name)
-        router.push(pathname + '?' + params.toString());
+        props.startTransition(() => replace(pathname + '?' + params.toString()));
 
     }
     const onSelectType = async (value: string[] | number[], name: string) => {
@@ -81,7 +83,7 @@ export const Filters = (props: Props) => {
         setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
         if (value.length > 0) {
             await createQueryString(name, JSON.stringify(value))
-            router.push(pathname + '?' + params.toString());
+            props.startTransition(() => replace(pathname + '?' + params.toString()));
         } else {
             deleteParams(name);
         }
@@ -106,7 +108,7 @@ export const Filters = (props: Props) => {
             params.delete("createdAt")
             params.delete("endAt")
         }
-        router.push(pathname + '?' + params.toString());
+        props.startTransition(() => replace(pathname + '?' + params.toString()));
     };
 
     const onPaidDateChange: DatePickerProps['onChange'] = (date, dateString) => {
@@ -119,8 +121,7 @@ export const Filters = (props: Props) => {
         }
 
 
-        router.push(pathname + '?' + params.toString());
-
+        props.startTransition(() => replace(pathname + '?' + params.toString()));
     };
 
     const onClientSelect = async (data: string[], name: string) => {
@@ -128,11 +129,11 @@ export const Filters = (props: Props) => {
         if (data?.length > 0) {
             setFilters(prev => ({ ...prev, client: data }))
             await createQueryString(name, JSON.stringify(data))
-            router.push(pathname + '?' + params.toString());
+            props.startTransition(() => replace(pathname + '?' + params.toString()));
         } else {
             deleteParams(name)
             setFilters(prev => ({ ...prev, client: data }))
-            router.push(pathname + '?' + params.toString());
+            props.startTransition(() => replace(pathname + '?' + params.toString()));
 
         }
     }
@@ -141,10 +142,10 @@ export const Filters = (props: Props) => {
         setFilters(prev => ({ ...prev, brand: res }))
         if (res?.length > 0) {
             await createQueryString("brands", JSON.stringify(res))
-            router.push(pathname + '?' + params.toString());
+            props.startTransition(() => replace(pathname + '?' + params.toString()));
         } else {
             deleteParams("brands")
-            router.push(pathname + '?' + params.toString());
+            props.startTransition(() => replace(pathname + '?' + params.toString()));
 
         }
     }
@@ -222,7 +223,7 @@ export const Filters = (props: Props) => {
                 </div>
 
                 <Button title="Clear" size='middle' danger type='dashed' icon={<ClearOutlined />}
-                    onClick={() => { setFilters(intialFilters); router.push(pathname); }}
+                    onClick={() => { setFilters(intialFilters); props.startTransition(() => replace(pathname)); }}
                     className='mt-3' >
                     Clear
                 </Button>

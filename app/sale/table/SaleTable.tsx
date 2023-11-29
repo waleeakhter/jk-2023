@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import Filters from './../table/filters/Filters';
 import Tooltips, { columns } from './columns';
 import { Client, Item, LazyTableState, MixInterfaces, Sale } from '@/typings';
@@ -17,7 +17,7 @@ import { cancelSaleItem } from '@/app/components/Datatable/functions';
 import { exportColumns, exportData } from './exports';
 import AddModal from '@/app/components/Datatable/AddModal';
 import AddSale from '../form/AddSale';
-import { PlusOutlined, ReloadOutlined , DeleteFilled } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined, DeleteFilled } from '@ant-design/icons';
 type Props = {
     searchParams: { type: string }
     data: Array<Sale | any>,
@@ -29,6 +29,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedItems, setSelectedItems] = useState<Array<MixInterfaces> | []>([]);
     const [visible, setVisible] = useState(false);
+    const [isPending, startTransition] = useTransition();
     const router = useRouter()
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -99,12 +100,13 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
 
     return (
         <div className=''>
-            <Filters searchParams={q} clients={clientsData} />
+            <Filters searchParams={q} clients={clientsData} startTransition={startTransition} />
             <AddModal visible={visible} setVisible={setVisible} >
                 {<AddSale items={itemsData ?? []} clients={clientsData ?? []} />}
             </AddModal>
             <div>
                 <DataTable
+                    loading={isPending}
                     className='data-table'
                     dataKey="_id"
                     totalRecords={totalRecords}
@@ -143,7 +145,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
                     <Column body={(rowData) =>
                         <div className='p-buttonset'>
                             <SaleActions rowData={rowData} />
-                            <Button  danger 
+                            <Button danger
                                 size='large' type='primary' icon={<DeleteFilled />} className='btn-delete'
                                 onClick={(e) => cancelSaleItem(e, rowData)} />
                         </div>
