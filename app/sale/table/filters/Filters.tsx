@@ -23,8 +23,10 @@ type FILTERS = {
 }
 
 
-type Props = { searchParams: URLSearchParams, clients: Array<Client> | undefined , 
-    startTransition :  React.TransitionStartFunction }
+type Props = {
+    searchParams: URLSearchParams, clients: Array<Client> | undefined,
+    startTransition: React.TransitionStartFunction, isPending: boolean
+}
 type RangeValue = [Dayjs | null, Dayjs | null] | null;
 
 
@@ -128,10 +130,10 @@ export const Filters = (props: Props) => {
 
         if (data?.length > 0) {
             setFilters(prev => ({ ...prev, client: data }))
-            await createQueryString(name, JSON.stringify(data))
+            params.set(name, JSON.stringify(data))
             props.startTransition(() => replace(pathname + '?' + params.toString()));
         } else {
-            deleteParams(name)
+            params.delete(name)
             setFilters(prev => ({ ...prev, client: data }))
             props.startTransition(() => replace(pathname + '?' + params.toString()));
 
@@ -141,10 +143,11 @@ export const Filters = (props: Props) => {
     const onBrandSelect = async (res: Array<string> | string) => {
         setFilters(prev => ({ ...prev, brand: res }))
         if (res?.length > 0) {
-            await createQueryString("brands", JSON.stringify(res))
+            params.set("brands", JSON.stringify(res))
+
             props.startTransition(() => replace(pathname + '?' + params.toString()));
         } else {
-            deleteParams("brands")
+            params.delete("brands")
             props.startTransition(() => replace(pathname + '?' + params.toString()));
 
         }
@@ -192,13 +195,14 @@ export const Filters = (props: Props) => {
                                 (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
                             fieldNames={{ label: "name", value: "_id" }}
                             size='large'
+                            loading={props.isPending}
                         />
                         {/* <AdvanceSelect name={"client"} value={"name"} multiple={true}
                             lableValue={"name"} options={props.clients} callback={(data) => onClientSelect(data, toggleClientFilters ? "client" : "excludeClients")} /> */}
                     </div>
                     <div className='flex flex-col gap-1'>
                         <label htmlFor="brans" className='block font-semibold text-sm'>By Brands</label>
-                        <BrandsSelect callback={onBrandSelect} value={filters.brand ?? ""} />
+                        <BrandsSelect callback={onBrandSelect} value={filters.brand ?? ""} loading={props.isPending} />
                     </div>
 
                     <div className='flex flex-col gap-1'>
@@ -207,6 +211,7 @@ export const Filters = (props: Props) => {
                             value={filters?.createdAt}
                             onChange={onDateChange}
                             format={"DD-MM-YYYY"}
+
                         />
                     </div>
                     {filters.status?.includes(1) ? (
@@ -217,6 +222,7 @@ export const Filters = (props: Props) => {
                                 onChange={onPaidDateChange}
                                 size='large'
                                 format={"DD-MM-YYYY"}
+
                             />
                         </div>
                     ) : null}

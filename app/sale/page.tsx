@@ -44,7 +44,7 @@ const page = async ({ searchParams }: Props) => {
 
     return (
         <SaleTable searchParams={searchParams} data={sales?.data ?? []}
-            clientsData={clients?.data ?? []}
+            clientsData={clients?.data ?? []} totalrows={sales?.totalrows ?? 0}
             itemsData={items?.data ?? []} sale={sales?.totalSale ?? 0} />
 
     )

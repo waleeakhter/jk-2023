@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useTransition } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import Filters from './../table/filters/Filters';
 import Tooltips, { columns } from './columns';
 import { Client, Item, LazyTableState, MixInterfaces, Sale } from '@/typings';
@@ -24,8 +24,9 @@ type Props = {
     clientsData: Array<Client>,
     itemsData: Array<Item>
     sale: number,
+    totalrows: number
 }
-const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) => {
+const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows }: Props) => {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedItems, setSelectedItems] = useState<Array<MixInterfaces> | []>([]);
     const [visible, setVisible] = useState(false);
@@ -37,11 +38,14 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
     const [lazyState, setlazyState] = useState<LazyTableState>({
         first: 0,
         rows: 10,
-        page: 1,
+        page: 0,
+        pageCount: totalrows
     });
-    const [totalRecords, setTotalRecords] = useState(data.length ?? 0);
-
-
+    const [totalRecords, setTotalRecords] = useState(totalrows ?? 0);
+    useEffect(() => {
+        console.log(totalrows, "totalrows")
+        setTotalRecords(totalrows)
+    }, [totalrows])
     // const query = useQuery({ queryKey: ['todos'], queryFn: getItems })
 
 
@@ -85,7 +89,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
                     <div className='flex-1 md-flex-auto'>
                         {selectedItems.length > 0 ? (selectedItems.reduce((total, sale) => total + sale.sell_quantity, 0) + " " + selectedItems.reduce((total, sale) => total + sale.total_amount, 0)) : ""}
                     </div>
-                    {selectedItems.length > 0 && <div className='flex-1 lg:flex-auto'><BulkUpdate selection={selectedItems} emptySelection={setSelectedItems} /></div>}
+                    {selectedItems.length > 0 && <div className='flex-1 lg:flex-auto'><BulkUpdate selection={selectedItems} emptySelection={setSelectedItems} startTransition={startTransition} /></div>}
                     <div className="lg:w-auto w-full flex">
                         <span className="p-input-icon-left">
                             <i className="pi pi-search" />
@@ -100,7 +104,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
 
     return (
         <div className=''>
-            <Filters searchParams={q} clients={clientsData} startTransition={startTransition} />
+            <Filters searchParams={q} clients={clientsData} startTransition={startTransition} isPending={isPending} />
             <AddModal visible={visible} setVisible={setVisible} >
                 {<AddSale items={itemsData ?? []} clients={clientsData ?? []} />}
             </AddModal>
@@ -109,15 +113,14 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
                     loading={isPending}
                     className='data-table'
                     dataKey="_id"
-                    totalRecords={totalRecords}
+                    totalRecords={10918}
                     scrollable
                     paginator
-                    first={lazyState.first}
                     onPage={onPage}
                     editMode="row"
                     selectionMode={'checkbox'}
                     size='small'
-                    rows={lazyState.rows ?? 10}
+                    rows={lazyState.rows}
                     rowsPerPageOptions={[10, 25, 50]}
                     removableSort
                     currentPageReportTemplate="{first} to {last} of {totalRecords}"
@@ -144,7 +147,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData }: Props) 
 
                     <Column body={(rowData) =>
                         <div className='p-buttonset'>
-                            <SaleActions rowData={rowData} />
+                            <SaleActions rowData={rowData} startTransition={startTransition} />
                             <Button danger
                                 size='large' type='primary' icon={<DeleteFilled />} className='btn-delete'
                                 onClick={(e) => cancelSaleItem(e, rowData)} />

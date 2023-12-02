@@ -1,15 +1,15 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import  dbConnect  from "./utils/dbConnect";
-import  AdminModal  from "@/models/Admin";
-import  bcrypt from 'bcrypt';
+import dbConnect from "./utils/dbConnect";
+import AdminModal from "@/models/Admin";
+import bcrypt from 'bcrypt';
 
 const login = async (credentials: Partial<Record<string, unknown>>) => {
   try {
     await dbConnect();
     const user = await AdminModal.findOne({ email: credentials.username });
     if (!user && user.role !== "admin") throw new Error("Wrong credentials!dsasd");
- 
+
     // const salt = await bcrypt.genSalt(10);
     // const hashedPassword = await bcrypt.hash(credentials.password as string, salt);
     // console.log(hashedPassword , "userss")
@@ -27,7 +27,7 @@ const login = async (credentials: Partial<Record<string, unknown>>) => {
   }
 };
 
-export const { signIn, signOut, auth  ,  handlers: { GET, POST },  } = NextAuth({
+export const { signIn, signOut, auth, handlers: { GET, POST }, } = NextAuth({
   pages: {
     signIn: "/auth/login",
   },
@@ -61,7 +61,7 @@ export const { signIn, signOut, auth  ,  handlers: { GET, POST },  } = NextAuth(
       }
       return session;
     },
- 
+
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: {

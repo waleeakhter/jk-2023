@@ -16,7 +16,7 @@ export async function GET(request: Request) {
         await dbConnect();
         const { searchParams } = new URL(request.url);
         const data = await getSaleList(searchParams)
-        return NextResponse.json({ data: data.saleList, totalSale: Math.round(data.totalSaleAmount.toFixed(2)) });
+        return NextResponse.json({ data: data.saleList, totalSale: Math.round(data.totalSaleAmount.toFixed(2)), totalrows: data.totalRows });
     } catch (error) {
         console.log(error);
         return NextResponse.json({ data: error });
@@ -92,18 +92,16 @@ export async function DELETE(request: Request, res: NextResponse) {
 
             for (const data of body) {
                 const item = await Item.findById(data.item._id);
-                 console.log(body  , "item.resource")
+                console.log(body, "item.resource")
                 if (item) {
                     if (body.resource === "shop"
                         || body.resource === undefined
                         || body.resource === null
-                    ) 
-                    {
+                    ) {
                         item.stock += data.sell_quantity;
                         await item.save();
                     }
-                    if (body.resource === "wearhouse") 
-                    {
+                    if (body.resource === "wearhouse") {
                         item.wearHouseStock += data.sell_quantity;
                         await item.save();
                     }

@@ -7,11 +7,11 @@ import { Menu, Tag } from 'antd';
 import { redirect, usePathname } from 'next/navigation'
 import Image from 'next/image';
 import { Session } from 'next-auth/types';
-type Props = {session : Session | null}
+type Props = { session: Session | null }
 
-const Header = ({session}: Props) => {
+const Header = ({ session }: Props) => {
   const pathname = usePathname()
-console.log(session)
+  console.log(session)
   const items: MenuProps['items'] = [
     {
 

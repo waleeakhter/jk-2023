@@ -1,8 +1,7 @@
 import { Sale } from '@/typings';
 import { Schema, model, models } from 'mongoose';
 
-
-
+import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 const SaleSchema: Schema<Sale> = new Schema<Sale>(
   {
 
@@ -57,6 +56,5 @@ const SaleSchema: Schema<Sale> = new Schema<Sale>(
   { timestamps: true, strict: false, collection: "sales" }
 );
 
-
-
+SaleSchema.plugin(aggregatePaginate);
 export default models.Sale || model("Sale", SaleSchema);
