@@ -1,12 +1,11 @@
-import { nextAuthOptions } from '@/app/authOptions';
 import dbConnect from '@/app/utils/dbConnect';
 import ItemModal from '@/models/Item';
-import { getServerSession } from 'next-auth';
+import { auth } from '@/app/auth';
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
     await dbConnect()
-    // const session = await getServerSession(nextAuthOptions)
+    // const session = await auth()
     function customSort(a: { name: string; }, b: { name: string; }): number {
         // Compare the names of the items
         const nameA = a.name.toUpperCase();

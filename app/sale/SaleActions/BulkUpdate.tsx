@@ -5,11 +5,14 @@ import { cancelSaleItem } from '../../components/Datatable/functions'
 import { statusHandler } from '@/app/sale/SaleActions/functions'
 import SaleActions from '.'
 
-type Props = { selection: Array<{ _id: string }> | [], emptySelection: Function, }
-const BulkUpdate = ({ selection, emptySelection, }: Props) => {
+type Props = {
+    selection: Array<{ _id: string }> | [], emptySelection: Function,
+    startTransition: React.TransitionStartFunction
+}
+const BulkUpdate = ({ selection, emptySelection, startTransition }: Props) => {
     return (
         <span className="p-buttonset">
-            <SaleActions selection={selection} emptySelection={emptySelection} />
+            <SaleActions selection={selection} emptySelection={emptySelection} startTransition={startTransition} />
             <Button icon="pi pi-times" severity='danger' size='small'
                 tooltip='Clear Selection' tooltipOptions={{ position: "bottom" }}
                 onClick={() => emptySelection([])}

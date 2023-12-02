@@ -4,16 +4,14 @@ import React, { useEffect, useState } from 'react'
 import { MobileOutlined, UsergroupAddOutlined, ShoppingCartOutlined, FileExclamationOutlined, LogoutOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu, Tag } from 'antd';
-import { usePathname } from 'next/navigation'
+import { redirect, usePathname } from 'next/navigation'
 import Image from 'next/image';
-import { useSession } from "next-auth/react"
-type Props = {}
+import { Session } from 'next-auth/types';
+type Props = { session: Session | null }
 
-const Header = (props: Props) => {
+const Header = ({ session }: Props) => {
   const pathname = usePathname()
-  const { data: session, status } = useSession()
-  session
-  console.log(pathname.replace("/", ''))
+  console.log(session)
   const items: MenuProps['items'] = [
     {
 
@@ -65,11 +63,12 @@ const Header = (props: Props) => {
         </div>
       </Link>
       <div className=' lg:max-w-md flex'>
-        {session?.user?.role === "admin" && <Menu style={{ minWidth: 0, flex: "auto" }} className=' ml-auto ' 
-        onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />}
+        {session && session?.user?.role === "admin" && <Menu style={{ minWidth: 0, flex: "auto" }} className=' ml-auto '
+          onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />}
       </div>
     </header>
   )
 }
 
 export default Header
+

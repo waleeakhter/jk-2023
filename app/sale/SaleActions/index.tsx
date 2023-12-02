@@ -7,9 +7,10 @@ import AlertForSaleUpdates from './Alert'
 
 interface Props {
     rowData?: Object[],
-    selection?: Array<{ _id: string }>, emptySelection?: Function
+    selection?: Array<{ _id: string }>, emptySelection?: Function,
+    startTransition: React.TransitionStartFunction
 }
-const SaleActions = ({ rowData, emptySelection, selection }: Props) => {
+const SaleActions = ({ rowData, emptySelection, selection, startTransition }: Props) => {
     const searchParams = useSearchParams().toString()!;
     const params = new URLSearchParams(searchParams);
     const status = JSON.parse(params.get("status") ?? '[0]')
@@ -24,14 +25,14 @@ const SaleActions = ({ rowData, emptySelection, selection }: Props) => {
 
     const updateHandler = (paidOn: Date) => {
 
-        statusHandler(rowData ?? selection,
+        startTransition(() => statusHandler(rowData ?? selection,
             currentStatus, currentStatus === 1 ? paidOn : undefined, undefined).then((res) => {
                 if (res?.success) {
                     if (emptySelection) {
                         emptySelection((prev: Object[]) => prev = [])
                     }
                 }
-            })
+            }))
     }
     return (
         <>

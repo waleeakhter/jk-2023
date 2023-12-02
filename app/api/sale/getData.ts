@@ -10,7 +10,9 @@ const defaultParams: SaleApiDefaultParams = {
     endAt: null,
     paidOn: null,
     client: '[]',
-    excludeClients: '[]'
+    excludeClients: '[]',
+    page: "1",
+    pageSize: "10"
 };
 const getSaleList = async (searchParams: any[] | URLSearchParams) => {
     const params = {
@@ -19,16 +21,17 @@ const getSaleList = async (searchParams: any[] | URLSearchParams) => {
     };
 
     const { status, brands, type, createdAt, endAt, paidOn, client,
-        excludeClients } = params;
+        excludeClients, page, pageSize } = params;
     const parsedStatus = JSON.parse(status);
     const parsedBrands = JSON.parse(brands);
     const parsedType = JSON.parse(type);
     const parsedClient = JSON.parse(client)
     const parsedExcludeClients = JSON.parse(excludeClients);
-
+    const pageNumber = page ? parseInt(page) : 1;
+    const pagination = pageSize ? parseInt(pageSize) : 10;
     const getDate = new Date(paidOn ?? new Date());
     getDate.setHours(0o0, 0, 0, 0);
-
+    console.log(pageNumber, pagination)
     const startOfDay = new Date(createdAt ?? "");
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(endAt ?? new Date());
@@ -37,7 +40,7 @@ const getSaleList = async (searchParams: any[] | URLSearchParams) => {
     const pipeline: PipelineStage[] = [
         {
             $match: {
-                status: { $in: parsedStatus },
+                ...(parsedStatus.length > 0 ? { status: { $in: parsedStatus } } : {}),
                 ...(paidOn && { paidOn: { $gte: getDate } }),
                 ...(createdAt && { createdAt: { $gte: startOfDay, $lte: endOfDay } }),
             },
@@ -118,10 +121,14 @@ const getSaleList = async (searchParams: any[] | URLSearchParams) => {
         });
     }
 
-    const saleList = await Sale.aggregate(pipeline);
+    const saleList = await Sale.aggregate(pipeline)
+    // .limit(pagination).skip((pageNumber - 1) * pagination)
     const totalSaleAmount = saleList.reduce((total, sale) => total + sale.total_amount, 0);
+    const count = await Sale.countDocuments({})
 
-    return { saleList, totalSaleAmount }
+    console.log(count)
+    const totalRows = Math.floor((count - 1) / pagination) + 1;
+    return { saleList, totalSaleAmount, totalRows }
 
 }
 

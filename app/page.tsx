@@ -1,5 +1,4 @@
 import React from 'react'
-import { getServerSessionGlobal } from './authOptions'
 import { redirect } from 'next/navigation'
 import { auth } from './auth'
 

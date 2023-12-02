@@ -23,7 +23,10 @@ type FILTERS = {
 }
 
 
-type Props = { searchParams: URLSearchParams, clients: Array<Client> | undefined }
+type Props = {
+    searchParams: URLSearchParams, clients: Array<Client> | undefined,
+    startTransition: React.TransitionStartFunction, isPending: boolean
+}
 type RangeValue = [Dayjs | null, Dayjs | null] | null;
 
 
@@ -32,7 +35,8 @@ export const Filters = (props: Props) => {
     const searchParams = useSearchParams().toString()!;
     const params = new URLSearchParams(searchParams);
     const [toggleClientFilters, setToggleClientFilters] = useState(true);
-    const router = useRouter();
+
+    const { replace } = useRouter();
     const pathname = usePathname();
     const intialFilters = {
         status: [Status.at(0)?.value ?? 0],
@@ -73,7 +77,7 @@ export const Filters = (props: Props) => {
 
     const deleteParams = (name: string) => {
         params.delete(name)
-        router.push(pathname + '?' + params.toString());
+        props.startTransition(() => replace(pathname + '?' + params.toString()));
 
     }
     const onSelectType = async (value: string[] | number[], name: string) => {
@@ -81,7 +85,7 @@ export const Filters = (props: Props) => {
         setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
         if (value.length > 0) {
             await createQueryString(name, JSON.stringify(value))
-            router.push(pathname + '?' + params.toString());
+            props.startTransition(() => replace(pathname + '?' + params.toString()));
         } else {
             deleteParams(name);
         }
@@ -106,7 +110,7 @@ export const Filters = (props: Props) => {
             params.delete("createdAt")
             params.delete("endAt")
         }
-        router.push(pathname + '?' + params.toString());
+        props.startTransition(() => replace(pathname + '?' + params.toString()));
     };
 
     const onPaidDateChange: DatePickerProps['onChange'] = (date, dateString) => {
@@ -119,20 +123,19 @@ export const Filters = (props: Props) => {
         }
 
 
-        router.push(pathname + '?' + params.toString());
-
+        props.startTransition(() => replace(pathname + '?' + params.toString()));
     };
 
     const onClientSelect = async (data: string[], name: string) => {
 
         if (data?.length > 0) {
             setFilters(prev => ({ ...prev, client: data }))
-            await createQueryString(name, JSON.stringify(data))
-            router.push(pathname + '?' + params.toString());
+            params.set(name, JSON.stringify(data))
+            props.startTransition(() => replace(pathname + '?' + params.toString()));
         } else {
-            deleteParams(name)
+            params.delete(name)
             setFilters(prev => ({ ...prev, client: data }))
-            router.push(pathname + '?' + params.toString());
+            props.startTransition(() => replace(pathname + '?' + params.toString()));
 
         }
     }
@@ -140,11 +143,12 @@ export const Filters = (props: Props) => {
     const onBrandSelect = async (res: Array<string> | string) => {
         setFilters(prev => ({ ...prev, brand: res }))
         if (res?.length > 0) {
-            await createQueryString("brands", JSON.stringify(res))
-            router.push(pathname + '?' + params.toString());
+            params.set("brands", JSON.stringify(res))
+
+            props.startTransition(() => replace(pathname + '?' + params.toString()));
         } else {
-            deleteParams("brands")
-            router.push(pathname + '?' + params.toString());
+            params.delete("brands")
+            props.startTransition(() => replace(pathname + '?' + params.toString()));
 
         }
     }
@@ -191,13 +195,14 @@ export const Filters = (props: Props) => {
                                 (option?.name?.toLocaleLowerCase() ?? '').includes(input.toLocaleLowerCase())}
                             fieldNames={{ label: "name", value: "_id" }}
                             size='large'
+                            loading={props.isPending}
                         />
                         {/* <AdvanceSelect name={"client"} value={"name"} multiple={true}
                             lableValue={"name"} options={props.clients} callback={(data) => onClientSelect(data, toggleClientFilters ? "client" : "excludeClients")} /> */}
                     </div>
                     <div className='flex flex-col gap-1'>
                         <label htmlFor="brans" className='block font-semibold text-sm'>By Brands</label>
-                        <BrandsSelect callback={onBrandSelect} value={filters.brand ?? ""} />
+                        <BrandsSelect callback={onBrandSelect} value={filters.brand ?? ""} loading={props.isPending} />
                     </div>
 
                     <div className='flex flex-col gap-1'>
@@ -206,6 +211,7 @@ export const Filters = (props: Props) => {
                             value={filters?.createdAt}
                             onChange={onDateChange}
                             format={"DD-MM-YYYY"}
+
                         />
                     </div>
                     {filters.status?.includes(1) ? (
@@ -216,13 +222,14 @@ export const Filters = (props: Props) => {
                                 onChange={onPaidDateChange}
                                 size='large'
                                 format={"DD-MM-YYYY"}
+
                             />
                         </div>
                     ) : null}
                 </div>
 
                 <Button title="Clear" size='middle' danger type='dashed' icon={<ClearOutlined />}
-                    onClick={() => { setFilters(intialFilters); router.push(pathname); }}
+                    onClick={() => { setFilters(intialFilters); props.startTransition(() => replace(pathname)); }}
                     className='mt-3' >
                     Clear
                 </Button>

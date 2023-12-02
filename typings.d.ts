@@ -63,6 +63,8 @@ export interface SaleApiDefaultParams {
     paidOn: string | null;
     client: string;
     excludeClients: string;
+    page: string;
+    pageSize: string;
 }
 
 export interface LazyTableState {
