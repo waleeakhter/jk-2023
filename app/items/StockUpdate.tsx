@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react'
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { Item } from '@/typings';
+import { Item } from '@/types/typings';
 import { Toast } from 'primereact/toast';
 import { InputNumber, DatePicker, Select, Badge, Tag, Radio, Button } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

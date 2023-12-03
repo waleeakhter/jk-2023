@@ -1,4 +1,4 @@
-import { Sale } from "@/typings";
+import { Sale } from "@/types/typings";
 
 const initialValues: Sale = {
   item: '',

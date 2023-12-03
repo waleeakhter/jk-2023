@@ -1,5 +1,5 @@
 
-import { Sale } from "@/typings"
+import { Sale } from "@/types/typings"
 import moment from "moment"
 
 export const exportColumns = [

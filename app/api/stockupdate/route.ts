@@ -1,6 +1,6 @@
 import dbConnect from '@/app/utils/dbConnect';
 import ItemModal from '@/models/Item';
-import { Item } from '@/typings';
+import { Item } from '@/types/typings';
 import { NextRequest, NextResponse } from 'next/server'
 import Log from '@/models/Log';
 

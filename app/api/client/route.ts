@@ -2,7 +2,7 @@ import { auth } from '@/app/auth';
 import dbConnect from '@/app/utils/dbConnect';
 import fetchCall from '@/app/utils/fetch';
 import ClientModal from '@/models/Client';
-import { Client } from '@/typings';
+import { Client } from '@/types/typings';
 import { NextResponse } from 'next/server';
 
 
@@ -34,6 +34,7 @@ export async function PATCH(request: Request) {
     if (!client?.name) {
       throw new Error("Client not found")
     }
+    console.log(client)
     client.name = body.name;
     client.credit = body.credit;
     console.log(body)

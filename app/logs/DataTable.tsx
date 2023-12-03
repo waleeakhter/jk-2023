@@ -5,7 +5,7 @@ import { logTableColumns } from './Columns'
 import { Input, Flex } from 'antd';
 import { useQuery } from '@tanstack/react-query';
 import { getLogs } from './functions';
-import { Item } from '@/typings';
+import { Item } from '@/types/typings';
 
 interface Filters {
     name: string;

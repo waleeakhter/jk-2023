@@ -1,4 +1,4 @@
-import { Log } from "@/typings";
+import { Log } from "@/types/typings";
 import { useQuery } from "@tanstack/react-query";
 import { Tooltip, Typography } from "antd";
 import type { ColumnsType } from 'antd/es/table';

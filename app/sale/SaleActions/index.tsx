@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button } from '../form/formik'
 import { statusHandler } from './functions'
-import { Sale } from '@/typings'
+import { Sale } from '@/types/typings'
 import { useSearchParams } from 'next/navigation'
 import AlertForSaleUpdates from './Alert'
 

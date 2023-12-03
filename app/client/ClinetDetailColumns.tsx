@@ -1,5 +1,5 @@
 
-import { Payments, Sale } from '@/typings';
+import { Payments, Sale } from '@/types/typings';
 import { Button, Input, Tag, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import moment from 'moment';

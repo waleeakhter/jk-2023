@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Select } from 'antd';
-import { Client } from '@/typings';
+import { Client } from '@/types/typings';
 import { useQuery } from '@tanstack/react-query';
 import { Table, Skeleton } from 'antd';
 import { ClinetDetailColumns, paymentHistoryColumns } from './ClinetDetailColumns';

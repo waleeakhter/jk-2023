@@ -4,7 +4,7 @@ import moment from 'moment'
 import jsPDF from 'jspdf';
 import { ReadonlyURLSearchParams } from 'next/navigation';
 import { JSON2SheetOpts } from 'xlsx';
-import { Sale } from '@/typings';
+import { Sale } from '@/types/typings';
 import writeXlsxFile, { SheetData } from 'write-excel-file';
 import internal, { Readable } from 'stream';
 

@@ -1,4 +1,4 @@
-import { Client } from '@/typings';
+import { Client } from '@/types/typings';
 import { SingleValue, Options } from 'react-select';
 import types from "@/app/utils/types.json"
 import { Payments } from '@/models/Payments';
