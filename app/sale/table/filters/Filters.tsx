@@ -84,10 +84,10 @@ export const Filters = (props: Props) => {
         console.log(value)
         setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
         if (value.length > 0) {
-            await createQueryString(name, JSON.stringify(value))
+            params.set(name, JSON.stringify(value))
             props.startTransition(() => replace(pathname + '?' + params.toString()));
         } else {
-            deleteParams(name);
+            params.delete(name)
         }
 
 
@@ -98,9 +98,8 @@ export const Filters = (props: Props) => {
             setFilters(prevFilters => ({
                 ...prevFilters, "createdAt": rawValues
             }));
-
-            await createQueryString("createdAt", dayjs(rawValues[0]).toString())
-            await createQueryString("endAt", dayjs(rawValues[1]).toString())
+            params.set("createdAt", dayjs(rawValues[0]).toString())
+            params.set("endAt", dayjs(rawValues[1]).toString())
 
 
         } else {
@@ -117,7 +116,7 @@ export const Filters = (props: Props) => {
 
         if (date) {
             setFilters(prev => ({ ...prev, paidOn: date }))
-            createQueryString("paidOn", dateString)
+            params.set("paidOn", dateString)
         } else {
             params.delete("paidOn")
         }
