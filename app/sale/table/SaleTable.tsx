@@ -109,6 +109,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
             </AddModal>
             <div>
                 <DataTable
+                    size={"small"}
                     loading={isPending}
                     className='data-table'
                     dataKey="_id"
@@ -118,7 +119,6 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
                     onPage={onPage}
                     editMode="row"
                     selectionMode={'checkbox'}
-                    size='small'
                     rows={data.length}
                     rowsPerPageOptions={[10, 25, 50]}
                     removableSort

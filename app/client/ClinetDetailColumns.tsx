@@ -1,6 +1,6 @@
 
 import { Payments, Sale } from '@/types/typings';
-import { Button, Input, Tag, Tooltip } from 'antd';
+import { Button, Input, Tag, Tooltip, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
 import { RollbackOutlined } from '@ant-design/icons';
@@ -72,6 +72,7 @@ export const ClinetDetailColumns: ColumnsType<Sale & Payments> = [
     key: 'total_amount',
     width: 50,
   },
+
   {
     title: 'Status',
     dataIndex: 'status',
@@ -156,6 +157,17 @@ export const paymentHistoryColumns: ColumnsType<Payments & Sale> = [
       compare: (a, b) => a.amount - b.amount,
       multiple: 2
     },
+  },
+  {
+    title: 'Details',
+    dataIndex: 'details',
+    key: 'details',
+    render: (value) =>  {
+     console.log(value)
+     return value ? <Typography  > <pre className="text-xs">
+        {Object.keys(value).map((key, index) => <div key={index}>{`${key}: ${value[key]}`}</div>)}
+    </pre> </Typography> : ''
+    }
   },
   {
     title: 'Date',

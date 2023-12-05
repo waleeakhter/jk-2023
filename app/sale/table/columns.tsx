@@ -1,7 +1,7 @@
 import { ColumnEditorOptions, ColumnProps } from 'primereact/column';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
-import { Tooltip } from 'primereact/tooltip';
+// import { Tooltip } from 'primereact/tooltip';
 import DatePicker from "react-datepicker";
 
 const inputsEditor = (options: any, type: string) => {
@@ -25,11 +25,19 @@ const inputsEditor = (options: any, type: string) => {
 export const columns: Array<ColumnProps> = [
     {
         field: "client.name", header: 'Client', sortable: true,
+        style : {width : "100px"},
+        className : "itemName max-w-[100px] text-ellipsis overflow-hidden whitespace-nowrap",
+        body: (data: { client: { name: string } }) =><Tooltip title={data.client.name} placement="bottomLeft"> 
+        <p className="itemName max-w-[20rem] text-ellipsis overflow-hidden whitespace-nowrap ">{data.client.name}</p>
+        </Tooltip>,
     },
     {
-        body: (data: { item: { name: string } }) => <p data-pr-tooltip={data.item.name} className="itemName max-w-[20rem] text-ellipsis overflow-hidden whitespace-nowrap ">{data.item.name}</p>,
+        body: (data: { item: { name: string } }) =><Tooltip title={data.item.name} placement="bottomLeft"> 
+        <p className="itemName max-w-[20rem] text-ellipsis overflow-hidden whitespace-nowrap ">{data.item.name}</p>
+        </Tooltip>,
         header: 'Item',
-        sortable: true
+        sortable: true,
+        field:"item.name",
     },
     {
         field: 'item.type', header: 'Type', sortable: true,
@@ -72,12 +80,13 @@ export const columns: Array<ColumnProps> = [
 ]
 
 import React from 'react'
+import { Tooltip } from 'antd';
 
 type Props = {}
 
 const Tooltips = (props: Props) => {
     return (
-        <Tooltip target=".itemName" position='bottom'></Tooltip>
+        <Tooltip  placement="bottomLeft"></Tooltip>
     )
 }
 

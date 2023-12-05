@@ -36,6 +36,7 @@ export interface Client {
 
 
 export interface Sale {
+    _id?: string | undefined;
     createdAt?: Date | string;
     item: Types.ObjectId | Item | string;
     client: Types.ObjectId | Client | string;
@@ -81,6 +82,7 @@ export interface Payments {
     client: Client;
     amount: number;
     paymentDate: Date | string;
+    "details": {},
 }
 export interface Log {
     "name": string
