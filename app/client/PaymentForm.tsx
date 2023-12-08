@@ -2,7 +2,7 @@ import React from 'react';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, DatePicker, Flex, Form, Input, InputNumber, Select, Space, Typography, notification } from 'antd';
 import moment from 'moment';
-import { Client } from '@/typings';
+import { Client } from '@/types/typings';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const defaultValues = {

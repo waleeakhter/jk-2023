@@ -1,7 +1,7 @@
 import dbConnect from "@/app/utils/dbConnect";
 import PaymentModal from "@/models/Payments";
 import { NextResponse } from 'next/server';
-import { Payments } from '@/typings';
+import { Payments } from '@/types/typings';
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   await dbConnect()
   const id = params.id

@@ -1,4 +1,4 @@
-import { Sale } from '@/typings';
+import { Sale } from '@/types/typings';
 import { Schema, model, models } from 'mongoose';
 
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';

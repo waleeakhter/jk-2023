@@ -1,5 +1,5 @@
 "use client"
-import { Client, Item } from '@/typings';
+import { Client, Item } from '@/types/typings';
 import { ErrorMessage, Formik, Field, FormikHelpers } from 'formik';
 import { Button } from "primereact/button"
 import React, { useState } from 'react'

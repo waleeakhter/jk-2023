@@ -1,4 +1,4 @@
-import { MixInterfaces } from '@/typings'
+import { MixInterfaces } from '@/types/typings'
 import { Button } from 'primereact/button'
 import React from 'react'
 import { cancelSaleItem } from '../../components/Datatable/functions'

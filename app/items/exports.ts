@@ -1,5 +1,5 @@
 
-import { Item } from "@/typings"
+import { Item } from "@/types/typings"
 
 export const exportColumns = [
     { header: "Item", dataKey: "item" },

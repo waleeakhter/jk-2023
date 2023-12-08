@@ -1,6 +1,6 @@
 "use server"
 
-import { Client } from "@/typings"
+import { Client } from "@/types/typings"
 import { revalidateTag } from "next/cache"
 
 export const updateClientCredit = async ( data: Client & {_id : string}) => {

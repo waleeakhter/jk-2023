@@ -43,9 +43,11 @@ const page = async ({ searchParams }: Props) => {
     var [items, clients, sales] = await Promise.all([itemsData, clientsData, salesData])
 
     return (
-        <SaleTable searchParams={searchParams} data={sales?.data ?? []}
-            clientsData={clients?.data ?? []} totalrows={sales?.totalrows ?? 0}
-            itemsData={items?.data ?? []} sale={sales?.totalSale ?? 0} />
+        <>
+            <SaleTable searchParams={searchParams} data={sales?.data ?? []}
+                clientsData={clients?.data ?? []} totalrows={sales?.totalrows ?? 0}
+                itemsData={items?.data ?? []} sale={sales?.totalSale ?? 0} />
+        </>
 
     )
 }

@@ -4,7 +4,7 @@ import DataTable from './DataTable'
 import { auth } from '../auth'
 import { redirect } from 'next/navigation'
 import { getLogs } from './functions'
-import { Log } from '@/typings'
+import { Log } from '@/types/typings'
 
 const Logs = async () => {
     const session = await auth()

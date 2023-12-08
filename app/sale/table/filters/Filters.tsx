@@ -11,7 +11,7 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { DatePickerProps, RangePickerProps } from 'antd/es/date-picker';
 import { Select } from 'antd';
-import { Client } from '@/typings';
+import { Client } from '@/types/typings';
 import { ClearOutlined } from '@ant-design/icons';
 type FILTERS = {
     createdAt: RangeValue,

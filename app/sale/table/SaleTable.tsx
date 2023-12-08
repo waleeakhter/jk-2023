@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useTransition } from 'react';
 import Filters from './../table/filters/Filters';
 import Tooltips, { columns } from './columns';
-import { Client, Item, LazyTableState, MixInterfaces, Sale } from '@/typings';
+import { Client, Item, LazyTableState, MixInterfaces, Sale } from '@/types/typings';
 import ExportData from '@/app/components/ExportData';
 import { useRouter } from 'next/navigation';
 import { Column, ColumnProps } from 'primereact/column';
@@ -39,7 +39,6 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
         first: 0,
         rows: 10,
         page: 0,
-        pageCount: totalrows
     });
     const [totalRecords, setTotalRecords] = useState(totalrows ?? 0);
     useEffect(() => {
@@ -110,6 +109,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
             </AddModal>
             <div>
                 <DataTable
+                    size={"small"}
                     loading={isPending}
                     className='data-table'
                     dataKey="_id"
@@ -119,8 +119,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
                     onPage={onPage}
                     editMode="row"
                     selectionMode={'checkbox'}
-                    size='small'
-                    rows={lazyState.rows}
+                    rows={data.length}
                     rowsPerPageOptions={[10, 25, 50]}
                     removableSort
                     currentPageReportTemplate="{first} to {last} of {totalRecords}"

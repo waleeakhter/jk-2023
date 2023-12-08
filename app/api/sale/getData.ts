@@ -1,5 +1,5 @@
 import Sale from "@/models/Sale";
-import { SaleApiDefaultParams } from "@/typings";
+import { SaleApiDefaultParams } from "@/types/typings";
 import { PipelineStage, Types } from "mongoose";
 
 const defaultParams: SaleApiDefaultParams = {

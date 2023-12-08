@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { _customStyles } from "./SelectStyle";
 import CreatableSelect from './CreatableSelect';
-import { Option, ReactSelect } from '@/typings';
+import { Option, ReactSelect } from '@/types/typings';
 import { GroupBase, MultiValue, OptionsOrGroups, SingleValue } from 'react-select';
 import Group from 'react-select/dist/declarations/src/components/Group';
 
