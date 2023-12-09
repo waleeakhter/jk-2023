@@ -17,13 +17,29 @@ export async function POST(req: NextRequest) {
         if (!getItem?._id) {
             throw new Error(`Could not find the item`)
         }
+
         if (check === "wearhouse") {
+            const wearHouseStock = getItem.wearHouseStock ?? 0; // Get the wearHouseStock value or default to 0 if undefined
+            const shopStock = getItem.stock; // Get the shop stock value
+
+            const salePrice = getItem.purchase_price; // Get the current sale price
+
+            // Calculate the total cost of the old stock
+            const oldStockCost = (wearHouseStock + shopStock) * salePrice;
+            const newStockCost = body.stock * body.purchase_price; // New items * Price per new item
+
+            const totalItems = body.stock + wearHouseStock + shopStock; // Total items after update
+
+            const totalCost = oldStockCost + newStockCost; // Total cost of all items after update
+
+            const averagePrice = Number(totalCost / totalItems).toFixed(2); // Average price
+            console.log(oldStockCost, getItem.wearHouseStock ?? 0, getItem.stock, getItem.purchase_price, "Average price")
             const stockUpdateItem = await ItemModal.findByIdAndUpdate(item._id,
                 {
                     $set: {
                         wearhouseStockUpdated: body.stockUpdate,
-                        wearHouseStock: body.stock + (getItem.wearHouseStock ?? 0),
-                        purchase_price: body.purchase_price,
+                        wearHouseStock:  body.stock + wearHouseStock,
+                        purchase_price: averagePrice,
                     }
                 })
             await Log.create({
