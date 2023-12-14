@@ -6,10 +6,10 @@ import { Client, Item, LazyTableState, MixInterfaces, Sale } from '@/types/typin
 import ExportData from '@/app/components/ExportData';
 import { useRouter } from 'next/navigation';
 import { Column, ColumnProps } from 'primereact/column';
-import { DataTablePageEvent, DataTable, DataTableRowEditCompleteEvent } from 'primereact/datatable';
+import { DataTablePageEvent, DataTable, DataTableRowEditCompleteEvent, DataTableRowEditSaveEvent } from 'primereact/datatable';
 import { updateOrder } from '@/app/components/Datatable/serverActions';
 import { FilterMatchMode } from 'primereact/api';
-import { Button } from 'antd'
+import { Button, Form } from 'antd'
 import BulkUpdate from '../SaleActions/BulkUpdate';
 import { InputText } from 'primereact/inputtext';
 import SaleActions from '../SaleActions';
@@ -56,6 +56,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
     const onRowEditComplete = (e: DataTableRowEditCompleteEvent) => {
         let _items = [...data];
         let { newData, index } = e;
+        console.log(e , "edit complete")
         _items[index] = newData;
         updateOrder(newData as any, "sale")
     };
@@ -72,6 +73,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
     const refreshTable = () => {
         router.refresh()
     }
+    const [form] = Form.useForm();
     const renderHeader = () => {
         return (
             <div className="flex md:justify-between justify-center items-center flex-wrap gap-2">
@@ -107,7 +109,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
             <AddModal visible={visible} setVisible={setVisible} >
                 {<AddSale items={itemsData ?? []} clients={clientsData ?? []} />}
             </AddModal>
-            <div>
+            <Form form={form}>
                 <DataTable
                     size={"small"}
                     loading={isPending}
@@ -140,7 +142,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
                 >
                     <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                     {
-                        columns.map((col: ColumnProps, i: number) => <Column {...col} key={i.toString()} />)
+                        columns(form).map((col: ColumnProps, i: number) => <Column {...col} key={i.toString()} />)
                     }
                     <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
 
@@ -155,7 +157,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
                         header={'Action'} frozen={true} style={{ flexGrow: 1, flexBasis: '100px' }} />
 
                 </DataTable>
-            </div>
+            </Form>
             <Tooltips />
         </div>
     )
