@@ -88,6 +88,7 @@ const ClientDetail: React.FC<Props> = ({ id, isModalOpen, setIsModalOpen }) => {
                 <Tabs defaultActiveKey="1" items={[{ key: "1", label: "Items List" }, { key: "2", label: "Payment History" }]} onChange={onChange} />
                 <Table sticky={{ offsetScroll: 1 }} scroll={{ y: "64vh", scrollToFirstRowOnChange: true }} size='small'
                     loading={isPending} dataSource={getData()}
+                    rowKey={(record) => record._id}
                     columns={tabIndex === "2" ? paymentHistoryColumns
                         : ClinetDetailColumns} />
             </Modal>

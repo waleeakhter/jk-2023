@@ -8,7 +8,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   await dbConnect()
-  const session  = await auth()
+  const session = await auth()
   //  if(!session?.user.id){
   //   return NextResponse.json({ message : 'Unauthorized' } , {status : 401});
 
@@ -37,9 +37,6 @@ export async function PATCH(request: Request) {
     console.log(client)
     client.name = body.name;
     client.credit = body.credit;
-    console.log(body)
-    // when live
-    // client.credit -= body.debit;
     await client.save();
     return NextResponse.json({ data: client, message: "Client Updated", status: true });
 

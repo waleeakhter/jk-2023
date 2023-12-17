@@ -12,17 +12,18 @@ import { columns } from './columns'
 import { updateClientCredit } from './serverAction'
 import PaymentForm from './PaymentForm'
 import { useQuery } from '@tanstack/react-query'
-import { Button, Tooltip } from 'antd';
+import { Button, Card, Form, Table, Tag, Tooltip } from 'antd';
 import { PlusOutlined, ReloadOutlined, EyeOutlined } from '@ant-design/icons';
 import ClientDetail from './ClinetDetail'
+import { AntColumns, EditableCell } from './AntColumns'
 type Props = { values: Array<Client | string | any> }
 const Datatable = ({ values }: Props) => {
     const [visible, setVisible] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [clinetID, setClientID] = useState("");
     const router = useRouter()
-
-    const showModal = (rowData: Client & { _id: string }, val: boolean) => {
+    const [form] = Form.useForm();
+    const showModal = (rowData: Client) => {
         setClientID(rowData._id)
         setIsModalOpen(true);
     };
@@ -74,15 +75,15 @@ const Datatable = ({ values }: Props) => {
         router.refresh()
     }
 
-    const renderHeader = () => {
+    const RenderHeader = () => {
         return (
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center ">
                 <div className='flex  gap-3 items-center '>
                     <h5 className="m-0 text-2xl text-gray-800 ">{"Sale"}</h5>
                     <Button size='middle' type='dashed' icon={<PlusOutlined />} onClick={() => setVisible(true)} />
                 </div>
                 <div className='text-center'>
-                    <h1 className='text-xl'>{Number(totalCredit ?? 0) > 0 ? <p>Total Amount: {totalCredit}<i className='pi pi-euro'></i> </p> : ""} </h1>
+                    <Tag color='default' className=' text-base'>{Number(totalCredit ?? 0) > 0 ? <p>Total Amount: {totalCredit} </p> : ""} </Tag>
 
                 </div>
                 <div className='flex gap-2'>
@@ -97,13 +98,29 @@ const Datatable = ({ values }: Props) => {
         )
     }
     return (
-        <div className=''>
+        <Card className=' pt-5'>
             <AddModal heading="Payments" visible={visible} setVisible={setVisible} >
                 <PaymentForm clients={data} />
             </AddModal>
             <ClientDetail setIsModalOpen={setIsModalOpen} isModalOpen={isModalOpen} id={clinetID} />
             <div>
-                <DataTable
+                <RenderHeader />
+                <Form form={form} component={false}>
+                    <Table columns={AntColumns(form, data ?? [] as Array<Client>, showModal)} dataSource={data ?? []} rowKey={(record) => record._id}
+                        components={{
+                            body: {
+                                cell: EditableCell
+                            }
+                        }}
+                        showHeader
+                        key="_id"
+                        size='small'
+                        scroll={{ y: "calc(100vh - 270px)", scrollToFirstRowOnChange: true }}
+                        sticky={{ offsetHeader: 81 }}
+
+                    />
+                </Form>
+                {/* <DataTable
                     className='data-table w-full'
                     dataKey="_id"
                     totalRecords={totalRecords}
@@ -143,10 +160,10 @@ const Datatable = ({ values }: Props) => {
                     }
                         header={'Action'} frozen={true} style={{ flexGrow: 1, flexBasis: '100px' }} />
 
-                </DataTable>
+                </DataTable> */}
             </div>
             <Tooltips />
-        </div>
+        </Card>
     )
 }
 

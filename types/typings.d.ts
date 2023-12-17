@@ -29,6 +29,7 @@ export interface Item {
 }
 
 export interface Client {
+    _id: string;
     name: string;
     credit: number;
     debit: number;
@@ -36,7 +37,7 @@ export interface Client {
 
 
 export interface Sale {
-    _id?: string | undefined;
+    _id: string;
     createdAt?: Date | string;
     item: Types.ObjectId | Item | string;
     client: Types.ObjectId | Client | string;
