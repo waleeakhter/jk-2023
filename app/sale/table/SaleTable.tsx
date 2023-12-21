@@ -9,7 +9,7 @@ import { Column, ColumnProps } from 'primereact/column';
 import { DataTablePageEvent, DataTable, DataTableRowEditCompleteEvent, DataTableRowEditSaveEvent } from 'primereact/datatable';
 import { updateOrder } from '@/app/components/Datatable/serverActions';
 import { FilterMatchMode } from 'primereact/api';
-import { Button, Form } from 'antd'
+import { Button, Form, Table } from 'antd'
 import BulkUpdate from '../SaleActions/BulkUpdate';
 import { InputText } from 'primereact/inputtext';
 import SaleActions from '../SaleActions';
@@ -18,6 +18,7 @@ import { exportColumns, exportData } from './exports';
 import AddModal from '@/app/components/Datatable/AddModal';
 import AddSale from '../form/AddSale';
 import { PlusOutlined, ReloadOutlined, DeleteFilled } from '@ant-design/icons';
+import { AntColumns, EditableCell } from './AntColumns';
 type Props = {
     searchParams: { type: string }
     data: Array<Sale | any>,
@@ -56,7 +57,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
     const onRowEditComplete = (e: DataTableRowEditCompleteEvent) => {
         let _items = [...data];
         let { newData, index } = e;
-        console.log(e , "edit complete")
+        console.log(e, "edit complete")
         _items[index] = newData;
         updateOrder(newData as any, "sale")
     };
@@ -109,7 +110,23 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
             <AddModal visible={visible} setVisible={setVisible} >
                 {<AddSale items={itemsData ?? []} clients={clientsData ?? []} />}
             </AddModal>
-            <Form form={form}>
+            <Form form={form} component={false}>
+                <Table columns={AntColumns(form, data ?? [] as Array<Sale>)} dataSource={data ?? []} rowKey={(record) => record._id}
+                    components={{
+                        body: {
+                            cell: (cell: any) => EditableCell(cell, form)
+                        }
+                    }}
+                    showHeader
+                    bordered
+                    key="_id"
+                    size='small'
+                    scroll={{ y: "calc(100vh - 270px)", scrollToFirstRowOnChange: true }}
+                    sticky={{ offsetHeader: 81 }}
+
+                />
+            </Form>
+            {/* <Form form={form}>
                 <DataTable
                     size={"small"}
                     loading={isPending}
@@ -157,7 +174,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
                         header={'Action'} frozen={true} style={{ flexGrow: 1, flexBasis: '100px' }} />
 
                 </DataTable>
-            </Form>
+            </Form> */}
             <Tooltips />
         </div>
     )

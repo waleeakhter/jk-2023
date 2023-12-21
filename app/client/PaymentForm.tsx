@@ -1,7 +1,6 @@
 import React from 'react';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, DatePicker, Flex, Form, Input, InputNumber, Select, Space, Typography, notification } from 'antd';
-import moment from 'moment';
 import { Client } from '@/types/typings';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -15,19 +14,19 @@ const PaymentForm = ({ clients }: { clients: Array<Client> }) => {
   const [form] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
   const queryClient = useQueryClient()
-  const { mutate: addPayment, isPending  } = useMutation({
-    mutationFn :  (values) =>{
+  const { mutate: addPayment, isPending } = useMutation({
+    mutationFn: (values) => {
 
- return  fetch('/api/client/payment', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      cache: "no-cache",
-      body: JSON.stringify(values),
-    })
-  },
-    onSuccess : async (res) => {
+      return fetch('/api/client/payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: "no-cache",
+        body: JSON.stringify(values),
+      })
+    },
+    onSuccess: async (res) => {
       const rest = await res.json();
       if (rest?.success) {
         api.success({
@@ -35,21 +34,21 @@ const PaymentForm = ({ clients }: { clients: Array<Client> }) => {
           description: rest?.message,
           "placement": "topRight",
         });
-       
+
         form.resetFields();
       }
-      return await queryClient.invalidateQueries({ queryKey: ['client' ]});
+      return await queryClient.invalidateQueries({ queryKey: ['client'] });
     },
-    onError : (err: Error) => {
+    onError: (err: Error) => {
       console.log(err)
       api.success({
         message: "Error",
         description: "Something went wrong",
         "placement": "topRight",
       });
-    
-  }
-})
+
+    }
+  })
   return <Form
     form={form}
     name="dynamic_form_nest_item"
@@ -104,7 +103,7 @@ const PaymentForm = ({ clients }: { clients: Array<Client> }) => {
       )}
     </Form.List>
     <Flex wrap="wrap" gap="small" className="site-button-ghost-wrapper" justify='end'>
-      <Button loading={isPending } type="dashed" size='middle' htmlType="submit"  >
+      <Button loading={isPending} type="dashed" size='middle' htmlType="submit"  >
         Submit
       </Button>
     </Flex>
