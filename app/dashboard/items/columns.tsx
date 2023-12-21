@@ -2,7 +2,6 @@ import { Badge, Tag } from 'antd';
 import { ColumnEditorOptions, ColumnProps } from 'primereact/column';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
-import { Tooltip } from 'primereact/tooltip';
 import DatePicker from "react-datepicker";
 
 const inputsEditor = (options: ColumnEditorOptions, type: string) => {

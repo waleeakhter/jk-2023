@@ -1,7 +1,7 @@
 "use server"
 import React from 'react'
 import DataTable from './DataTable'
-import { auth } from '../auth'
+import { auth } from '../../auth'
 import { redirect } from 'next/navigation'
 import { getLogs } from './functions'
 import { Log } from '@/types/typings'

@@ -1,7 +1,7 @@
 'use server'
 import React from 'react'
 import Datatable from './Datatable';
-import { auth } from '../auth'
+import { auth } from '../../auth'
 import { redirect } from 'next/navigation';
 
 type Props = {}

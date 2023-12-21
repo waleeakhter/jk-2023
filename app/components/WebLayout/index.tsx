@@ -1,21 +1,27 @@
 import React from 'react'
 import Header from '../Header'
+import AuthProvider from '@/app/context/AuthProvider'
+import StyledComponentsRegistry from '@/app/lib/AntdRegistry'
+import { auth } from '@/app/auth'
 
 type Props = {}
 
-const WebLayout = ({
+const DashboardLayout = async ({
     children,
 }: {
     children: React.ReactNode
 }) => {
+    const session = await auth()
     return (
         <>
-            {/* <Header /> */}
-            <div className='p-8'>
-                {children}
-            </div>
+             <AuthProvider>
+          <Header session={session} />
+          <StyledComponentsRegistry>
+            {children}
+          </StyledComponentsRegistry>
+        </AuthProvider>
         </>
     )
 }
 
-export default WebLayout
+export default DashboardLayout

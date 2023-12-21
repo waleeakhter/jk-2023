@@ -12,8 +12,6 @@ import { FilterMatchMode } from 'primereact/api';
 import { Button, Form, Table } from 'antd'
 import BulkUpdate from '../SaleActions/BulkUpdate';
 import { InputText } from 'primereact/inputtext';
-import SaleActions from '../SaleActions';
-import { cancelSaleItem } from '@/app/components/Datatable/functions';
 import { exportColumns, exportData } from './exports';
 import AddModal from '@/app/components/Datatable/AddModal';
 import AddSale from '../form/AddSale';
@@ -75,7 +73,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
         router.refresh()
     }
     const [form] = Form.useForm();
-    const renderHeader = () => {
+    const RenderHeader = () => {
         return (
             <div className="flex md:justify-between justify-center items-center flex-wrap gap-2">
                 <div className='flex  gap-1 items-center mr-auto '>
@@ -110,6 +108,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
             <AddModal visible={visible} setVisible={setVisible} >
                 {<AddSale items={itemsData ?? []} clients={clientsData ?? []} />}
             </AddModal>
+            <RenderHeader />
             <Form form={form} component={false}>
                 <Table columns={AntColumns(form, data ?? [] as Array<Sale>)} dataSource={data ?? []} rowKey={(record) => record._id}
                     components={{
@@ -119,6 +118,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
                     }}
                     showHeader
                     bordered
+                    loading={isPending}
                     key="_id"
                     size='small'
                     scroll={{ y: "calc(100vh - 270px)", scrollToFirstRowOnChange: true }}

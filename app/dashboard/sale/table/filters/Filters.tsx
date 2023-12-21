@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { DatePicker, Button } from 'antd';
-import { SelectButton, SelectButtonChangeEvent } from 'primereact/selectbutton';
 import Types from "@/app/utils/types.json";
 import Status from "@/app/utils/status.json";
 import { Fieldset } from 'primereact/fieldset';
@@ -9,7 +8,7 @@ import { ToggleButton } from 'primereact/togglebutton';
 import BrandsSelect from '@/app/components/BrandsSelect';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import { DatePickerProps, RangePickerProps } from 'antd/es/date-picker';
+import { DatePickerProps } from 'antd/es/date-picker';
 import { Select } from 'antd';
 import { Client } from '@/types/typings';
 import { ClearOutlined } from '@ant-design/icons';

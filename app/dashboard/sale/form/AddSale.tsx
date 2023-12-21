@@ -3,7 +3,7 @@ import { Client, Item } from '@/types/typings';
 import { ErrorMessage, Formik, Field, FormikHelpers } from 'formik';
 import { Button } from "primereact/button"
 import React, { useState } from 'react'
-import AdvanceSelect from '../../components/AdvanceSelect';
+import AdvanceSelect from '../../../components/AdvanceSelect';
 import { validationSchema } from './validationSchema';
 import initialValues from './initialValues';
 import { callback, onSubmit } from "./submit"

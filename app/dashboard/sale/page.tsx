@@ -1,7 +1,7 @@
 import React from 'react'
 import SaleTable from './table/SaleTable'
 import { getClients } from './SaleActions/ServerActions';
-import { auth } from '../auth';
+import { auth } from '../../auth';
 import { redirect } from 'next/navigation';
 type Props = {
     searchParams: { type: string };

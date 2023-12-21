@@ -1,8 +1,7 @@
 import React from 'react'
 import { redirect } from 'next/navigation'
 import { auth } from './auth'
-import SaleChart from './Dashboard/SaleChart'
-import { getMonthlySalesAndProfit } from './Dashboard/ServerActions'
+import SaleChart from './components/SaleChart'
 
 const Home = async () => {
   const session = await auth()

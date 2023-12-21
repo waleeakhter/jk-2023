@@ -15,25 +15,25 @@ const Header = ({ session }: Props) => {
   const items: MenuProps['items'] = [
     {
 
-      label: (<Link href={"/items"} title='Items' >Items</Link>),
+      label: (<Link href={"/dashboard/items"} title='Items' >Items</Link>),
       key: 'items',
       icon: <MobileOutlined />,
     },
     {
 
-      label: (<Link href={"/client"} >Clients</Link>),
+      label: (<Link href={"/dashboard/client"} >Clients</Link>),
       key: 'client',
       icon: <UsergroupAddOutlined />,
     },
     {
 
-      label: (<Link href={"/sale"} >Daily Sale </Link>),
+      label: (<Link href={"/dashboard/sale"} >Daily Sale </Link>),
       key: 'sale',
       icon: <ShoppingCartOutlined />,
     },
     {
 
-      label: (<Link className='hover' href={"/logs"} >Logs</Link>),
+      label: (<Link className='hover' href={"/dashboard/logs"} >Logs</Link>),
       key: 'logs',
       icon: <FileExclamationOutlined />,
     },
@@ -62,9 +62,9 @@ const Header = ({ session }: Props) => {
             fill src="/text.svg" alt='logo' />
         </div>
       </Link>
-      <div className=' lg:max-w-md flex'>
-        {session && session?.user?.role === "admin" && <Menu style={{ minWidth: 0, flex: "auto" }} className=' ml-auto '
-          onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />}
+      <div className=' lg:max-w-md flex w-full'>
+      <Menu style={{ minWidth: 0, flex: "auto" }} className=' ml-auto w-full'
+          onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
       </div>
     </header>
   )

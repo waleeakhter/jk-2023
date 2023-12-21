@@ -86,14 +86,14 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>,) => {
             dataIndex: 'client',
             render: (_, record) => <Tooltip placement="bottomLeft" title={<span className=' text-xs '>{record.client?.name}</span>} >{record.client?.name}</Tooltip>
             ,
-            width: '100px',
+            width: 'auto',
             ellipsis: true
         },
         {
             title: 'Item',
             dataIndex: 'item.name',
             render: (_, record) => <Tooltip placement="bottomLeft" title={<span className=' text-xs '>{record.item?.name}</span>} >{record.item?.name}</Tooltip>,
-            width: '20rem',
+            width: 'auto',
             ellipsis: true,
             onCell: (record, index) => ({
                 record,

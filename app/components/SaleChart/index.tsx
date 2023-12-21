@@ -2,8 +2,8 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Card, AreaChart, Title, Text } from '@tremor/react';
-import {getSaleAndProfit } from './ServerActions';
 import { useState } from 'react';
+import { getSaleAndProfit } from './ServerActions';
 
 // const data = [
 //   {
