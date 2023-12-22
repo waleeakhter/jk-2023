@@ -4,6 +4,9 @@ import type { ColumnsType } from 'antd/es/table';
 import { useState } from "react";
 import { EditOutlined, CheckOutlined, CloseOutlined, EyeOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { cancelSaleItem } from "@/app/components/Datatable/functions";
+import { PlusOutlined, ReloadOutlined, DeleteFilled } from '@ant-design/icons';
+import { updateOrder } from "@/app/components/Datatable/serverActions";
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
     dataIndex: any;
@@ -71,7 +74,7 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>,) => {
             const client = data.find((item) => key === item._id);
             const newData = { ...client, ...row };
             console.log(newData, "data")
-            // updateClientCredit(newData).then(() => setEditingKey(''));
+            updateOrder(newData as any , "sale").then(() => setEditingKey(''));
         } catch (errInfo) {
             console.log('Validate Failed:', errInfo);
         }
@@ -95,13 +98,13 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>,) => {
             render: (_, record) => <Tooltip placement="bottomLeft" title={<span className=' text-xs '>{record.item?.name}</span>} >{record.item?.name}</Tooltip>,
             width: 'auto',
             ellipsis: true,
-            onCell: (record, index) => ({
-                record,
-                inputType: "number",
-                dataIndex: "credit",
-                title: "Credit",
-                editing: isEditing(record),
-            }),
+            // onCell: (record, index) => ({
+            //     record,
+            //     inputType: "number",
+            //     dataIndex: "credit",
+            //     title: "Credit",
+            //     editing: isEditing(record),
+            // }),
         },
         {
             title: 'Type',
@@ -186,7 +189,9 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>,) => {
                             </span>
                             :
                             <Button shape="circle" size="small" icon={<EditOutlined />} disabled={editingKey !== ''} onClick={() => edit(record)} />}
-                        {/* <Button icon={<EyeOutlined />} shape="circle" size="small" htmlType="button" onClick={() => showModal(record)} /> */}
+                        <Button danger shape="circle"
+                                size='small' type='primary' icon={<DeleteFilled />}
+                                onClick={(e) => cancelSaleItem(e, record)} />
                     </Flex>
                 );
             }
