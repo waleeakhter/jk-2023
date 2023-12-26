@@ -15,6 +15,7 @@ import { exportColumns, exportData } from './exports'
 import ItemForm from './itemForm'
 import StockUpdate from './StockUpdate'
 import { PlusOutlined, HomeOutlined, ShopOutlined, RedoOutlined } from '@ant-design/icons';
+import DashboardLayout from '@/app/components/WebLayout'
 type Props = { data: Array<Item | string | any>, showPrice: number | undefined }
 const Datatable = ({ data, showPrice }: Props) => {
     const [visible, setVisible] = useState(false);
@@ -97,7 +98,7 @@ const Datatable = ({ data, showPrice }: Props) => {
         )
     }
     return (
-        <div className=''>
+        <DashboardLayout >
             <AddModal visible={visible} setVisible={setVisible}
                 heading={form === "newItem" ? "Add New Item" : form === "wearhouse" ? "Update Wearhouse Stock" : "Update Shop Stock"} >
 
@@ -148,7 +149,7 @@ const Datatable = ({ data, showPrice }: Props) => {
                 </DataTable>
             </div>
             <Tooltips />
-        </div>
+        </DashboardLayout>
     )
 }
 

@@ -12,7 +12,7 @@ const Home = async () => {
   return (
     <>
       <h1>{JSON.stringify(session, null, 2)}</h1>
-      <SaleChart />
+
     </>
   )
 }

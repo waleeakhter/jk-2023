@@ -31,15 +31,10 @@ export default async function RootLayout({
         className={inter.className}>
 
         <AuthProvider>
-          <Header session={session} />
           <StyledComponentsRegistry>
             {children}
           </StyledComponentsRegistry>
         </AuthProvider>
-
-
-
-
       </body>
     </html>
   )

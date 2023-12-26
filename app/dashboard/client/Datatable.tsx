@@ -7,7 +7,6 @@ import { Client, LazyTableState } from '@/types/typings'
 import { DataTable, DataTablePageEvent, DataTableRowEditCompleteEvent } from 'primereact/datatable'
 import AddModal from '../../components/Datatable/AddModal'
 import { Column, ColumnProps } from 'primereact/column'
-import Tooltips from '../../sale/table/columns'
 import { columns } from './columns'
 import { updateClientCredit } from './serverAction'
 import PaymentForm from './PaymentForm'
@@ -16,6 +15,7 @@ import { Button, Card, Form, Table, Tag, Tooltip } from 'antd';
 import { PlusOutlined, ReloadOutlined, EyeOutlined } from '@ant-design/icons';
 import ClientDetail from './ClinetDetail'
 import { AntColumns, EditableCell } from './AntColumns'
+import Tooltips from '../sale/table/columns'
 type Props = { values: Array<Client | string | any> }
 const Datatable = ({ values }: Props) => {
     const [visible, setVisible] = useState(false);

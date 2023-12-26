@@ -3,6 +3,7 @@ import SaleTable from './table/SaleTable'
 import { getClients } from './SaleActions/ServerActions';
 import { auth } from '../../auth';
 import { redirect } from 'next/navigation';
+import DashboardLayout from '@/app/components/WebLayout';
 type Props = {
     searchParams: { type: string };
 }
@@ -43,11 +44,11 @@ const page = async ({ searchParams }: Props) => {
     var [items, clients, sales] = await Promise.all([itemsData, clientsData, salesData])
 
     return (
-        <>
+        <DashboardLayout>
             <SaleTable searchParams={searchParams} data={sales?.data ?? []}
                 clientsData={clients?.data ?? []} totalrows={sales?.totalrows ?? 0}
                 itemsData={items?.data ?? []} sale={sales?.totalSale ?? 0} />
-        </>
+        </DashboardLayout>
 
     )
 }
