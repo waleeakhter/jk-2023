@@ -1,9 +1,10 @@
 "use server"
+import { Sale } from "@/types/typings"
 import { revalidateTag } from "next/cache"
 
 
 
-export const onStatusChange = async (data: Object[] | undefined, status: number, paidOn: Date) => {
+export const onStatusChange = async (data: Sale[] | Sale | undefined, status: number, paidOn: Date) => {
 
     const res = await fetch(process.env.API_URL + 'sale',
         {

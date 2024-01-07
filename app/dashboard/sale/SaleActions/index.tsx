@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import { Button } from '../form/formik'
 import { statusHandler } from './functions'
 import { Sale } from '@/types/typings'
 import { useSearchParams } from 'next/navigation'
 import AlertForSaleUpdates from './Alert'
+import { Button } from 'antd'
 
 interface Props {
-    rowData?: Object[],
-    selection?: Array<{ _id: string }>, emptySelection?: Function,
+    rowData?: Sale,
+    selection?: Array<Sale & { _id: string }>, emptySelection?: Function,
     startTransition: React.TransitionStartFunction
 }
 const SaleActions = ({ rowData, emptySelection, selection, startTransition }: Props) => {
@@ -41,11 +41,10 @@ const SaleActions = ({ rowData, emptySelection, selection, startTransition }: Pr
             {
                 buttons.map(btn => (
 
-                    !status.includes(btn.status) ?
-                        <Button key={btn.text} icon={"pi " + btn.icon}
-                            severity={btn.severity as "warning" | "secondary" | "success" | "info" | "danger" | "help"}
-                            tooltip={btn.text} tooltipOptions={{ position: 'bottom' }}
-                            size='small' onClick={(e) => { setCurrentStatus(btn.status); setVisible(true) }} /> : ""
+                    !status.includes(btn?.status) ? "" : ""
+                        // <Button shape="circle" size="small"  key={btn.text} 
+                        //     danger={rowData?.status !== 0 ? true : false } type={rowData?.status === 1 ? 'primary' : rowData?.status === 2 : "default" }
+                        //     onClick={(e) => { setCurrentStatus(btn.status); setVisible(true) }} >{rowData?.status}</Button>  : ""
                 ))
             }
 

@@ -27,7 +27,8 @@ type Props = {
 }
 const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows }: Props) => {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [selectedItems, setSelectedItems] = useState<Array<MixInterfaces> | []>([]);
+    const [selectedItems, setSelectedItems] = useState<Array<Sale> | []>([]);
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [visible, setVisible] = useState(false);
     const [isPending, startTransition] = useTransition();
     const router = useRouter()
@@ -52,13 +53,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
         setlazyState(prev => { return { ...prev, ...event } });
     };
 
-    const onRowEditComplete = (e: DataTableRowEditCompleteEvent) => {
-        let _items = [...data];
-        let { newData, index } = e;
-        console.log(e, "edit complete")
-        _items[index] = newData;
-        updateOrder(newData as any, "sale")
-    };
+  
 
     const onGlobalFilterChange = (e: any) => {
         const value = e.target.value;
@@ -87,9 +82,9 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
                 </div>
                 <div className='flex items-center gap-2 justify-between md:flex-none flex-1 lg:flex-nowrap flex-wrap'>
                     <div className='flex-1 md-flex-auto'>
-                        {selectedItems.length > 0 ? (selectedItems.reduce((total, sale) => total + sale.sell_quantity, 0) + " " + selectedItems.reduce((total, sale) => total + sale.total_amount, 0)) : ""}
+                        {selectedRowKeys.length > 0 ? (selectedItems.reduce((total, sale) => total + sale.sell_quantity, 0) + " " + selectedItems.reduce((total, sale) => total + sale.total_amount, 0)) : ""}
                     </div>
-                    {selectedItems.length > 0 && <div className='flex-1 lg:flex-auto'><BulkUpdate selection={selectedItems} emptySelection={setSelectedItems} startTransition={startTransition} /></div>}
+                    {selectedRowKeys.length > 0 && <div className='flex-1 lg:flex-auto'><BulkUpdate selection={selectedItems} emptySelection={setSelectedRowKeys} startTransition={startTransition} /></div>}
                     <div className="lg:w-auto w-full flex">
                         <span className="p-input-icon-left">
                             <i className="pi pi-search" />
@@ -110,7 +105,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
             </AddModal>
             <RenderHeader />
             <Form form={form} component={false}>
-                <Table columns={AntColumns(form, data ?? [] as Array<Sale>)} dataSource={data ?? []} rowKey={(record) => record._id}
+                <Table columns={AntColumns(form, data ?? [] as Array<Sale> , startTransition)} dataSource={data ?? []} rowKey={(record) => record._id}
                     components={{
                         body: {
                             cell: (cell: any) => EditableCell(cell, form)
@@ -123,7 +118,11 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
                     size='small'
                     scroll={{ y: "calc(100vh - 270px)", scrollToFirstRowOnChange: true }}
                     sticky={{ offsetHeader: 81 }}
-
+                    rowSelection={{
+                        type : "checkbox",
+                        selectedRowKeys,
+                        onChange :(selectedRowKeys, selectedRows, info)  => {setSelectedRowKeys(selectedRowKeys);setSelectedItems(selectedRows)}
+                    }}
                 />
             </Form>
             {/* <Form form={form}>

@@ -155,23 +155,32 @@ export const paymentHistoryColumns: ColumnsType<Payments & Sale> = [
     },
     sorter: {
       compare: (a, b) => a.amount - b.amount,
-      multiple: 2
+      multiple: 1
     },
   },
   {
     title: 'Details',
     dataIndex: 'details',
     key: 'details',
-    render: (value) =>  {
-     console.log(value)
-     return value ? <Typography  > <pre className="text-xs">
+    render: (value) => {
+      console.log(value)
+      return value ? <Typography  > <pre className="text-xs">
         {Object.keys(value).map((key, index) => <div key={index}>{`${key}: ${value[key]}`}</div>)}
-    </pre> </Typography> : ''
+      </pre> </Typography> : ''
     }
   },
   {
     title: 'Date',
     dataIndex: 'paymentDate',
     key: 'paymentDate',
+    sorter: {
+      compare: (a, b) => {
+        const dateA: Date = moment(a.paymentDate, "DD-MM-YY").toDate();
+        const dateB: Date = moment(b.paymentDate, "DD-MM-YY").toDate();
+        return dateA.getTime() - dateB.getTime();
+      },
+      multiple: 2,
+    },
+    defaultSortOrder: "ascend"
   },
 ];

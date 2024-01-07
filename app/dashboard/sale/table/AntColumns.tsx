@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import { cancelSaleItem } from "@/app/components/Datatable/functions";
 import { PlusOutlined, ReloadOutlined, DeleteFilled } from '@ant-design/icons';
 import { updateOrder } from "@/app/components/Datatable/serverActions";
+import SaleActions from "../SaleActions";
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
     dataIndex: any;
@@ -59,7 +60,7 @@ export const EditableCell: React.FC<EditableCellProps> = ({
 
 
 
-export const AntColumns = (form: FormInstance, data: Array<Sale>,) => {
+export const AntColumns = (form: FormInstance, data: Array<Sale>, startTransition : React.TransitionStartFunction) => {
     const [editingKey, setEditingKey] = useState('');
     const isEditing = (record: Sale) => record._id === editingKey;
     const edit = (record: Sale) => {
@@ -189,6 +190,7 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>,) => {
                             </span>
                             :
                             <Button shape="circle" size="small" icon={<EditOutlined />} disabled={editingKey !== ''} onClick={() => edit(record)} />}
+                            {/* <SaleActions rowData={record} startTransition={startTransition} /> */}
                         <Button danger shape="circle"
                                 size='small' type='primary' icon={<DeleteFilled />}
                                 onClick={(e) => cancelSaleItem(e, record)} />

@@ -1,20 +1,39 @@
-import React from 'react'
-import { redirect } from 'next/navigation'
-import { auth } from './auth'
-import SaleChart from './components/SaleChart'
+"use server"
+import React from 'react';
+import { Carousel, Image } from 'antd';
+import Datatable from './components/Home/Datatable';
 
-const Home = async () => {
-  const session = await auth()
-  if (!session?.user?.email) {
-    return redirect('/api/auth/signin')
-  }
+const contentStyle: React.CSSProperties = {
+  height: '350px',
+  color: '#fff',
+  lineHeight: '350px',
+  textAlign: 'center',
+  background: '#364d79',
+  width: '100%',
+};
+const Home: React.FC = async () => {
+  const getItems = await fetch(process.env.API_URL + "/item/public" , {
+    cache: "no-cache",
+  });
+  const data = await getItems.json().then(items => items.data)
+  return <>
+    <Carousel autoplay style={{ maxWidth: 621, margin: "auto" }}>
+      <div className=' text-center'>
+        <Image style={contentStyle} src='/realme c35.png'></Image>
+      </div>
+      <div className=' text-center'>
+        <Image style={contentStyle} src='/12mini.png'></Image>
+      </div>
+      <div className=' text-center'>
+        <Image style={contentStyle} src='/x5.png'></Image>
+      </div>
+      <div className=' text-center'>
+        <Image style={contentStyle} src='/realme10pro.png'></Image>
+      </div>
+    </Carousel>
 
-  return (
-    <>
-      <h1>{JSON.stringify(session, null, 2)}</h1>
+    <Datatable data={data ?? []} />
+  </>
+};
 
-    </>
-  )
-}
-
-export default Home
+export default Home;

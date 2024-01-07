@@ -5,16 +5,18 @@ import { auth } from '../../auth'
 import { redirect } from 'next/navigation';
 import DashboardLayout from '@/app/components/WebLayout';
 
-type Props = {}
+type Props = {
+    searchParams: { type: string };
+}
 
-const Clients = async () => {
+const Clients = async ({ searchParams } : Props) => {
     const session = await auth()
     if (!session?.user.email) {
         return redirect('/auth/login')
     }
+    const q = new URLSearchParams(searchParams)
 
-
-    const getClients = await fetch(process.env.API_URL + 'client', {
+    const getClients = await fetch(process.env.API_URL + 'client?'+ q, {
         cache: "no-cache",
         next: {
             tags: ["Clients"]

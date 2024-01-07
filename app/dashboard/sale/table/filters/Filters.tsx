@@ -115,7 +115,7 @@ export const Filters = (props: Props) => {
 
         if (date) {
             setFilters(prev => ({ ...prev, paidOn: date }))
-            params.set("paidOn", dateString)
+            params.set("paidOn", dayjs(date).toString())
         } else {
             params.delete("paidOn")
         }

@@ -1,5 +1,5 @@
 
-// import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
@@ -14,10 +14,10 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import StyledComponentsRegistry from './lib/AntdRegistry';
 const inter = Inter({ subsets: ['latin'] })
 
-// export const metadata: Metadata = {
-//   title: 'JK',
-//   description: 'Developed By Waleed Akhter',
-// }
+export const metadata: Metadata = {
+  title: 'JK Trading',
+  description: 'Developed By Waleed Akhter',
+}
 
 export default async function RootLayout({
   children,

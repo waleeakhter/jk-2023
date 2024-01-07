@@ -83,7 +83,7 @@ const StockUpdate = ({ check }: Props) => {
         },
         onSuccess: (res: { data: stockUpdate, message: string }) => {
             const { data, message } = res
-            reset()
+            // reset()
             refetch()
             toast.current?.show({ severity: 'success', summary: 'Info', detail: message });
 

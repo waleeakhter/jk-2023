@@ -31,7 +31,7 @@ export async function GET(request: Request) {
         const res = await ItemModal.find(({
             ...(type && { type: type }),
             ...(brand && { brand: brand }),
-            ...(qty && { stock: { $gte: gte, $lte: qty } }),
+            ...(gte && { stock: { $gt: gte } }),
             ...(name && { name: { $regex: new RegExp(name, "i") } }),
         })).sort({ name: 1 }).collation({ locale: "en" })
 
