@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
                 {
                     $set: {
                         wearhouseStockUpdated: body.stockUpdate,
-                        wearHouseStock:  body.stock + wearHouseStock,
+                        wearHouseStock: body.stock + wearHouseStock,
                         purchase_price: averagePrice,
                     }
                 })
@@ -59,27 +59,45 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ status: 200, success: true, message: `Updated Successfully`, data: stockUpdateItem });
         }
         if (check === "shop") {
-            if (getItem.wearHouseStock <= 0 && getItem.wearHouseStock >= body.stock && !body.resource) {
-                throw new Error(`Insufficient stock`)
-            }
+            // if (getItem.wearHouseStock <= 0 && getItem.wearHouseStock >= body.stock && !body.resource) {
+            //     throw new Error(`Insufficient stock`)
+
+            const wearHouseStock = getItem.wearHouseStock ?? 0; // Get the wearHouseStock value or default to 0 if undefined
+            const shopStock = getItem.stock; // Get the shop stock value
+
+            const salePrice = getItem.purchase_price; // Get the current sale price
+
+            // Calculate the total cost of the old stock
+            const oldStockCost = (wearHouseStock + shopStock) * salePrice;
+            const newStockCost = body.stock * body.purchase_price; // New items * Price per new item
+
+            const totalItems = body.stock + wearHouseStock + shopStock; // Total items after update
+
+            const totalCost = oldStockCost + newStockCost; // Total cost of all items after update
+
+            const averagePrice = Number(totalCost / totalItems).toFixed(2);
+            // }
             const stockUpdateItem = await ItemModal.findByIdAndUpdate(item._id,
                 {
                     $set: {
                         stockUpdated: body.stockUpdate,
                         stock: body.stock + (getItem.stock ?? 0),
+                        purchase_price: averagePrice,
                     }
                 })
             if (stockUpdateItem) {
-                if (!body.resource) {
-                    getItem.wearHouseStock = getItem.wearHouseStock - body.stock;
-                }
+
+
+                // if (!body.resource) {
+                //     getItem.wearHouseStock = getItem.wearHouseStock - body.stock;
+                // }
                 getItem.save()
                 await Log.create({
                     name: `${item.name} stock updated: Transferred to shop.`, source: "inventory", logType: "stockupdate",
                     "details": {
                         "item": item?._id,
                         "action": "update",
-                        "from": body.resource ? "newstock" : "warehouse",
+                        "from": "newstock",
                         "to": "shop",
                         "initialStock": item.stock,
                         "quantityUpdated": body.stock,
