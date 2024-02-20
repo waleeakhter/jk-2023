@@ -61,26 +61,20 @@ const updateSale = async (body:
     sell_quantity: number;
     createdAt: any;
     statusUpdate: boolean,
-    data: Array<Sale & { _id: string, status: number }> & { _id: string, status: number }
+    data: Array<Sale & { _id: string, status: number }>
   }) => {
   try {
 
     if (body?.statusUpdate) {
-      console.log(" in ")
-      const $in = Array.isArray(body.data) ? { $in: body.data.map(el => el._id) } : body.data?._id;
-      const $paidOn = (body.status === 0 || body.status === 2) ? null : body.paidOn;
-      await updateClientCredit(body.data, body.status)
-      // if(Array.isArray(body.data)){
-      //     updateBulkClient(body.data , body.status)
-      // }
+      const { data, status, paidOn } = body;
+      const $in = Array.isArray(data) ? { $in: data.map(el => el._id) } : data?._id;
+      const $paidOn = (status === 0 || status === 2) ? null : paidOn;
 
-      // if(!Array.isArray(body.data)){
-      //     await singleClientUpdate(body.data as Sale & { _id: string, status: number } , body.status)
-      // }
+      await updateClientCredit(data, status);
 
       const updateSaleItem = await SaleModal.updateMany(
         { _id: $in },
-        { $set: { status: body.status, paidOn: $paidOn } }
+        { $set: { status, paidOn: $paidOn } }
       );
 
       return { status: 200, success: true, message: messages(body.status), data: updateSaleItem };

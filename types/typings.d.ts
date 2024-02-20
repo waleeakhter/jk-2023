@@ -45,7 +45,7 @@ export interface Sale {
     total_amount: number;
     sell_price: number;
     sell_quantity: number;
-    status?: number;
+    status: number;
     paidOn?: Date,
     wearhouseStock?: boolean | undefined,
     resource?: string

@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { statusHandler } from './functions'
 import { Sale } from '@/types/typings'
 import { useSearchParams } from 'next/navigation'
 import AlertForSaleUpdates from './Alert'
-import { Button } from 'antd'
-
+import { Button, Tooltip } from 'antd'
+import {
+    CheckOutlined,
+    UserAddOutlined,
+    RollbackOutlined
+} from '@ant-design/icons';
 interface Props {
     rowData?: Sale,
     selection?: Array<Sale & { _id: string }>, emptySelection?: Function,
@@ -14,39 +18,79 @@ const SaleActions = ({ rowData, emptySelection, selection, startTransition }: Pr
     const searchParams = useSearchParams().toString()!;
     const params = new URLSearchParams(searchParams);
     const status = JSON.parse(params.get("status") ?? '[0]')
-    const [currentStatus, setCurrentStatus] = useState(0)
+    const [currentStatus, setCurrentStatus] = useState<number>(0)
+    const [currentRow, setCurrentRow] = useState<Sale | undefined>(rowData)
     const [visible, setVisible] = useState<boolean>(false);
-    const buttons = [
-        { status: 0, text: "Change to Unpaid ", icon: "pi-replay", severity: "danger" },
-        { status: 1, text: "Amount Recevied", icon: "pi-check-square", severity: "primary" },
-        { status: 2, text: "Credit Transfer: Add to client Account", icon: "pi-user-plus", severity: "primary" }
-    ]
-
+    useEffect(() => {
+        setCurrentRow(rowData)
+    }, [rowData])
 
     const updateHandler = (paidOn: Date) => {
-
-        startTransition(() => statusHandler(rowData ?? selection,
-            currentStatus, currentStatus === 1 ? paidOn : undefined, undefined).then((res) => {
+       console.log(selection,rowData, "___selection___")
+        startTransition(async () => {
+            
+                const res = await statusHandler(rowData ?? selection,
+                    currentStatus, currentStatus === 1 ? paidOn : undefined, undefined)
                 if (res?.success) {
-                    if (emptySelection) {
+                    if (emptySelection && selection?.length) {
                         emptySelection((prev: Object[]) => prev = [])
                     }
                 }
-            }))
+         
+            return Promise.resolve();
+        });
+    }
+
+    const ActionButtion = (status: number[]) => {
+     
+        const hasStatus = (s: number) => status.includes(s);
+
+        return (
+            <>
+                {hasStatus(0) && (
+                    <>
+                        <Tooltip title="Amount Received" placement='bottom'>
+                            <Button shape="circle" size="small" type='primary' icon={<CheckOutlined />}
+                                onClick={() => { setCurrentStatus(prev => prev = 1); setVisible(true) }} ></Button>
+                        </Tooltip>
+                        <Tooltip title="Credit Transfer: Add to client Account" placement='bottom'>
+                            <Button shape="circle" size="small" type='primary' icon={<UserAddOutlined />}
+                                onClick={() => { setCurrentStatus(prev => prev = 2); setVisible(true) }} ></Button>
+                        </Tooltip>
+                    </>
+                )}
+                {hasStatus(1) && (
+                    <>
+                        <Tooltip title="Change to Unpaid" placement='bottom'>
+                            <Button shape="circle" size="small" type='primary' danger icon={<RollbackOutlined />}
+                                onClick={() => { setCurrentStatus(prev => prev = 0); setVisible(true) }} ></Button>
+                        </Tooltip>
+                        <Tooltip title="Credit Transfer: Add to client Account" placement='bottom'>
+                            <Button shape="circle" size="small" type='primary' icon={<UserAddOutlined />}
+                                onClick={() => { setCurrentStatus(prev => prev = 2); setVisible(true) }} ></Button>
+                        </Tooltip>
+                    </>
+                )}
+                {hasStatus(2) && (
+                    <>
+                        <Tooltip title="Change to Unpaid" placement='bottom'>
+                            <Button shape="circle" size="small" type='primary' danger icon={<RollbackOutlined />}
+                                onClick={() => { setCurrentStatus(prev => prev = 0); setVisible(true) }} ></Button>
+                        </Tooltip>
+                        <Tooltip title="Amount Received" placement='bottom'>
+                            <Button shape="circle" size="small" type='primary' icon={<CheckOutlined />}
+                                onClick={() => { setCurrentStatus(prev => prev = 1); setVisible(true) }} ></Button>
+                        </Tooltip>
+                    </>
+                )}
+            </>
+        );
     }
     return (
         <>
             <AlertForSaleUpdates visible={visible} setVisible={setVisible}
                 callback={updateHandler} currentStatus={currentStatus} />
-            {
-                buttons.map(btn => (
-
-                    !status.includes(btn?.status) ? "" : ""
-                        // <Button shape="circle" size="small"  key={btn.text} 
-                        //     danger={rowData?.status !== 0 ? true : false } type={rowData?.status === 1 ? 'primary' : rowData?.status === 2 : "default" }
-                        //     onClick={(e) => { setCurrentStatus(btn.status); setVisible(true) }} >{rowData?.status}</Button>  : ""
-                ))
-            }
+            {ActionButtion(status)}
 
         </>
 

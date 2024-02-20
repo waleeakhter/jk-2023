@@ -47,6 +47,9 @@ const Datatable = ({ values }: Props) => {
         if (!value) {
             params.delete("client");
             replace(pathname + '?' + params.toString())
+        }else{
+             params.set("client", value)
+            replace(pathname + '?' + params.toString())
         }
     }
     const onEnter = () => {

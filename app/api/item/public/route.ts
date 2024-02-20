@@ -31,7 +31,6 @@ export async function GET(request: Request) {
         const res = await ItemModal.find({type : "lcd"}, { name: 1, price : 1, _id: 1 , type : 1 , stock : 1 , wearHouseStock : 1})
             .sort({ name: 1 })
             .collation({ locale: "en" });
-            console.log(res , "dsad")
         return NextResponse.json({ data: res.sort(customSort), success: true });
 
     } catch (error) {

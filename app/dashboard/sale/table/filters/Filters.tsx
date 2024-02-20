@@ -80,14 +80,14 @@ export const Filters = (props: Props) => {
 
     }
     const onSelectType = async (value: string[] | number[], name: string) => {
-        console.log(value)
+        console.log(name)
         setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
         if (value.length > 0) {
             params.set(name, JSON.stringify(value))
-            props.startTransition(() => replace(pathname + '?' + params.toString()));
         } else {
             params.delete(name)
         }
+        props.startTransition(() => replace(pathname + '?' + params.toString()));
 
 
     };

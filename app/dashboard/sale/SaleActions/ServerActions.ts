@@ -15,6 +15,7 @@ export const onStatusChange = async (data: Sale[] | Sale | undefined, status: nu
     )
     revalidateTag("sale")
     const update = await res.json()
+    console.log(update, "___update___")
     return update
 }
 

@@ -9,7 +9,7 @@ import { Column, ColumnProps } from 'primereact/column';
 import { DataTablePageEvent, DataTable, DataTableRowEditCompleteEvent, DataTableRowEditSaveEvent } from 'primereact/datatable';
 import { updateOrder } from '@/app/components/Datatable/serverActions';
 import { FilterMatchMode } from 'primereact/api';
-import { Button, Form, Table } from 'antd'
+import { Button, Form, Space, Table } from 'antd'
 import BulkUpdate from '../SaleActions/BulkUpdate';
 import { InputText } from 'primereact/inputtext';
 import { exportColumns, exportData } from './exports';
@@ -17,6 +17,11 @@ import AddModal from '@/app/components/Datatable/AddModal';
 import AddSale from '../form/AddSale';
 import { PlusOutlined, ReloadOutlined, DeleteFilled } from '@ant-design/icons';
 import { AntColumns, EditableCell } from './AntColumns';
+import { useRef } from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import { Input } from 'antd';
+import Highlighter from 'react-highlight-words';
+import type { InputRef, TableColumnsType, TableColumnType } from 'antd';
 type Props = {
     searchParams: { type: string }
     data: Array<Sale | any>,
@@ -25,6 +30,9 @@ type Props = {
     sale: number,
     totalrows: number
 }
+
+import { FilterDropdownProps } from 'antd/es/table/interface';
+
 const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows }: Props) => {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedItems, setSelectedItems] = useState<Array<Sale> | []>([]);
@@ -32,6 +40,101 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
     const [visible, setVisible] = useState(false);
     const [isPending, startTransition] = useTransition();
     const router = useRouter()
+    const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef<InputRef>(null);
+
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: FilterDropdownProps['confirm'],
+    dataIndex:keyof Sale,
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  const getColumnSearchProps = (dataIndex: keyof Sale): TableColumnType<Sale> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+            ref={searchInput}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+        searchedColumn === dataIndex ? (
+            <Highlighter
+                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                searchWords={[searchText]}
+                autoEscape
+                textToHighlight={text ? text.toString() : ''}
+            />
+        ) : (
+            text
+        ),
+  });
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     });
@@ -103,14 +206,15 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
             <AddModal visible={visible} setVisible={setVisible} >
                 {<AddSale items={itemsData ?? []} clients={clientsData ?? []} />}
             </AddModal>
-            <RenderHeader />
+            {/* <RenderHeader /> */}
             <Form form={form} component={false}>
-                <Table columns={AntColumns(form, data ?? [] as Array<Sale> , startTransition)} dataSource={data ?? []} rowKey={(record) => record._id}
+                <Table columns={AntColumns(form, data ?? [] as Array<Sale> , startTransition , getColumnSearchProps)} dataSource={data ?? []} rowKey={(record) => record._id}
                     components={{
                         body: {
                             cell: (cell: any) => EditableCell(cell, form)
                         }
                     }}
+                    title={() => <RenderHeader />}
                     showHeader
                     bordered
                     loading={isPending}
@@ -118,6 +222,7 @@ const SaleTable = ({ searchParams, data, clientsData, sale, itemsData, totalrows
                     size='small'
                     scroll={{ y: "calc(100vh - 270px)", scrollToFirstRowOnChange: true }}
                     sticky={{ offsetHeader: 81 }}
+                    pagination ={{defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '25', '50', '100']}}
                     rowSelection={{
                         type : "checkbox",
                         selectedRowKeys,

@@ -1,5 +1,5 @@
 import { Client, Sale } from "@/types/typings";
-import { Button, DatePicker, Flex, Form, FormInstance, Input, InputNumber, Popconfirm, Tooltip, Typography } from "antd";
+import { Button, DatePicker, Flex, Form, FormInstance, Input, InputNumber, Popconfirm, Space, TableColumnType, Tooltip, Typography } from "antd";
 import type { ColumnsType } from 'antd/es/table';
 import { useState } from "react";
 import { EditOutlined, CheckOutlined, CloseOutlined, EyeOutlined } from '@ant-design/icons';
@@ -8,6 +8,8 @@ import { cancelSaleItem } from "@/app/components/Datatable/functions";
 import { PlusOutlined, ReloadOutlined, DeleteFilled } from '@ant-design/icons';
 import { updateOrder } from "@/app/components/Datatable/serverActions";
 import SaleActions from "../SaleActions";
+import moment from "moment";
+import { SearchOutlined } from '@ant-design/icons';
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
     dataIndex: any;
@@ -60,7 +62,7 @@ export const EditableCell: React.FC<EditableCellProps> = ({
 
 
 
-export const AntColumns = (form: FormInstance, data: Array<Sale>, startTransition : React.TransitionStartFunction) => {
+export const AntColumns = (form: FormInstance, data: Array<Sale>, startTransition: React.TransitionStartFunction , getColumnSearchProps : (dataIndex: keyof Sale) => TableColumnType<Sale>) => {
     const [editingKey, setEditingKey] = useState('');
     const isEditing = (record: Sale) => record._id === editingKey;
     const edit = (record: Sale) => {
@@ -75,7 +77,7 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>, startTransitio
             const client = data.find((item) => key === item._id);
             const newData = { ...client, ...row };
             console.log(newData, "data")
-            updateOrder(newData as any , "sale").then(() => setEditingKey(''));
+            updateOrder(newData as any, "sale").then(() => setEditingKey(''));
         } catch (errInfo) {
             console.log('Validate Failed:', errInfo);
         }
@@ -91,7 +93,20 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>, startTransitio
             render: (_, record) => <Tooltip placement="bottomLeft" title={<span className=' text-xs '>{record.client?.name}</span>} >{record.client?.name}</Tooltip>
             ,
             width: 'auto',
-            ellipsis: true
+            ellipsis: true,
+            sorter: (a, b) => {
+                const nameA = a.client.name.toLowerCase();
+                const nameB = b.client.name.toLowerCase();
+
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                // If names are equal, sort by another property (e.g., ID)
+                return a._id.localeCompare(b._id);
+            },
         },
         {
             title: 'Item',
@@ -99,13 +114,48 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>, startTransitio
             render: (_, record) => <Tooltip placement="bottomLeft" title={<span className=' text-xs '>{record.item?.name}</span>} >{record.item?.name}</Tooltip>,
             width: 'auto',
             ellipsis: true,
-            // onCell: (record, index) => ({
-            //     record,
-            //     inputType: "number",
-            //     dataIndex: "credit",
-            //     title: "Credit",
-            //     editing: isEditing(record),
-            // }),
+            sorter: (a, b) => a.item.name.localeCompare(b.item.name),
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+                <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+                  <Input
+                    
+                      placeholder={`Search Item`}
+                      value={selectedKeys[0]}
+                      onChange={(e) => {setSelectedKeys(e.target.value ? [e.target.value] : []); confirm({ closeDropdown: false })}}
+                      onPressEnter={() => ""}
+                      style={{ marginBottom: 8, display: 'block' }}
+                  />
+                  <Space>
+                
+                    <Button
+                      onClick={() => { setSelectedKeys([]);   confirm({ closeDropdown: true })}}
+                      size="small"
+                      style={{ width: 90 }}
+                    >
+                      Reset
+                    </Button>
+              
+                    <Button
+                      type="link"
+                      size="small"
+                      onClick={() => {
+                        close();
+                      }}
+                    >
+                      close
+                    </Button>
+                  </Space>
+                </div>
+              ),
+            filterIcon: (filtered: boolean) => (
+                <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+              ),
+              onFilter: (value, record) =>
+               record.item.name.toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
+    
+            // ...getColumnSearchProps("item.name")
         },
         {
             title: 'Type',
@@ -170,6 +220,14 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>, startTransitio
                 title: "Date",
                 editing: isEditing(record),
             }),
+            sorter: {
+                compare: (a, b) => {
+                    const dateA: Date = moment(a.createdAt, "DD-MM-YY").toDate();
+                    const dateB: Date = moment(b.createdAt, "DD-MM-YY").toDate();
+                    return dateB.getTime() - dateA.getTime(); // Sort in descending order
+                },
+                multiple: 2,
+            },
 
         },
         {
@@ -189,11 +247,12 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>, startTransitio
                                 </Popconfirm>
                             </span>
                             :
-                            <Button shape="circle" size="small" icon={<EditOutlined />} disabled={editingKey !== ''} onClick={() => edit(record)} />}
-                            {/* <SaleActions rowData={record} startTransition={startTransition} /> */}
+                            <Button shape="circle" size="small" icon={<EditOutlined />} disabled={editingKey !== ''} onClick={() => edit(record)} />
+                        }
+                        <SaleActions rowData={record} startTransition={startTransition} />
                         <Button danger shape="circle"
-                                size='small' type='primary' icon={<DeleteFilled />}
-                                onClick={(e) => cancelSaleItem(e, record)} />
+                            size='small' type='primary' icon={<DeleteFilled />}
+                            onClick={(e) => cancelSaleItem(e, record)} />
                     </Flex>
                 );
             }

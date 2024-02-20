@@ -1,0 +1,127 @@
+From 0233ee79c4495b55036fe403efa5be09ba30bf3c Mon Sep 17 00:00:00 2001
+From: Waleed Akhter <waleeakhter@gmail.com>
+Date: Tue, 20 Feb 2024 17:00:08 +0000
+Subject: [PATCH] Refactor item search and update logic
+
+---
+ app/api/item/route.ts        | 11 ++++++++---
+ app/api/sale/createSale.ts   |  4 ++--
+ app/api/stockupdate/route.ts | 34 ++++++++++++++++++++++++++--------
+ 3 files changed, 36 insertions(+), 13 deletions(-)
+
+diff --git a/app/api/item/route.ts b/app/api/item/route.ts
+index bf549fd..7293345 100644
+--- a/app/api/item/route.ts
++++ b/app/api/item/route.ts
+@@ -28,12 +28,17 @@ export async function GET(request: Request) {
+         const gte = searchParams.get('gte');
+         const name = searchParams.get('name')
+ 
+-        const res = await ItemModal.find(({
++        const res = await ItemModal.find({
+             ...(type && { type: type }),
+             ...(brand && { brand: brand }),
+-            ...(gte && { stock: { $gt: gte } }),
++            ...(gte && {
++                $or: [
++                    { stock: { $gt: gte } },
++                    { wearHouseStock: { $gt: gte } }
++                ],
++            }),
+             ...(name && { name: { $regex: new RegExp(name, "i") } }),
+-        })).sort({ name: 1 }).collation({ locale: "en" })
++        }).sort({ name: 1 }).collation({ locale: "en" });
+ 
+ 
+         const totalAmount = res.reduce((total, item) => total + (item.purchase_price * (item.stock + item.wearHouseStock)), 0);
+diff --git a/app/api/sale/createSale.ts b/app/api/sale/createSale.ts
+index 5242850..a19d742 100644
+--- a/app/api/sale/createSale.ts
++++ b/app/api/sale/createSale.ts
+@@ -16,7 +16,7 @@ const createSale = async (body: {
+     try {
+         let newItemId: Types.ObjectId | null = null;
+         let newClientId: Types.ObjectId | null = null;
+-        const { resource } = body
++        const { resource , item } = body
+         if (body.client.__isNew__) {
+             const name = body.client.value.trim().toUpperCase()
+             const existingClient = await Client.findOne({ name: name });
+@@ -46,7 +46,7 @@ const createSale = async (body: {
+             if (!item) {
+                 return { status: 404, success: false, message: "Item not found" };
+             }
+-            if (resource === "shop") {
++            if (resource === "shop" && item.type === "lcd") {
+                 if (body.sell_quantity > item.stock) {
+                     return { status: 404, success: false, message: `${item.name} is out of stock` };
+                 }
+diff --git a/app/api/stockupdate/route.ts b/app/api/stockupdate/route.ts
+index be3c56a..cdbda72 100644
+--- a/app/api/stockupdate/route.ts
++++ b/app/api/stockupdate/route.ts
+@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
+                 {
+                     $set: {
+                         wearhouseStockUpdated: body.stockUpdate,
+-                        wearHouseStock:  body.stock + wearHouseStock,
++                        wearHouseStock: body.stock + wearHouseStock,
+                         purchase_price: averagePrice,
+                     }
+                 })
+@@ -59,27 +59,45 @@ export async function POST(req: NextRequest) {
+             return NextResponse.json({ status: 200, success: true, message: `Updated Successfully`, data: stockUpdateItem });
+         }
+         if (check === "shop") {
+-            if (getItem.wearHouseStock <= 0 && getItem.wearHouseStock >= body.stock && !body.resource) {
+-                throw new Error(`Insufficient stock`)
+-            }
++            // if (getItem.wearHouseStock <= 0 && getItem.wearHouseStock >= body.stock && !body.resource) {
++            //     throw new Error(`Insufficient stock`)
++
++            const wearHouseStock = getItem.wearHouseStock ?? 0; // Get the wearHouseStock value or default to 0 if undefined
++            const shopStock = getItem.stock; // Get the shop stock value
++
++            const salePrice = getItem.purchase_price; // Get the current sale price
++
++            // Calculate the total cost of the old stock
++            const oldStockCost = (wearHouseStock + shopStock) * salePrice;
++            const newStockCost = body.stock * body.purchase_price; // New items * Price per new item
++
++            const totalItems = body.stock + wearHouseStock + shopStock; // Total items after update
++
++            const totalCost = oldStockCost + newStockCost; // Total cost of all items after update
++
++            const averagePrice = Number(totalCost / totalItems).toFixed(2);
++            // }
+             const stockUpdateItem = await ItemModal.findByIdAndUpdate(item._id,
+                 {
+                     $set: {
+                         stockUpdated: body.stockUpdate,
+                         stock: body.stock + (getItem.stock ?? 0),
++                        purchase_price: averagePrice,
+                     }
+                 })
+             if (stockUpdateItem) {
+-                if (!body.resource) {
+-                    getItem.wearHouseStock = getItem.wearHouseStock - body.stock;
+-                }
++
++
++                // if (!body.resource) {
++                //     getItem.wearHouseStock = getItem.wearHouseStock - body.stock;
++                // }
+                 getItem.save()
+                 await Log.create({
+                     name: `${item.name} stock updated: Transferred to shop.`, source: "inventory", logType: "stockupdate",
+                     "details": {
+                         "item": item?._id,
+                         "action": "update",
+-                        "from": body.resource ? "newstock" : "warehouse",
++                        "from": "newstock",
+                         "to": "shop",
+                         "initialStock": item.stock,
+                         "quantityUpdated": body.stock,
+-- 
+2.42.0.windows.2
+
