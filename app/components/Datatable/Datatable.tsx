@@ -8,7 +8,7 @@ import { FilterMatchMode } from 'primereact/api';
 import ActionButtons from './ActionButtons';
 import { InputNumber } from 'primereact/inputnumber';
 import AddModal from './AddModal';
-import { MixInterfaces } from '@/typings';
+import { MixInterfaces } from '@/types/typings';
 import { Headers } from 'react-csv/components/CommonPropTypes';
 import BulkUpdate from '../../sale/SaleActions/BulkUpdate';
 import { useRouter } from 'next/navigation';

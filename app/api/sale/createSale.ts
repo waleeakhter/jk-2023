@@ -16,7 +16,7 @@ const createSale = async (body: {
     try {
         let newItemId: Types.ObjectId | null = null;
         let newClientId: Types.ObjectId | null = null;
-        const { resource } = body
+        const { resource , item } = body
         if (body.client.__isNew__) {
             const name = body.client.value.trim().toUpperCase()
             const existingClient = await Client.findOne({ name: name });
@@ -46,7 +46,7 @@ const createSale = async (body: {
             if (!item) {
                 return { status: 404, success: false, message: "Item not found" };
             }
-            if (resource === "shop") {
+            if (resource === "shop" && item.type === "lcd") {
                 if (body.sell_quantity > item.stock) {
                     return { status: 404, success: false, message: `${item.name} is out of stock` };
                 }

@@ -1,12 +1,11 @@
-import { nextAuthOptions } from '@/app/authOptions';
 import dbConnect from '@/app/utils/dbConnect';
 import ItemModal from '@/models/Item';
-import { getServerSession } from 'next-auth';
+import { auth } from '@/app/auth';
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
     await dbConnect()
-    // const session = await getServerSession(nextAuthOptions)
+    // const session = await auth()
     function customSort(a: { name: string; }, b: { name: string; }): number {
         // Compare the names of the items
         const nameA = a.name.toUpperCase();
@@ -29,12 +28,17 @@ export async function GET(request: Request) {
         const gte = searchParams.get('gte');
         const name = searchParams.get('name')
 
-        const res = await ItemModal.find(({
+        const res = await ItemModal.find({
             ...(type && { type: type }),
             ...(brand && { brand: brand }),
-            ...(qty && { stock: { $gte: gte, $lte: qty } }),
+            ...(gte && {
+                $or: [
+                    { stock: { $gt: gte } },
+                    { wearHouseStock: { $gt: gte } }
+                ],
+            }),
             ...(name && { name: { $regex: new RegExp(name, "i") } }),
-        })).sort({ name: 1 }).collation({ locale: "en" })
+        }).sort({ name: 1 }).collation({ locale: "en" });
 
 
         const totalAmount = res.reduce((total, item) => total + (item.purchase_price * (item.stock + item.wearHouseStock)), 0);

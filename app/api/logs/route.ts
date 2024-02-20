@@ -10,7 +10,7 @@ export async function GET(request: Request) {
 
         const logsList = await LogModal.find({
             ...(name && { "name": { $regex: name, $options: "i" } })
-        }).sort({ createdAt: -1 })
+        }).sort({ paymentDate: -1 })
         return NextResponse.json({ data: logsList ?? [] });
     } catch (error) {
         return NextResponse.json({ data: error }, { status: 500 });
