@@ -18,7 +18,7 @@ type stockUpdate = {
     stock: number,
     stockUpdate: dayjs.Dayjs,
     purchase_price?: number,
-    resource?:boolean | undefined
+    resource?: boolean | undefined
 }
 
 
@@ -44,7 +44,7 @@ const StockUpdate = ({ check }: Props) => {
     const validationSchema = Yup.object().shape({
         item: Yup.object().shape({ name: Yup.string().required('Item name is required') }),
         stock: Yup.number().required().default(0).positive().min(1),
-        ...(check === "wearhouse" ? { purchase_price: Yup.number().default(0).min(1) } : null),
+        purchase_price: Yup.number().default(0).min(1),
         stockUpdate: Yup.date().default(new Date()).required(),
     });
     const {
@@ -83,7 +83,7 @@ const StockUpdate = ({ check }: Props) => {
         },
         onSuccess: (res: { data: stockUpdate, message: string }) => {
             const { data, message } = res
-            // reset()
+            reset()
             refetch()
             toast.current?.show({ severity: 'success', summary: 'Info', detail: message });
 
@@ -119,11 +119,11 @@ const StockUpdate = ({ check }: Props) => {
                     <Space direction="vertical" align='end' className='w-full'>
                         <label><small>Direct Stock : Toggle</small></label>
                         <Controller
-                                name="resource"
-                                control={control}
-                                render={({ field: { onChange, value } }) => (
-                        <Switch checkedChildren="Direct Stock" unCheckedChildren="Wearhouse" checked={value} onChange={onChange} />
-                        )} />
+                            name="resource"
+                            control={control}
+                            render={({ field: { onChange, value } }) => (
+                                <Switch checkedChildren="Direct Stock" unCheckedChildren="Wearhouse" checked={value} onChange={onChange} />
+                            )} />
                     </Space>
                     <div className="grid grid-cols-1 gap-4">
                         <div className="w-full">
@@ -172,7 +172,7 @@ const StockUpdate = ({ check }: Props) => {
                             />
                             <div className="p-message p-message-error">{errors.stock?.message}</div>
                         </div>
-                        {check === "wearhouse" ? <div className="w-full">
+                        <div className="w-full">
                             <label htmlFor="item"><strong>Purchase Price</strong></label>
                             <Controller
                                 name="purchase_price"
@@ -184,7 +184,7 @@ const StockUpdate = ({ check }: Props) => {
                                 )}
                             />
                             <div className="p-message p-message-error">{errors.purchase_price?.message}</div>
-                        </div> : null}
+                        </div>
                         <div className="w-full">
                             <Controller
                                 name="stockUpdate"

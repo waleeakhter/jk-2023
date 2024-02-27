@@ -1,8 +1,6 @@
 import { Badge, Tag } from 'antd';
-import { ColumnEditorOptions, ColumnProps } from 'primereact/column';
-import { InputNumber } from 'primereact/inputnumber';
-import { InputText } from 'primereact/inputtext';
-import DatePicker from "react-datepicker";
+import {  ColumnProps } from 'primereact/column';
+
 
 export const columns: Array<ColumnProps> = [
     {
