@@ -1,39 +1,74 @@
-"use server"
-import React from 'react';
-import { Carousel, Image } from 'antd';
-import Datatable from './components/Home/Datatable';
+"use client";
+import React from "react";
+import { Carousel, Image } from "antd";
+
+import Datatable from "./components/Home/Datatable";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
 
 const contentStyle: React.CSSProperties = {
-  height: '350px',
-  color: '#fff',
-  lineHeight: '350px',
-  textAlign: 'center',
-  background: '#364d79',
-  width: '100%',
+  height: "350px",
+  color: "#fff",
+  lineHeight: "350px",
+  textAlign: "center",
+  background: "#364d79",
+  width: "100%",
 };
-const Home: React.FC = async () => {
-  const getItems = await fetch(process.env.API_URL + "/item/public" , {
-    cache: "no-cache",
-  });
-  const data = await getItems.json().then(items => items.data)
-  return <>
-    <Carousel autoplay style={{ maxWidth: 621, margin: "auto" }}>
-      <div className=' text-center'>
-        <Image style={contentStyle} src='/realme c35.png'></Image>
-      </div>
-      <div className=' text-center'>
-        <Image style={contentStyle} src='/12mini.png'></Image>
-      </div>
-      <div className=' text-center'>
-        <Image style={contentStyle} src='/x5.png'></Image>
-      </div>
-      <div className=' text-center'>
-        <Image style={contentStyle} src='/realme10pro.png'></Image>
-      </div>
-    </Carousel>
 
-    <Datatable data={data ?? []} />
-  </>
+const Home: React.FC = () => {
+  const queryClient = new QueryClient({
+    defaultOptions:{
+      queries:{
+        refetchOnWindowFocus: "always",
+        refetchOnReconnect: "always",
+        staleTime: Infinity,
+      }
+    }
+  });
+  const fetchItems = async () => {
+    const response = await fetch("/api/item/public", {
+      cache: "no-store",
+    });
+    const data = await response.json();
+    return data.data;
+  };
+  const { data, isLoading } = useQuery({
+    queryKey: ["items"],
+    queryFn: fetchItems,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true,
+    staleTime: Infinity,
+  });
+
+  console.log(data, "______data______");
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <>
+      <Carousel autoplay style={{ maxWidth: 621, margin: "auto" }}>
+        <div className=" text-center">
+          <Image style={contentStyle} src="/realme c35.png"></Image>
+        </div>
+        <div className=" text-center">
+          <Image style={contentStyle} src="/12mini.png"></Image>
+        </div>
+        <div className=" text-center">
+          <Image style={contentStyle} src="/x5.png"></Image>
+        </div>
+        <div className=" text-center">
+          <Image style={contentStyle} src="/realme10pro.png"></Image>
+        </div>
+      </Carousel>
+      <QueryClientProvider client={queryClient}>
+        <Datatable data={data ?? []} />
+      </QueryClientProvider>
+    </>
+  );
 };
 
 export default Home;
