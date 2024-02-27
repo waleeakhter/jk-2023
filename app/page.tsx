@@ -38,15 +38,9 @@ const Home: React.FC = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["items"],
     queryFn: fetchItems,
-    refetchOnReconnect: true,
-    refetchOnWindowFocus: true,
-    staleTime: Infinity,
+   enabled: true,
   });
 
-  console.log(data, "______data______");
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <>
@@ -65,7 +59,7 @@ const Home: React.FC = () => {
         </div>
       </Carousel>
       <QueryClientProvider client={queryClient}>
-        <Datatable data={data ?? []} />
+        <Datatable loading={isLoading} data={data ?? []} />
       </QueryClientProvider>
     </>
   );
