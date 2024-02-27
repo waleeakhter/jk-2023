@@ -1,13 +1,9 @@
-"use client";
 import React from "react";
 import { Carousel, Image } from "antd";
 
 import Datatable from "./components/Home/Datatable";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+
+import { fetchItems } from "./lib/Data";
 
 const contentStyle: React.CSSProperties = {
   height: "350px",
@@ -18,29 +14,12 @@ const contentStyle: React.CSSProperties = {
   width: "100%",
 };
 
-const Home: React.FC = () => {
-  const queryClient = new QueryClient({
-    defaultOptions:{
-      queries:{
-        refetchOnWindowFocus: "always",
-        refetchOnReconnect: "always",
-        staleTime: Infinity,
-      }
-    }
-  });
-  const fetchItems = async () => {
-    const response = await fetch("/api/item/public", {
-      cache: "no-store",
-    });
-    const data = await response.json();
-    return data.data;
-  };
-  const { data, isLoading } = useQuery({
-    queryKey: ["items"],
-    queryFn: fetchItems,
-   enabled: true,
-  });
+const Home: React.FC = async () => {
 
+
+
+
+  const data  =  await fetchItems()
 
   return (
     <>
@@ -58,9 +37,8 @@ const Home: React.FC = () => {
           <Image style={contentStyle} src="/realme10pro.png"></Image>
         </div>
       </Carousel>
-      <QueryClientProvider client={queryClient}>
-        <Datatable loading={isLoading} data={data ?? []} />
-      </QueryClientProvider>
+
+        <Datatable loading={false} data={data ?? []} />
     </>
   );
 };
