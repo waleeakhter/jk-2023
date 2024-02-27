@@ -20,20 +20,26 @@ export async function GET(request: Request) {
         return 0;
     }
     try {
-
-        // const { searchParams } = new URL(request.url)
-        // // const type = searchParams.get('type')
-        // // const brand = searchParams.get('brand');
-        // // const qty = searchParams.get('qty');
-        // // const gte = searchParams.get('gte');
-        // const name = searchParams.get('name')
-
-        const res = await ItemModal.find({type : "lcd"}, { name: 1, price : 1, _id: 1 , type : 1 , stock : 1 , wearHouseStock : 1})
+        const res = await ItemModal.find({ type: "lcd" }, { name: 1, price: 1, _id: 1, type: 1, stock: 1, wearHouseStock: 1 })
             .sort({ name: 1 })
-            .collation({ locale: "en" });
-        return NextResponse.json({ data: res.sort(customSort), success: true });
+            .collation({ locale: "en" })
+            .lean();
 
+        const customSort = function(a: any, b: any): number {
+            const nameA = a.name.toUpperCase();
+            const nameB = b.name.toUpperCase();
+
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+            return 0;
+        };
+
+        return NextResponse.json({ data: res.sort(customSort), success: true });
     } catch (error) {
-        return NextResponse.json({ data: error, message: "Somthing went wrong" });
+        return NextResponse.json({ data: error, message: "Something went wrong" });
     }
 }
