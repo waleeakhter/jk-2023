@@ -20,8 +20,8 @@ const validationSchema = Yup.object().shape({
 });
 
 // You can import your 'types' and 'brands' here if needed
-import types from "@/app/utils/types.json";
-import brands from "@/app/utils/brands.json";
+import types from "@/utils/types.json";
+import brands from "@/utils/brands.json";
 import { Item } from "@/types/typings";
 import { useMutation } from "@tanstack/react-query";
 

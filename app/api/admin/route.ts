@@ -1,4 +1,4 @@
-import dbConnect from '@/app/utils/dbConnect';
+import dbConnect from '@/utils/dbConnect';
 import Admin from '@/models/Admin';
 import { NextRequest, NextResponse } from 'next/server'
 

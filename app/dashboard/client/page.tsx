@@ -3,7 +3,6 @@ import React from 'react'
 import Datatable from './Datatable';
 import { auth } from '../../auth'
 import { redirect } from 'next/navigation';
-import DashboardLayout from '@/app/components/WebLayout';
 
 type Props = {
     searchParams: { type: string };
@@ -26,10 +25,7 @@ const Clients = async ({ searchParams } : Props) => {
     const Clients = await getClients.json()
 
     return (
-
-        <DashboardLayout>
             <Datatable values={Clients ?? []}  />
-        </DashboardLayout>
     )
 }
 

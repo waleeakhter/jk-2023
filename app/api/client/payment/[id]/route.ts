@@ -1,4 +1,4 @@
-import dbConnect from "@/app/utils/dbConnect";
+import dbConnect from "@/utils/dbConnect";
 import PaymentModal from "@/models/Payments";
 import { NextResponse } from 'next/server';
 import { Payments } from '@/types/typings';

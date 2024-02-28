@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../Header'
 import AuthProvider from '@/app/context/AuthProvider'
-import StyledComponentsRegistry from '@/app/lib/AntdRegistry'
+import StyledComponentsRegistry from '@/lib/AntdRegistry'
 
 type Props = {}
 

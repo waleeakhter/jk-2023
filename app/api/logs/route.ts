@@ -1,4 +1,4 @@
-import dbConnect from "@/app/utils/dbConnect";
+import dbConnect from "@/utils/dbConnect";
 import LogModal from '@/models/Log';
 import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
