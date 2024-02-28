@@ -4,6 +4,8 @@ import { getClients } from './SaleActions/ServerActions';
 import { auth } from '../../auth';
 import { redirect } from 'next/navigation';
 import DashboardLayout from '@/app/components/WebLayout';
+import { getSaleList } from '@/lib/data';
+
 type Props = {
     searchParams: { type: string };
 }
@@ -15,17 +17,8 @@ const page = async ({ searchParams }: Props) => {
     }
 
     const q = new URLSearchParams(searchParams)
-
-    const getSales = async () => {
-        const res = await fetch(`${process.env.API_URL}sale?page=${1}&pageSize=${10}&` + q, {
-            cache: 'no-cache',
-            next: {
-                tags: ["sale"],
-            }
-
-        })
-        return res.json()
-    }
+   const sales = await getSaleList(q)
+    // }
     const getItems = async () => {
         const res = await fetch(process.env.API_URL + "item", {
             cache: "no-cache",
@@ -40,15 +33,13 @@ const page = async ({ searchParams }: Props) => {
 
     const itemsData = getItems()
     const clientsData = getClients()
-    const salesData = getSales()
-    var [items, clients, sales] = await Promise.all([itemsData, clientsData, salesData])
+    // const salesData = getSales()
+    var [items, clients] = await Promise.all([itemsData, clientsData])
 
     return (
-        <DashboardLayout>
-            <SaleTable searchParams={searchParams} data={sales?.data ?? []}
-                clientsData={clients?.data ?? []} totalrows={sales?.totalrows ?? 0}
-                itemsData={items?.data ?? []} sale={sales?.totalSale ?? 0} />
-        </DashboardLayout>
+            <SaleTable searchParams={searchParams} data={sales?.saleList ?? []}
+                clientsData={clients?.data ?? []} totalrows={sales?.totalRows ?? 0}
+                itemsData={items?.data ?? []} sale={sales?.totalSaleAmount ?? 0} />
 
     )
 }

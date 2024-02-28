@@ -1,5 +1,5 @@
 
-import dbConnect from "@/app/utils/dbConnect";
+import dbConnect from "@/utils/dbConnect";
 import Item from "@/models/Item";
 import SaleModel from "@/models/Sale"
 import { Sale } from "@/types/typings";

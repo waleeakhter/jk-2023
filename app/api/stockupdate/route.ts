@@ -1,4 +1,4 @@
-import dbConnect from '@/app/utils/dbConnect';
+import dbConnect from '@/utils/dbConnect';
 import ItemModal from '@/models/Item';
 import { Item } from '@/types/typings';
 import { NextRequest, NextResponse } from 'next/server'

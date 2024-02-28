@@ -1,7 +1,7 @@
 import Item from "@/models/Item";
-import dbConnect from "../utils/dbConnect";
+import dbConnect from "@/utils/dbConnect";
 
-export const fetchItems = async () => {
+ const fetchItems = async () => {
     await  dbConnect();
     const res = await Item.find(
       { type: "lcd" },
@@ -26,3 +26,4 @@ export const fetchItems = async () => {
     const _res = res.length ? res.map((item) => ({...item,_id : (item._id as string).toString() , })) : []
     return _res.sort(customSort);
   };
+  export default fetchItems

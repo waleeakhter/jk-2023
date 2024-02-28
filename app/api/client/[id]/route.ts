@@ -1,4 +1,4 @@
-import dbConnect from "@/app/utils/dbConnect";
+import dbConnect from "@/utils/dbConnect";
 import ClientModal from '@/models/Client';
 import Item from "@/models/Item";
 import Sale from "@/models/Sale";

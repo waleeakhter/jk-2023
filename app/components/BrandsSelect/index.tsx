@@ -1,5 +1,5 @@
 import React from 'react'
-import brands from "@/app/utils/brands.json"
+import brands from "@/utils/brands.json"
 import AdvanceSelect from '../AdvanceSelect'
 import { Select } from 'antd'
 interface Props {

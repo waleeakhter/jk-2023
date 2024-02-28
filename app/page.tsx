@@ -3,7 +3,7 @@ import { Carousel, Image } from "antd";
 
 import Datatable from "./components/Home/Datatable";
 
-import { fetchItems } from "./lib/Data";
+import { fetchItems } from "@/lib/data";
 
 const contentStyle: React.CSSProperties = {
   height: "350px",
