@@ -42,7 +42,7 @@ const parseSearchParams = (searchParams: any[] | URLSearchParams) => {
         parsedExcludeClients: JSON.parse(excludeClients),
         pageNumber: parseInt(page),
         pagination: parseInt(pageSize),
-        getDate: new Date(paidOn ?? new Date()),
+        getDate: new Date(paidOn ?? new Date()).setHours(0, 0, 0, 0),
         startOfDay: new Date(createdAt ?? ""),
         endOfDay: new Date(endAt ?? new Date())
     };
@@ -51,7 +51,7 @@ const parseSearchParams = (searchParams: any[] | URLSearchParams) => {
 
 const getSaleList = async (searchParams: any[] | URLSearchParams) => {
     await dbConnect()
-  
+ 
     const {
         parsedStatus,
         parsedBrands,
@@ -64,6 +64,8 @@ const getSaleList = async (searchParams: any[] | URLSearchParams) => {
         startOfDay,
         endOfDay
     } = parseSearchParams(searchParams);
+    startOfDay.setHours(0, 0, 0, 0);
+    endOfDay.setHours(23, 59, 59, 999);
     const pipeline: PipelineStage[] = [
         {
             $match: {
