@@ -98,7 +98,7 @@ const Datatable = ({ data, showPrice }: Props) => {
         )
     }
     return (
-        <DashboardLayout >
+        < >
             <AddModal visible={visible} setVisible={setVisible}
                 heading={form === "newItem" ? "Add New Item" : form === "wearhouse" ? "Update Wearhouse Stock" : "Update Shop Stock"} >
 
@@ -149,7 +149,7 @@ const Datatable = ({ data, showPrice }: Props) => {
                 </DataTable>
             </div>
             <Tooltips />
-        </DashboardLayout>
+        </>
     )
 }
 

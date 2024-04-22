@@ -9,7 +9,7 @@ import initialValues from './initialValues';
 import { callback, onSubmit } from "./submit"
 import DatePicker from "react-datepicker";
 import { Select, Tooltip } from 'antd';
-import types from '@/app/utils/types.json';
+import types from '@/utils/types.json';
 import { useQuery } from '@tanstack/react-query';
 import { Switch, Space } from 'antd';
 

@@ -1,5 +1,5 @@
-import dbConnect from '@/app/utils/dbConnect';
-import fetchCall from '@/app/utils/fetch';
+import dbConnect from '@/utils/dbConnect';
+import fetchCall from '@/utils/fetch';
 import ItemType from '@/models/ItemType';
 import { NextResponse } from 'next/server';
 export async function GET(request: Request) {

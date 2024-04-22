@@ -1,6 +1,6 @@
 import { Schema, models, model } from "mongoose";
-import brands from "@/app/utils/brands.json"
-import types from "@/app/utils/types.json"
+import brands from "@/utils/brands.json"
+import types from "@/utils/types.json"
 // Creating a Schema for uploaded files
 const ItemSchema = new Schema({
     name: {

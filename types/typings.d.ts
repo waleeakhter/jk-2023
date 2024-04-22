@@ -1,6 +1,6 @@
 import { Client } from '@/types/typings';
 import { SingleValue, Options } from 'react-select';
-import types from "@/app/utils/types.json"
+import types from "@/utils/types.json"
 import { Payments } from '@/models/Payments';
 export interface Option {
     readonly label: string;

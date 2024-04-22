@@ -3,7 +3,6 @@ import React from 'react'
 import Datatable from './Datatable'
 import { redirect } from "next/navigation"
 import { auth } from '../../auth'
-import DashboardLayout from '@/app/components/WebLayout'
 
 type Props = {
     searchParams: { type: string },

@@ -173,14 +173,19 @@ export const paymentHistoryColumns: ColumnsType<Payments & Sale> = [
     title: 'Date',
     dataIndex: 'paymentDate',
     key: 'paymentDate',
+    render(value, record, index) {
+      return <Tag color={"default"}>{moment(value).format("DD-MM-YYYY")}</Tag>
+    },
     sorter: {
       compare: (a, b) => {
-        const dateA: Date = moment(a.paymentDate, "DD-MM-YY").toDate();
-        const dateB: Date = moment(b.paymentDate, "DD-MM-YY").toDate();
+        console.log(a.paymentDate , "a.paymentDate")
+        const dateA: Date = moment(a.paymentDate, "YYYY-MM-DDTHH:mm:ss.SSSZ").toDate();
+        const dateB: Date = moment(b.paymentDate, "YYYY-MM-DDTHH:mm:ss.SSSZ").toDate();
         return dateA.getTime() - dateB.getTime();
       },
       multiple: 2,
     },
-    defaultSortOrder: "ascend"
+    sortOrder: "descend",
+    defaultSortOrder : "descend"
   },
 ];

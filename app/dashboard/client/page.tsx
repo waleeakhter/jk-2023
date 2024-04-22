@@ -3,7 +3,7 @@ import React from 'react'
 import Datatable from './Datatable';
 import { auth } from '../../auth'
 import { redirect } from 'next/navigation';
-import DashboardLayout from '@/app/components/WebLayout';
+import { getClients } from '@/lib/data';
 
 type Props = {
     searchParams: { type: string };
@@ -16,20 +16,17 @@ const Clients = async ({ searchParams } : Props) => {
     }
     const q = new URLSearchParams(searchParams)
 
-    const getClients = await fetch(process.env.API_URL + 'client?'+ q, {
-        cache: "no-cache",
-        next: {
-            tags: ["Clients"]
-        }
-    })
+    // const getClients = await fetch(process.env.API_URL + 'client?'+ q, {
+    //     cache: "no-cache",
+    //     next: {
+    //         tags: ["Clients"]
+    //     }
+    // })
 
-    const Clients = await getClients.json()
+    const Clients = await getClients(q)
 
     return (
-
-        <DashboardLayout>
             <Datatable values={Clients ?? []}  />
-        </DashboardLayout>
     )
 }
 

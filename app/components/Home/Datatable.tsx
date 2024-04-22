@@ -15,7 +15,7 @@ const Datatable = ({ data, loading }: Props) => {
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [lazyState, setlazyState] = useState<LazyTableState>({
     first: 0,
-    rows: 10,
+    rows: 20,
     page: 1,
   });
   const [totalRecords, setTotalRecords] = useState(data.length ?? 0);
@@ -41,6 +41,13 @@ const Datatable = ({ data, loading }: Props) => {
         <div className="flex  gap-3 items-center ">
           <h5 className="m-0 text-2xl text-gray-800 ">{"Items List"}</h5>
         </div>
+        <h2 className=" text-red-700 ">
+          Dial:{" "}
+          <a className=" text-blue-500 underline" href="tel:+351920390253">
+            +351 920 390 253
+          </a>{" "}
+          to verify availability.<small>(If Quantity Less then 3)</small>
+        </h2>
         <div className="flex">
           <span className="p-input-icon-left">
             <i className="pi pi-search" />

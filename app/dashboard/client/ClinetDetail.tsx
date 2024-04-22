@@ -6,6 +6,8 @@ import { Table, Skeleton } from 'antd';
 import { ClinetDetailColumns, paymentHistoryColumns } from './ClinetDetailColumns';
 import { Tabs } from 'antd';
 import type { TabsProps } from 'antd';
+import { MomentInput } from 'moment';
+import moment from 'moment';
 type Props = { setIsModalOpen: (arg0: boolean) => void, isModalOpen: boolean, id: string }
 
 const ClientDetail: React.FC<Props> = ({ id, isModalOpen, setIsModalOpen }) => {
@@ -39,7 +41,11 @@ const ClientDetail: React.FC<Props> = ({ id, isModalOpen, setIsModalOpen }) => {
         queryFn: async () => {
             const res = await fetch(`/api/client`)
             console.log(res, "res")
-            return res.json().then(data => data.data);;
+            return res.json().then(data => data.data.sort((a: { createdAt: MomentInput; }, b: { createdAt: MomentInput; }) => {
+                const dateA: Date = moment(a.createdAt, "DD-MM-YY").toDate();
+                const dateB: Date = moment(b.createdAt, "DD-MM-YY").toDate();
+                return dateA.getTime() - dateB.getTime();
+            }));
         },
         enabled: id ? true : false,
         staleTime: 10000,

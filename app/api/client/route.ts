@@ -1,6 +1,6 @@
 import { auth } from '@/app/auth';
-import dbConnect from '@/app/utils/dbConnect';
-import fetchCall from '@/app/utils/fetch';
+import dbConnect from '@/utils/dbConnect';
+import fetchCall from '@/utils/fetch';
 import ClientModal from '@/models/Client';
 import { Client } from '@/types/typings';
 import { NextResponse } from 'next/server';
@@ -15,7 +15,6 @@ export async function GET(request: Request) {
   //  }
   const { searchParams } = new URL(request.url);
   const { id , client } = Object.fromEntries(searchParams.entries())
-  console.log(client , "____client____")
   const res = await ClientModal.find(({ ...(id && { _id: id }), ...(client && {name : {$regex : client , $options: "i"} }) })).sort({ name: 1 }).collation({ locale: "en" })
   const totalAmount = res.reduce((total, item) => total + item.credit, 0);
   return NextResponse.json({ data: res, totalCredit: Math.round(totalAmount) });

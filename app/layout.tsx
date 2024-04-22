@@ -11,7 +11,7 @@ import React from 'react';
 import { auth } from './auth'
 import AuthProvider from './context/AuthProvider';
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import StyledComponentsRegistry from './lib/AntdRegistry';
+import StyledComponentsRegistry from '@/lib/AntdRegistry';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {

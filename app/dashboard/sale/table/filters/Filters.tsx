@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { DatePicker, Button } from 'antd';
-import Types from "@/app/utils/types.json";
-import Status from "@/app/utils/status.json";
+import Types from "@/utils/types.json";
+import Status from "@/utils/status.json";
 import { Fieldset } from 'primereact/fieldset';
 import { ToggleButton } from 'primereact/togglebutton';
 import BrandsSelect from '@/app/components/BrandsSelect';

@@ -8,8 +8,8 @@ import { Toast } from 'primereact/toast';
 import { InputNumber, DatePicker, Select, Badge, Tag, Radio, Button } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEuro } from "@fortawesome/free-solid-svg-icons";
-import types from '@/app/utils/types.json';
-import brands from '@/app/utils/brands.json';
+import types from '@/utils/types.json';
+import brands from '@/utils/brands.json';
 import dayjs from 'dayjs';
 import { Switch, Space } from 'antd';
 type Props = { check: string }
