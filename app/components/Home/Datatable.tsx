@@ -15,7 +15,7 @@ const Datatable = ({ data, loading }: Props) => {
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [lazyState, setlazyState] = useState<LazyTableState>({
     first: 0,
-    rows: 10,
+    rows: 20,
     page: 1,
   });
   const [totalRecords, setTotalRecords] = useState(data.length ?? 0);
