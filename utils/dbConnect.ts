@@ -42,7 +42,6 @@ async function dbConnect() {
         cached.promise = connect(MONGODB_URI!, opts).then((mongoose) => {
             console.log("Mongo connected")
             seedAdmin();
-            seedType();
             return mongoose;
         });
     }

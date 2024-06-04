@@ -1,10 +1,13 @@
 import Item from "@/models/Item";
 import dbConnect from "@/utils/dbConnect";
 
- const fetchItems = async () => {
+ const fetchItems = async (searchParams  : any) => {
+    const {name} = searchParams || {};
     await  dbConnect();
     const res = await Item.find(
-      { type: "lcd" },
+      { 
+        ...(name && { "name": { $regex: name, $options: "i" } }),
+        type: "lcd" },
       { name: 1, price: 1, _id: 1, type: 1, stock: 1, wearHouseStock: 1 }
     )
       .sort({ name: 1 })
