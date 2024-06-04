@@ -33,8 +33,14 @@ export async function GET(request: Request) {
             ...(brand && { brand: brand }),
             ...(gte && {
                 $or: [
-                    { stock: { $gt: gte } },
+                    { stock: { $lt: gte } },
                     { wearHouseStock: { $gt: gte } }
+                ],
+            }),
+            ...(qty && {
+                $or: [
+                    { stock: { $lt: qty } },
+                    { wearHouseStock: { $lte: 10 } }
                 ],
             }),
             ...(name && { name: { $regex: new RegExp(name, "i") } }),
