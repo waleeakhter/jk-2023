@@ -10,6 +10,7 @@ import useScreenType from "@/lib/useMobile";
 import MobileViewList from "./MobileViewList";
 import Loading from "@/app/loading";
 import useBodyScrollLock from "@/lib/useBodyScrollLock";
+import PwaModal from "../PwaModal";
 type Props = { data: Array<Item | string | any>; loading: boolean };
 const Datatable = ({ data, loading }: Props) => {
   const { isMobile } = useScreenType();
@@ -101,6 +102,7 @@ const Datatable = ({ data, loading }: Props) => {
   };
   return (
     <div>
+      <PwaModal />
       {!isMobile ? (
         <>
         
