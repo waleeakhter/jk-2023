@@ -40,7 +40,7 @@ const PwaModal = () => {
 
     return (
         <>
-            {showModal && <Dialog visible={showModal} onHide={handleClose} className='w-[90%]' >
+            {showModal && <Dialog visible={showModal} onHide={handleClose} className='md:w-[500px] w-[90%]' >
                     <h2 className='text-xl font-bold mb-2'>Install the App</h2>
                     <p className='mb-4 text-sm'>
                         This app is available on your phone, tablet or computer.
