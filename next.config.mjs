@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
-const withPWA = require("@ducanh2912/next-pwa").default({
+import withPWAInit from "@ducanh2912/next-pwa";
+const withPWA = withPWAInit({
     dest: "public",
     cacheOnFrontEndNav: true,
     reloadOnOnline: true,
@@ -30,4 +31,4 @@ const nextConfig = {
     },
 }
 
-module.exports = withPWA(nextConfig)
+export default withPWA(nextConfig);
