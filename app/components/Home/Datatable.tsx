@@ -1,14 +1,19 @@
 "use client";
-import React, { useState } from "react";
-import { Button, Input, Tooltip } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Carousel, Image, Input, Tooltip } from "antd";
 import { FilterMatchMode } from "primereact/api";
 import { Item, LazyTableState } from "@/types/typings";
 import { DataTable, DataTablePageEvent } from "primereact/datatable";
 import { Column, ColumnProps } from "primereact/column";
 import { columns } from "./columns";
-import Tooltips from "@/app/dashboard/sale/table/columns";
+import useScreenType from "@/lib/useMobile";
+import MobileViewList from "./MobileViewList";
+import Loading from "@/app/loading";
+import useBodyScrollLock from "@/lib/useBodyScrollLock";
 type Props = { data: Array<Item | string | any>; loading: boolean };
 const Datatable = ({ data, loading }: Props) => {
+  const { isMobile } = useScreenType();
+  const [isMounted , setIsMounted] = useState(false);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -35,6 +40,36 @@ const Datatable = ({ data, loading }: Props) => {
     setGlobalFilterValue(value);
   };
 
+  
+
+  useEffect(() => {
+      setIsMounted(true);
+  },[]);
+
+  useEffect(() => { 
+    if(isMobile){
+      document.body.classList.add("overflow-hidden");
+    }else{
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  },[isMobile]);
+
+  if(!isMounted) {
+   return <Loading />
+  }
+  const contentStyle: React.CSSProperties = {
+    height: "350px",
+    color: "#fff",
+    lineHeight: "350px",
+    textAlign: "center",
+    background: "#364d79",
+    width: "100%",
+  };
+
   const renderHeader = () => {
     return (
       <div className="flex justify-between items-center flex-wrap lg:gap:1 gap-3">
@@ -48,10 +83,11 @@ const Datatable = ({ data, loading }: Props) => {
           </a>{" "}
           to verify availability.<small>(If Quantity Less then 3)</small>
         </h2>
-        <div className="flex">
+        <div className="flex w-full">
           <span className="p-input-icon-left">
             <i className="pi pi-search" />
             <Input.Search
+              classNames={{ affixWrapper: " w-['100vmin'" }}
               size="large"
               className={" font-normal "}
               value={globalFilterValue}
@@ -64,40 +100,62 @@ const Datatable = ({ data, loading }: Props) => {
     );
   };
   return (
-    <>
-      <DataTable
-        loading={loading}
-        className="data-table w-full"
-        dataKey="_id"
-        totalRecords={totalRecords}
-        scrollable
-        paginator
-        first={lazyState.first}
-        onPage={onPage}
-        size="small"
-        rows={lazyState.rows ?? 10}
-        rowsPerPageOptions={[10, 25, 50]}
-        removableSort
-        currentPageReportTemplate="{first} to {last} of {totalRecords}"
-        paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-        value={[...data]}
-        header={renderHeader}
-        globalFilterFields={["name", "type"]}
-        filters={filters}
-        filterDisplay="row"
-        emptyMessage="No Items found."
-      >
-        {columns.map((col: ColumnProps, i: number) => (
-          <Column {...col} key={i.toString()} />
-        ))}
-        <Column
-          rowEditor
-          headerStyle={{ width: "10%", minWidth: "8rem" }}
-          bodyStyle={{ textAlign: "center" }}
-        ></Column>
-      </DataTable>
-      <Tooltips />
-    </>
+    <div>
+      {!isMobile ? (
+        <>
+        
+        
+      <Carousel  autoplay style={{ maxWidth: 621, margin: "auto" }}>
+        <div className=" text-center">
+          <Image style={contentStyle} src="/realme c35.png"></Image>
+        </div>
+        <div className=" text-center">
+          <Image style={contentStyle} src="/12mini.png"></Image>
+        </div>
+        <div className=" text-center">
+          <Image style={contentStyle} src="/x5.png"></Image>
+        </div>
+        <div className=" text-center">
+          <Image style={contentStyle} src="/realme10pro.png"></Image>
+        </div>
+      </Carousel>
+        
+        <DataTable
+          loading={loading && isMobile}
+          className="data-table w-full"
+          dataKey="_id"
+          totalRecords={totalRecords}
+          scrollable
+          paginator
+          first={lazyState.first}
+          onPage={onPage}
+          size="small"
+          rows={lazyState.rows ?? 10}
+          rowsPerPageOptions={[10, 25, 50]}
+          removableSort
+          currentPageReportTemplate="{first} to {last} of {totalRecords}"
+          paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+          value={[...data]}
+          header={renderHeader}
+          globalFilterFields={["name", "type"]}
+          filters={filters}
+          filterDisplay="row"
+          emptyMessage="No Items found."
+        >
+          {columns.map((col: ColumnProps, i: number) => (
+            <Column {...col} key={i.toString()} />
+          ))}
+          <Column
+            rowEditor
+            headerStyle={{ width: "10%", minWidth: "8rem" }}
+            bodyStyle={{ textAlign: "center" }}
+          ></Column>
+        </DataTable>
+        </>
+      ) : (
+        <MobileViewList data={data} />
+      )}
+    </div>
   );
 };
 
