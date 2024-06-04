@@ -10,6 +10,7 @@ import useScreenType from "@/lib/useMobile";
 import MobileViewList from "./MobileViewList";
 import Loading from "@/app/loading";
 import useBodyScrollLock from "@/lib/useBodyScrollLock";
+import PwaModal from "../PwaModal";
 type Props = { data: Array<Item | string | any>; loading: boolean };
 const Datatable = ({ data, loading }: Props) => {
   const { isMobile } = useScreenType();
@@ -101,22 +102,23 @@ const Datatable = ({ data, loading }: Props) => {
   };
   return (
     <div>
+      <PwaModal />
       {!isMobile ? (
         <>
         
         
       <Carousel  autoplay style={{ maxWidth: 621, margin: "auto" }}>
         <div className=" text-center">
-          <Image style={contentStyle} src="/realme c35.png"></Image>
+          <Image style={contentStyle} src="/realme c35.png" alt="img"></Image>
         </div>
         <div className=" text-center">
-          <Image style={contentStyle} src="/12mini.png"></Image>
+          <Image style={contentStyle} src="/12mini.png" alt="img"></Image>
         </div>
         <div className=" text-center">
-          <Image style={contentStyle} src="/x5.png"></Image>
+          <Image style={contentStyle} src="/x5.png" alt="img"></Image>
         </div>
         <div className=" text-center">
-          <Image style={contentStyle} src="/realme10pro.png"></Image>
+          <Image style={contentStyle} src="/realme10pro.png" alt="img"></Image>
         </div>
       </Carousel>
         
