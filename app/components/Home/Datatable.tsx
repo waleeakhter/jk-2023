@@ -109,16 +109,16 @@ const Datatable = ({ data, loading }: Props) => {
         
       <Carousel  autoplay style={{ maxWidth: 621, margin: "auto" }}>
         <div className=" text-center">
-          <Image style={contentStyle} src="/realme c35.png"></Image>
+          <Image style={contentStyle} src="/realme c35.png" alt="img"></Image>
         </div>
         <div className=" text-center">
-          <Image style={contentStyle} src="/12mini.png"></Image>
+          <Image style={contentStyle} src="/12mini.png" alt="img"></Image>
         </div>
         <div className=" text-center">
-          <Image style={contentStyle} src="/x5.png"></Image>
+          <Image style={contentStyle} src="/x5.png" alt="img"></Image>
         </div>
         <div className=" text-center">
-          <Image style={contentStyle} src="/realme10pro.png"></Image>
+          <Image style={contentStyle} src="/realme10pro.png" alt="img"></Image>
         </div>
       </Carousel>
         

@@ -37,7 +37,7 @@ const ExportSetting: React.FC<Props> = ({ columns, visible, setVisible, callback
 
     useEffect(() => {
         createFileNameWithParams(params, dataForPreview.at(0).client, setFileName);
-    }, [params]);
+    }, [params , dataForPreview]);
 
     const handleCheckboxChange = (dataKey: string, isChecked: boolean | undefined) => {
         setColumns((prevColumns) =>

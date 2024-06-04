@@ -22,4 +22,5 @@ const logsSchema = new Schema({
   },
 });
 
-export default module.exports = models.Log || model("Log", logsSchema);
+
+export default models.Log || model("Log", logsSchema);

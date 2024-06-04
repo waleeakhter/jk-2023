@@ -24,4 +24,4 @@ const paymentSchema = new Schema({
   }
 });
 
-export default module.exports = models.Payment || model("Payment", paymentSchema);
+export default models.Payment || model("Payment", paymentSchema);

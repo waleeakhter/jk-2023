@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { DatePicker, Button } from 'antd';
 import Types from "@/utils/types.json";
@@ -65,14 +65,7 @@ export const Filters = (props: Props) => {
         }
     ));
 
-    const createQueryString = useCallback(
-        async (name: string, value: string) => {
 
-            params.set(name, value);
-            return params.toString();
-        },
-        [searchParams, filters]
-    );
 
     const deleteParams = (name: string) => {
         params.delete(name)
