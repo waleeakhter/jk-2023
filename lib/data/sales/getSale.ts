@@ -42,9 +42,9 @@ const parseSearchParams = (searchParams: any[] | URLSearchParams) => {
         parsedExcludeClients: JSON.parse(excludeClients),
         pageNumber: parseInt(page),
         pagination: parseInt(pageSize),
-        getDate: new Date(paidOn ?? new Date()),
-        startOfDay: new Date(createdAt ?? ""),
-        endOfDay: new Date(endAt ?? new Date())
+        getDate: paidOn ? new Date(paidOn).setHours(0,0,0,0) : null,
+        startOfDay: createdAt ?  new Date(createdAt ?? "").setHours(0, 0, 0, 0) : null,
+        endOfDay: endAt ? new Date(endAt ?? "").setHours(23, 59, 59, 999) : null
     };
 };
 
@@ -64,9 +64,6 @@ const getSaleList = async (searchParams: any[] | URLSearchParams) => {
         startOfDay,
         endOfDay
     } = parseSearchParams(searchParams);
-    startOfDay.setHours(0, 0, 0, 0);
-    endOfDay.setHours(23, 59, 59, 999);
-    getDate.setHours(0  , 0, 0, 0);
     console.log(getDate)
     const pipeline: PipelineStage[] = [
         {
