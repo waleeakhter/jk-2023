@@ -42,9 +42,9 @@ const parseSearchParams = (searchParams: any[] | URLSearchParams) => {
         parsedExcludeClients: JSON.parse(excludeClients),
         pageNumber: parseInt(page),
         pagination: parseInt(pageSize),
-        getDate: paidOn ? new Date(paidOn).setHours(0,0,0,0) : null,
-        startOfDay: createdAt ?  new Date(createdAt ?? "").setHours(0, 0, 0, 0) : null,
-        endOfDay: endAt ? new Date(endAt ?? "").setHours(23, 59, 59, 999) : null
+        getDate: paidOn ? new Date(paidOn) : null,
+        startOfDay: createdAt ?  new Date(createdAt ?? "") : null,
+        endOfDay: endAt ? new Date(endAt ?? "") : null
     };
 };
 
@@ -64,13 +64,19 @@ const getSaleList = async (searchParams: any[] | URLSearchParams) => {
         startOfDay,
         endOfDay
     } = parseSearchParams(searchParams);
+
+    if(startOfDay && endOfDay){
+        startOfDay.setHours(0, 0, 0, 0);
+        endOfDay.setHours(23, 59, 59, 999) 
+    }
+    if(getDate) getDate.setHours(0, 0, 0, 0);
     console.log(getDate)
     const pipeline: PipelineStage[] = [
         {
             $match: {
                 ...(parsedStatus.length > 0 ? { status: { $in: parsedStatus } } : {}),
                 ...(getDate && { paidOn: { $gte: getDate } }),
-                ...(startOfDay && { createdAt: { $gte: startOfDay, $lte: endOfDay } }),
+                ...(startOfDay && endOfDay && { createdAt: { $gte: startOfDay, $lte: endOfDay } }),
             },
         },
         {
