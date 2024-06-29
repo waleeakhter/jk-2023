@@ -105,7 +105,7 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
           }
         />
         {data.length > 0 ? (
-          <div className="overflow-y-auto h-[100vmax] pb-8">
+          <div className="overflow-y-auto h-[85vmax] pb-32">
             {data.map((item) => itemTemplate(item))}
           </div>
         ) : (
