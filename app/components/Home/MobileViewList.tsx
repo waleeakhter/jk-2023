@@ -1,11 +1,12 @@
 "use client";
-import React, { useState, useEffect, useTransition } from "react";
-import { VirtualScroller } from "primereact/virtualscroller";
+import React, { useState, useTransition } from "react";
 import { Item } from "@/types/typings";
-import { Affix, Button, Card, Input, Skeleton } from "antd";
+import { Affix, Card, Input } from "antd";
 import Image from "next/image";
 import { Caveat } from "next/font/google";
+import { Empty } from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Highlighter from "react-highlight-words";
 const caveat = Caveat({
   weight: "400",
   subsets: ["latin"],
@@ -15,7 +16,9 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
   const searchParams = useSearchParams().toString()!;
   const params = new URLSearchParams(searchParams);
   const { replace } = useRouter();
-  const [globalFilterValue, setGlobalFilterValue] = useState(params.get("name") ?? "");
+  const [globalFilterValue, setGlobalFilterValue] = useState(
+    params.get("name") ?? ""
+  );
   const [isPending, startTransition] = useTransition();
   const itemTemplate = (item: Item) => {
     return (
@@ -25,7 +28,14 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
       dark:shadow-lg   w-full card mb-3 dark:text-emerald-50 text-[#27272A] dark:backdrop-blur-lg "
       >
         <div className="grid gap-1 text-left">
-          <h3 className="text-base  font-semibold">{item.name}</h3>
+          <h3 className="text-base  font-semibold">
+            <Highlighter
+              highlightClassName="YourHighlightClass"
+              searchWords={[globalFilterValue]}
+              autoEscape={true}
+              textToHighlight={item.name}
+            />
+          </h3>
         </div>
         <div className="grid gap-1 text-right">
           <p className="text-2xl font-bold">€{item.price}</p>
@@ -55,22 +65,33 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
   };
 
   return (
-    <div className="flex flex-col bg-[#18181B]">
-      <Affix offsetTop={0} onChange={(affixed) => console.log(affixed)}>
-        <header className=" h-60 text-center gap-4 flex items-center justify-center text-[#919591] font-bold text-3xl">
+    <div className="flex flex-col bg-[#18181B] h-screen">
+      <Affix
+        className="flex-[0_0_15rem] [&>*:first-child]:h-full"
+        offsetTop={0}
+        onChange={(affixed) => console.log(affixed)}
+      >
+        <header className=" h-full text-center gap-4 flex items-center justify-center text-[#919591] font-bold text-3xl">
           <div className="flex gap-4 items-center justify-center -mt-16">
             <Image src={"/jk3.svg"} width={50} height={50} alt="logo" />
             <p className={`${caveat.className}} pt-4 italic `}>
               {" "}
               Lcd Price List
+              <h2 className=" text-red-700 text-xs max-w-[12rem]">
+                Dial:{" "}
+                <a
+                  className=" text-blue-500 underline"
+                  href="tel:+351920390253"
+                >
+                  +351 920 390 253
+                </a>{" "}
+                to verify availability.<small>(If Quantity Less then 3)</small>
+              </h2>
             </p>
           </div>
         </header>
       </Affix>
-      <Card
-        className="p-1 dark:bg-[#27272A] border-none rounded-none -mt-16 rounded-t-[4rem] z-30 relative mb-4 flex [&>*:first-child]:flex-1 [&>*:first-child]:p-1 [&>*:first-child]:text-center"
-        style={{ height: "82vh" }}
-      >
+      <Card className=" flex-1 p-1 dark:bg-[#27272A] border-none rounded-none -mt-16 rounded-t-[4rem] z-30 relative flex [&>*:first-child]:flex-1 [&>*:first-child]:p-1 [&>*:first-child]:text-center">
         <Input.Search
           loading={isPending}
           classNames={{ affixWrapper: " w-['80vmin'" }}
@@ -83,13 +104,15 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
             <i className="pi pi-search dark:text-white text-[#27272A]" />
           }
         />
-        <VirtualScroller
-          items={data}
-          itemSize={15}
-          itemTemplate={itemTemplate}
-          delay={0}
-          className="border-1 surface-border border-round  h-[100%] flex-1 "
-        />
+        {data.length > 0 ? (
+          <div className="overflow-y-auto h-[100vmax] pb-8">
+            {data.map((item) => itemTemplate(item))}
+          </div>
+        ) : (
+          <Empty
+            description={<div className="dark:text-white">No Data Found</div>}
+          />
+        )}
       </Card>
     </div>
   );
