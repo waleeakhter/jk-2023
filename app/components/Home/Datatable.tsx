@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Carousel, Image, Input, Tooltip } from "antd";
+import { Carousel, Image, Input } from "antd";
 import { FilterMatchMode } from "primereact/api";
 import { Item, LazyTableState } from "@/types/typings";
 import { DataTable, DataTablePageEvent } from "primereact/datatable";
@@ -9,8 +9,6 @@ import { columns } from "./columns";
 import useScreenType from "@/lib/useMobile";
 import MobileViewList from "./MobileViewList";
 import Loading from "@/app/loading";
-import useBodyScrollLock from "@/lib/useBodyScrollLock";
-import PwaModal from "../PwaModal";
 type Props = { data: Array<Item | string | any>; loading: boolean };
 const Datatable = ({ data, loading }: Props) => {
   const { isMobile } = useScreenType();
@@ -24,7 +22,7 @@ const Datatable = ({ data, loading }: Props) => {
     rows: 20,
     page: 1,
   });
-  const [totalRecords, setTotalRecords] = useState(data.length ?? 0);
+  const [totalRecords] = useState(data.length ?? 0);
   const onPage = (event: DataTablePageEvent) => {
     setlazyState((prev) => {
       return { ...prev, ...event };
@@ -102,7 +100,6 @@ const Datatable = ({ data, loading }: Props) => {
   };
   return (
     <div>
-      <PwaModal />
       {!isMobile ? (
         <>
         
