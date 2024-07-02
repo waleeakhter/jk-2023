@@ -47,7 +47,7 @@ const createSale = async (body: Sale) => {
       if (!item) {
         return { status: 404, success: false, message: "Item not found" };
       }
-      if (resource === "shop" && item.type === "lcd") {
+      
         if (body.sell_quantity > item.stock) {
           return {
             status: 404,
@@ -57,7 +57,7 @@ const createSale = async (body: Sale) => {
         }
         item.stock -= body.sell_quantity;
         await item.save();
-      }
+      
 
       if (resource === "wearhouse") {
         if (body.sell_quantity > item.wearHouseStock) {
