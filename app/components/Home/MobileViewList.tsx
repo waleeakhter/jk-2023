@@ -31,7 +31,7 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
       dark:shadow-lg   w-full card mb-3 dark:text-emerald-50 text-[#27272A] dark:backdrop-blur-lg "
       >
         <div className="grid gap-1 text-left">
-          <h3 className="text-base  font-semibold">
+          <h3 className="text-[0.8rem] sm:text-base  font-semibold">
             <Highlighter
               highlightClassName="YourHighlightClass"
               searchWords={[globalFilterValue.name]}
@@ -41,7 +41,7 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
           </h3>
         </div>
         <div className="grid gap-1 text-right">
-          <p className="text-2xl font-bold">€{item.price}</p>
+          <p className=" text-xl sm:text-2xl font-bold">€{item.price}</p>
           <p
             className={`${
               Number(item.stock + (item.wearHouseStock ?? 0)) === 0
@@ -74,9 +74,9 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
   };
 
   return (
-    <div className="flex relative flex-col bg-[#18181B] h-dvh">
+    <div className="flex relative flex-col dark:bg-[#18181B] h-dvh">
       <div className="flex overflow-x-hidden">
-        <div className="flex h-[100dvh] flex-col  p-5 flex-1">
+        <div className="flex h-[100dvh] flex-col p-2  sm:p-5 flex-1">
           <Affix
             className="flex-[0_0_9rem] [&>*:first-child]:h-full"
             offsetTop={0}
@@ -103,7 +103,7 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
               </div>
             </header>
           </Affix>
-          <div className="flex-1 flex-col flex dark:bg-[#27272A] p-4  overflow-hidden border-none rounded-3xl z-30">
+          <div className="flex-1 flex-col flex dark:bg-[#27272A] p-4  overflow-hidden border-none rounded-3xl z-30 shadow-2xl">
             <Input.Search
               loading={isPending}
               classNames={{ affixWrapper: " w-['80vmin'" }}
@@ -113,7 +113,7 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
               onChange={(e) => onGlobalFilterChange("name", e.target.value ?? "")}
               placeholder="Keyword Search"
               enterButton={
-                <i className="pi pi-search dark:text-white text-[#27272A]" />
+                <i className="pi pi-search dark:text-white " />
               }
             />
             <Segmented
