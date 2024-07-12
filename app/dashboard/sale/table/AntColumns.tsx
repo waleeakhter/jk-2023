@@ -199,10 +199,13 @@ export const AntColumns = (form: FormInstance, data: Array<Sale>, startTransitio
 
         },
         {
-            title: 'Resource',
-            dataIndex: 'resource',
-            key: 'resource',
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
             width: '100px',
+            render(_, record) {
+                return record.status === 1 ? <Typography.Text type="success">Paid</Typography.Text> : <Typography.Text type="danger">Unpaid</Typography.Text>
+            },
 
         },
         {

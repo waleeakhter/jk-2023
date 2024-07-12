@@ -87,6 +87,12 @@ export const columns = (form: FormInstance) => {
                 return inputsEditor(options, "date", form)
             },
         },
+        {
+            field: "Status",
+            header: 'status',
+            sortable: true,
+            body: (data: { status: number }) => <p> { data.status === 1 ? "Paid" : ""}</p>,
+        },
 
     ] as Array<ColumnProps>
 }

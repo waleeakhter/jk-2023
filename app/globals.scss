@@ -96,3 +96,59 @@ input[type="number"] {
     background-image: none;
     background: rgba(0, 0, 0, 0.35);
 }
+
+/* Define color variables for light and dark modes */
+:root {
+    --scrollbar-bg: #f0f0f0;
+    --scrollbar-thumb: #c0c0c0;
+    --scrollbar-thumb-hover: #a0a0a0;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --scrollbar-bg: #2b2b2b;
+        --scrollbar-thumb: #555555;
+        --scrollbar-thumb-hover: #777777;
+    }
+}
+
+/* Apply the variables to the scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 6px;
+    border: 3px solid var(--scrollbar-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
+}
+
+.ant-segmented-item {
+    @media (prefers-color-scheme: dark) {
+        &:hover {
+            color: white !important;
+        }
+
+        &.ant-segmented-item-selected {
+            &:hover {
+                color: #2b2b2b !important;
+            }
+
+        }
+    }
+
+}

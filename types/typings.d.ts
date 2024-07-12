@@ -62,7 +62,8 @@ export interface SaleApiDefaultParams {
     type: string;
     createdAt: string | null;
     endAt: string | null;
-    paidOn: string | null;
+    paidStart: string | null;
+    paidEnd: string | null;
     client: string;
     excludeClients: string;
     page: string;
