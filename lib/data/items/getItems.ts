@@ -2,12 +2,12 @@ import Item from "@/models/Item";
 import dbConnect from "@/utils/dbConnect";
 
  const fetchItems = async (searchParams  : any) => {
-    const {name} = searchParams || {};
+    const {name , type  = "lcd"} = searchParams || {};
     await  dbConnect();
     const res = await Item.find(
       { 
-        ...(name && { "name": { $regex: name, $options: "i" }}),
-        type: "lcd" ,   $or: [
+        ...(name && { "name": { $regex: decodeURIComponent(name.toString()), $options: "i" }}),
+        type: type ,   $or: [
           { stock: { $gt: 0 } },
           { wearHouseStock: { $gt: 0 } }
       ], },

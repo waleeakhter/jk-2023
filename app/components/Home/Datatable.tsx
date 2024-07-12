@@ -100,7 +100,7 @@ const Datatable = ({ data, loading }: Props) => {
   };
   return (
     <div>
-      {!isMobile ? (
+      {isMobile ? (
         <>
         
         
