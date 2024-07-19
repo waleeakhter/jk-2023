@@ -17,7 +17,7 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
   const params = new URLSearchParams(searchParams);
   const { replace } = useRouter();
   const [globalFilterValue, setGlobalFilterValue] = useState({
-    name : params.get("name") ?? "",
+    name : decodeURIComponent(params.get("name") ?? ""),
     type : params.get("type") ?? "lcd"
   }
     
@@ -44,12 +44,12 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
           <p className=" text-xl sm:text-2xl font-bold">€{item.price}</p>
           <p
             className={`${
-              Number(item.stock + (item.wearHouseStock ?? 0)) === 0
+              Number(item.stock) === 0
                 ? "text-red-600"
                 : "text-gray-500 dark:text-gray-400"
             } text-sm  font-medium `}
           >
-            In stock: {Number(item.stock + (item.wearHouseStock ?? 0))}
+            In stock: {Number(item.stock)}
           </p>
         </div>
       </div>
@@ -62,7 +62,7 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
     return encodeURIComponent(param.replace(/[^a-zA-Z0-9-_ ]/g, ''));
   }
   const onGlobalFilterChange = ( name : string , value = "") => {
-   
+   console.log(value , "filter");
     setGlobalFilterValue((prev) => ({ ...prev, [name]: value }));
     if (value) {
       params.set(name, sanitizeUrlParam(value.toLocaleLowerCase()));
@@ -105,6 +105,8 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
           </Affix>
           <div className="flex-1 flex-col flex dark:bg-[#27272A] p-4  overflow-hidden border-none rounded-3xl z-30 shadow-2xl">
             <Input.Search
+              allowClear={true}
+              
               loading={isPending}
               classNames={{ affixWrapper: " w-['80vmin'" }}
               size="large"
