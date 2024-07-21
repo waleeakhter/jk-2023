@@ -5,8 +5,7 @@ import { Item } from "@/types/typings";
 import useScreenType from "@/lib/useMobile";
 import MobileViewList from "./MobileViewList";
 import Loading from "@/app/loading";
-type Props = { data: Array<Item | string | any>; loading: boolean };
-const Datatable = ({ data, loading }: Props) => {
+type Props = { data: Array<Item>; loading: boolean };const Datatable = ({ data, loading }: Props) => {
   const { isMobile } = useScreenType();
   const [isMounted , setIsMounted] = useState(false);
  

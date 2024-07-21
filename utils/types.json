@@ -26,5 +26,9 @@
     {
         "name": "Airpod's",
         "value": "airpod"
+    },
+    {
+        "name": "Nokia",
+        "value": "nokia"
     }
 ]

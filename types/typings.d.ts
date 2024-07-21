@@ -15,7 +15,6 @@ export interface ReactSelect {
 export interface Item {
     _id?: string;
     name: string;
-    quantity: number;
     purchase_price: number,
     stock: number,
     wearHouseStock: number,
