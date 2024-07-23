@@ -110,7 +110,7 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
             {isPending ? (
               <Loading />
             ) : data.length > 0 ? (
-              <div className=" overflow-y-scroll flex-[1_1_100%] w-full h-full">
+              <div className=" overflow-y-auto flex-[1_1_100%] w-full h-full">
                 {itemTemplate(
                   data,
                   globalFilterValue.name ?? "",
@@ -121,9 +121,7 @@ export default function MobileViewList({ data }: Readonly<{ data: Item[] }>) {
               <Empty
                 description={
                   <div className="dark:text-white">
-                    {globalFilterValue.type === "nokia"
-                      ? "Coming Soon"
-                      : "No Data Found"}
+                    {"No Data Found"}
                   </div>
                 }
               />

@@ -2,8 +2,13 @@ import Item from "@/models/Item";
 import dbConnect from "@/utils/dbConnect";
 
 const fetchItems = async (searchParams: any) => {
-  const { name, type = "lcd" } = searchParams || {};
+  let { name, type = "lcd" } = searchParams || {};
   let greaterThanZero = type !== "lcd";
+  let getNokiaPhone = ""
+   if(type === "nokia"){
+    type = "mobile"
+    getNokiaPhone = "nokia"
+   }
 
   await dbConnect();
   const res = await Item.find(
@@ -12,6 +17,7 @@ const fetchItems = async (searchParams: any) => {
         name: { $regex: decodeURIComponent(name.toString()), $options: "i" },
       }),
       type: type,
+      ...(getNokiaPhone && {brand : getNokiaPhone}),
       ...(greaterThanZero && { stock: { $gt: 0 } }),
     },
     { name: 1, price: 1, _id: 1, type: 1, stock: 1, wearHouseStock: 1 }
