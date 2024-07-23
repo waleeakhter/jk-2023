@@ -63,7 +63,7 @@ const AddSale = ({ items, clients }: Props) => {
                         <div className='from-group'>
                             <label>Item Name</label>
                             <AdvanceSelect name={"item"} value={"name"} lableValue={"name"}
-                                options={itemsData} extra={"price"} callback={callback} setFieldValue={setFieldValue} />
+                                options={itemsData.filter(item => item.stock > 0)} extra={"price"} callback={callback} setFieldValue={setFieldValue} />
                             <span className=' text-red-600 '><ErrorMessage name="item" /></span>
                         </div>
                         <div className='from-group'>
